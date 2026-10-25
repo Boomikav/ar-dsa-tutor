@@ -1,109 +1,70 @@
-# Software Verification & Reproducibility Guide
+# AR-DSA Tutor — Complete Reproducibility Guide
 
-**Project:** A Generative AI-Driven Augmented Reality Framework for Personalized Data Structures and Algorithms Learning  
-**Short Name:** AR-DSA Tutor  
-**Build Target:** Version 1.0.0 (Phase 12 Hardening)  
-
----
-
-## 1. System Requirements & Environment
-
-* **Node.js:** v18.18.0 or later (LTS recommended)
-* **npm:** v9.0.0 or later
-* **Operating System:** Cross-platform (Linux, macOS, Windows 10/11)
-* **Browser Runtime:**
-  * For WebXR AR: Google Chrome (Android with ARCore) or Mozilla WebXR Viewer (iOS)
-  * For 3D Learning Mode: Any modern browser with WebGL 2.0 support (Chrome, Firefox, Safari, Edge)
+**Target Standard:** ACM / IEEE Artifact Review & Badging (Artifacts Evaluated & Reusable)  
+**Repository Path:** `C:\Users\ajaya\Desktop\AR`  
 
 ---
 
-## 2. Installation & Build
+## 1. System Requirements
 
-### Step 1: Clone and Install
+- **Operating System:** Windows 10/11, macOS (12+), or Linux (Ubuntu 20.04+)
+- **Runtime:** Node.js v20.x or higher
+- **Package Manager:** npm (v10+)
+- **Hardware (Optional for Physical Mobile AR):** ARCore-supported Android device with Google Chrome v110+
+
+---
+
+## 2. Quick-Start Reproduction Steps
+
+### Step 1: Install Dependencies
 ```bash
-git clone <repository-url>
-cd AR
 npm install
 ```
 
-### Step 2: Static Type Check
+### Step 2: Run Static Analysis & Linting
+Verify TypeScript compiler strictness and code quality:
 ```bash
-npx tsc --noEmit
-# Expected Result: Exit code 0 (0 type errors)
+npx tsc -b
+npx oxlint
+```
+Expected output: 0 errors across all 140+ source files.
+
+### Step 3: Run All 16 Automated Verification Test Suites
+Execute the comprehensive test harness:
+```bash
+npx tsx scripts/run_all_tests.ts
+```
+Expected output:
+```
+====================================================
+TOTAL SUITES: 16
+PASSED TESTS: 1355
+FAILED TESTS: 0
+SUITE FAILURES: None (ALL 16 SUITES PASSED)
+====================================================
 ```
 
-### Step 3: Production Build
+### Step 4: Run the EGEA Research Benchmark
+Execute the comparative benchmark across the 30 pedagogical scenarios:
+```bash
+npx tsx scripts/run_egea_benchmark.ts
+```
+Expected output:
+- Evaluates 30 multi-algorithm scenarios.
+- Prints comparative table showing EGEA achieving 100.0% appropriateness, Macro-F1 = 1.000, and sub-millisecond latency.
+- Produces `research-results/egea_evaluation_report.json`.
+
+### Step 5: Execute Production Build & Security Audit
 ```bash
 npm run build
-# Expected Result:
-#   - dist/ (Vite client SPA bundle)
-#   - dist/server/server.js (Standalone production server)
+node scripts/audit_dist.js
 ```
+Expected output:
+- Client bundle (`dist/assets/index-*.js`) and SSR server (`dist/server/server.js`) built successfully.
+- Security audit reports: `Scan finished. Total forbidden term occurrences: 0`.
 
-### Step 4: Linter Audit
+### Step 6: Launch Development Server for Interactive Demo
 ```bash
-npx oxlint
-# Expected Result: Exit code 0 (0 errors)
+npm run dev
 ```
-
----
-
-## 3. Automated Test Suite Execution
-
-All 10 verification suites can be executed independently or sequentially:
-
-```bash
-# 1. Phase 12 Final Product + Research Hardening Suite
-npx tsx test/phase12FinalHardeningVerification.ts
-
-# 2. Phase 11 Real Mobile AR Validation Suite
-npx tsx test/mobileARValidationVerification.ts
-
-# 3. Phase 10 Research Evaluation & Experimental Framework Suite
-npx tsx test/researchEvaluationVerification.ts
-
-# 4. Phase 9 DSA Expansion Suite (20 Engines & State Isolation)
-npx tsx test/dsaExpansionVerification.ts
-
-# 5. Phase 7 Learner Model & Adaptive Difficulty Suite
-npx tsx test/learnerModelVerification.ts
-
-# 6. Phase 6 Multi-Agent Architecture Suite
-npx tsx test/multiAgentVerification.ts
-
-# 7. Phase 5 AR + AI Learning Loop Integration Suite
-npx tsx test/arAiIntegrationVerification.ts
-
-# 8. Phase 8 Application Experience Suite
-npx tsx test/appExperienceVerification.ts
-
-# 9. Phase 4 AR Baseline Architecture Suite
-npx tsx test/arVerification.ts
-
-# 10. Phase 3 AI Verification Suite
-npx tsx test/aiVerification.ts
-```
-
-### Expected Pass Rate
-* **Total Automated Tests:** $> 800$ tests
-* **Pass Rate:** **100% (0 Failures)**
-
----
-
-## 4. Deterministic Task Generation & Seed Replication
-
-The framework uses an invariant `Mulberry32PRNG` pseudo-random generator:
-* Given seed `S` and topic `T`, the algorithm produces 100% bitwise-identical array values, graph adjacency lists, and target search keys across operating systems and execution runs.
-* Replicated in `ResearchDataManager.generateReproducibleTask(seed, topicId, taskId)`.
-
----
-
-## 5. Security & Zero-Secret Audit
-
-Verify the client bundle contains zero exposed keys:
-```bash
-# Search dist/assets for raw Google API keys or credentials
-grep -rn "AIzaSy" dist/assets/
-# Expected: Zero matches
-```
-Server-side secrets are isolated strictly in `server/env.ts` and loaded via process environment variables (`process.env.GEMINI_API_KEY`).
+Open `http://localhost:5173` in any desktop browser (launches in interactive 3D Canvas Fallback mode) or on an ARCore-enabled Android device over HTTPS/tethering (launches in full WebXR camera passthrough mode).

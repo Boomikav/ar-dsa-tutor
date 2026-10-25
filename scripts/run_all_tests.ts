@@ -16,7 +16,8 @@ const testSuites = [
   'aiVerification.ts',
   'arAiIntegrationVerification.ts',
   'appExperienceVerification.ts',
-  'researchEvaluationVerification.ts'
+  'researchEvaluationVerification.ts',
+  'egeaEvaluationVerification.ts'
 ];
 
 let totalPassed = 0;

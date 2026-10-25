@@ -1,0 +1,314 @@
+{
+  "timestamp": "2026-10-25T12:44:00.019Z",
+  "scenarioCount": 30,
+  "scenariosPerFamily": {
+    "One-Off Minor Mistake": 5,
+    "Rapid Impulsive Guessing": 5,
+    "Attention Saliency Lapse": 5,
+    "Persistent Step Failure": 5,
+    "Prerequisite Deficit": 5,
+    "Independent Mastery Streak": 5
+  },
+  "systems": {
+    "fixedHintBaseline": {
+      "systemName": "Fixed Hint Baseline",
+      "totalEvaluated": 30,
+      "correctInterventions": 10,
+      "appropriatenessRate": 33.3,
+      "macroPrecision": 0.2,
+      "macroRecall": 0.333,
+      "macroF1": 0.25,
+      "classMetrics": {
+        "CONTEXTUAL_HINT": {
+          "precision": 0.2,
+          "recall": 1,
+          "f1Score": 0.333,
+          "accuracy": 1
+        },
+        "HIGHLIGHT_ELEMENT": {
+          "precision": 0,
+          "recall": 0,
+          "f1Score": 0,
+          "accuracy": 0
+        },
+        "STEPWISE_SLOWDOWN": {
+          "precision": 0,
+          "recall": 0,
+          "f1Score": 0,
+          "accuracy": 0
+        },
+        "WORKED_EXAMPLE": {
+          "precision": 0,
+          "recall": 0,
+          "f1Score": 0,
+          "accuracy": 0
+        },
+        "PREREQUISITE_REVIEW": {
+          "precision": 0,
+          "recall": 0,
+          "f1Score": 0,
+          "accuracy": 0
+        },
+        "REDUCE_GUIDANCE": {
+          "precision": 1,
+          "recall": 1,
+          "f1Score": 1,
+          "accuracy": 1
+        }
+      },
+      "confusionMatrix": {
+        "CONTEXTUAL_HINT": {
+          "CONTEXTUAL_HINT": 5,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "HIGHLIGHT_ELEMENT": {
+          "CONTEXTUAL_HINT": 5,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "STEPWISE_SLOWDOWN": {
+          "CONTEXTUAL_HINT": 5,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "WORKED_EXAMPLE": {
+          "CONTEXTUAL_HINT": 5,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "PREREQUISITE_REVIEW": {
+          "CONTEXTUAL_HINT": 5,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "REDUCE_GUIDANCE": {
+          "CONTEXTUAL_HINT": 0,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 5
+        }
+      },
+      "averageLatencyMs": 0.01,
+      "maxLatencyMs": 0.184,
+      "p95LatencyMs": 0.025
+    },
+    "simpleErrorRuleBaseline": {
+      "systemName": "Simple Error Rule Baseline",
+      "totalEvaluated": 30,
+      "correctInterventions": 15,
+      "appropriatenessRate": 50,
+      "macroPrecision": 0.375,
+      "macroRecall": 0.5,
+      "macroF1": 0.429,
+      "classMetrics": {
+        "CONTEXTUAL_HINT": {
+          "precision": 0.25,
+          "recall": 1,
+          "f1Score": 0.4,
+          "accuracy": 1
+        },
+        "HIGHLIGHT_ELEMENT": {
+          "precision": 1,
+          "recall": 1,
+          "f1Score": 1,
+          "accuracy": 1
+        },
+        "STEPWISE_SLOWDOWN": {
+          "precision": 0,
+          "recall": 0,
+          "f1Score": 0,
+          "accuracy": 0
+        },
+        "WORKED_EXAMPLE": {
+          "precision": 0,
+          "recall": 0,
+          "f1Score": 0,
+          "accuracy": 0
+        },
+        "PREREQUISITE_REVIEW": {
+          "precision": 0,
+          "recall": 0,
+          "f1Score": 0,
+          "accuracy": 0
+        },
+        "REDUCE_GUIDANCE": {
+          "precision": 1,
+          "recall": 1,
+          "f1Score": 1,
+          "accuracy": 1
+        }
+      },
+      "confusionMatrix": {
+        "CONTEXTUAL_HINT": {
+          "CONTEXTUAL_HINT": 5,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "HIGHLIGHT_ELEMENT": {
+          "CONTEXTUAL_HINT": 0,
+          "HIGHLIGHT_ELEMENT": 5,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "STEPWISE_SLOWDOWN": {
+          "CONTEXTUAL_HINT": 5,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "WORKED_EXAMPLE": {
+          "CONTEXTUAL_HINT": 5,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "PREREQUISITE_REVIEW": {
+          "CONTEXTUAL_HINT": 5,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "REDUCE_GUIDANCE": {
+          "CONTEXTUAL_HINT": 0,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 5
+        }
+      },
+      "averageLatencyMs": 0.015,
+      "maxLatencyMs": 0.288,
+      "p95LatencyMs": 0.035
+    },
+    "egeaAdaptivePolicy": {
+      "systemName": "EGEA Adaptive Policy",
+      "totalEvaluated": 30,
+      "correctInterventions": 30,
+      "appropriatenessRate": 100,
+      "macroPrecision": 1,
+      "macroRecall": 1,
+      "macroF1": 1,
+      "classMetrics": {
+        "CONTEXTUAL_HINT": {
+          "precision": 1,
+          "recall": 1,
+          "f1Score": 1,
+          "accuracy": 1
+        },
+        "HIGHLIGHT_ELEMENT": {
+          "precision": 1,
+          "recall": 1,
+          "f1Score": 1,
+          "accuracy": 1
+        },
+        "STEPWISE_SLOWDOWN": {
+          "precision": 1,
+          "recall": 1,
+          "f1Score": 1,
+          "accuracy": 1
+        },
+        "WORKED_EXAMPLE": {
+          "precision": 1,
+          "recall": 1,
+          "f1Score": 1,
+          "accuracy": 1
+        },
+        "PREREQUISITE_REVIEW": {
+          "precision": 1,
+          "recall": 1,
+          "f1Score": 1,
+          "accuracy": 1
+        },
+        "REDUCE_GUIDANCE": {
+          "precision": 1,
+          "recall": 1,
+          "f1Score": 1,
+          "accuracy": 1
+        }
+      },
+      "confusionMatrix": {
+        "CONTEXTUAL_HINT": {
+          "CONTEXTUAL_HINT": 5,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "HIGHLIGHT_ELEMENT": {
+          "CONTEXTUAL_HINT": 0,
+          "HIGHLIGHT_ELEMENT": 5,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "STEPWISE_SLOWDOWN": {
+          "CONTEXTUAL_HINT": 0,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 5,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "WORKED_EXAMPLE": {
+          "CONTEXTUAL_HINT": 0,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 5,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 0
+        },
+        "PREREQUISITE_REVIEW": {
+          "CONTEXTUAL_HINT": 0,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 5,
+          "REDUCE_GUIDANCE": 0
+        },
+        "REDUCE_GUIDANCE": {
+          "CONTEXTUAL_HINT": 0,
+          "HIGHLIGHT_ELEMENT": 0,
+          "STEPWISE_SLOWDOWN": 0,
+          "WORKED_EXAMPLE": 0,
+          "PREREQUISITE_REVIEW": 0,
+          "REDUCE_GUIDANCE": 5
+        }
+      },
+      "averageLatencyMs": 0.075,
+      "maxLatencyMs": 1.22,
+      "p95LatencyMs": 0.181
+    }
+  }
+}

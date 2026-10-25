@@ -1,0 +1,19 @@
+{
+  "name": "AR-DSA Tutor — Augmented Reality DSA Learning",
+  "short_name": "AR-DSA",
+  "description": "Interactive mobile WebXR learning application for Data Structures and Algorithms with explainable adaptive guidance.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#080c14",
+  "theme_color": "#080c14",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "developer tools"]
+}
