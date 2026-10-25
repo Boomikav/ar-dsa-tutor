@@ -1,7 +1,7 @@
 # AR-DSA Tutor — Research Claims to Evidence Traceability Map
 
-**Document Version:** 1.0.0  
-**Audit Baseline Commit:** `9f43d2a`  
+**Document Version:** 2.0.0  
+**Audit Baseline Commit:** `f3269b2`  
 **Purpose:** Maps every technical and scientific claim directly to reproducible code, tests, and raw outputs.  
 
 ---
@@ -22,6 +22,8 @@
 | **CLAIM-10** | Physical Android phone camera passthrough and plane SLAM verified on real device | N/A (requires hardware) | `docs/REAL_DEVICE_WEBXR_VALIDATION.md` | N/A (no hardware attached) | N/A | **NOT RUN / UNVERIFIED (Hardware Unavailable)** |
 | **CLAIM-11** | AR-DSA Tutor improves student exam scores or normalized learning gain ($g$) | N/A (requires human study) | `docs/EXPERIMENTAL_PROTOCOL.md` (Protocol design) | N/A (no human study executed) | N/A | **NOT SUPPORTED (Future IRB Study Required)** |
 | **CLAIM-12** | Native Android APK or Unity binary built and published | `docs/UNITY_MIGRATION_SPEC.md`, `docs/ANDROID_RELEASE_CHECKLIST.md` | Inspection audit | N/A (only specs exist) | N/A | **NOT SUPPORTED (Specification Only)** |
+| **CLAIM-13** | EGEA outperforms a history-aware matched baseline that lacks step-level persistence tracking | `src/services/research/egea/EGEAMatchedHistoryBaseline.ts` | `scripts/evaluate_failure_mode_benchmark.ts` | `research-results/failure_mode_benchmark_report.json` | `npx tsx scripts/evaluate_failure_mode_benchmark.ts` | **SUPPORTED (100% vs 83.3% Accuracy on 18 Challenge Cases)** |
+| **CLAIM-14** | EGEA has 4 characterized failure modes under adversarial boundary timing and jitter | `src/services/research/egea/EGEAFailureModeBenchmark.ts` | `scripts/evaluate_failure_mode_benchmark.ts` | `research-results/failure_mode_benchmark_report.json` | `npx tsx scripts/evaluate_failure_mode_benchmark.ts` | **SUPPORTED (4 Disclosed Failure Modes: EDGE-01 to EDGE-04)** |
 
 ---
 
@@ -31,3 +33,5 @@
 2. **"The system has been verified on physical Android hardware across multiple manufacturers."** (All automated tests ran in Node.js / Three.js simulation; physical hardware was not connected).
 3. **"EGEA was evaluated by an independent panel of human educational experts."** (The challenge suite was authored as an engineering challenge suite using published pedagogical rubrics; no external human panel was recruited).
 4. **"A native mobile app or Unity package is available for download."** (Only the WebXR PWA web application is implemented; Unity/APK are migration blueprints).
+5. **"EGEA guarantees 60 FPS mobile WebXR rendering."** (Microsecond latency profiles pure JavaScript CPU execution; mobile GPU fill rates and draw calls govern final frame rates).
+6. **"EGEA is an optimal or error-free pedagogical oracle."** (4 concrete heuristic failure modes exist under boundary timing, touch jitter, and semantic naming variations).

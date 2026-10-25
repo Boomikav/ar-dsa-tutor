@@ -1,71 +1,88 @@
-# AR-DSA Tutor — Experimental Protocol & Evaluation Methodology
+# AR-DSA Tutor — Frozen Experimental Protocol & Evaluation Methodology
 
-**Protocol Version:** 1.0.0  
+**Protocol Version:** 2.0.0 (Frozen Pre-Submission Specification)  
 **Authors:** Academic Review & Systems Architecture Team  
 **Standards Compliance:** ACM / IEEE Experimental Replication Standards  
 
 ---
 
-## 1. Experimental Objectives
+## 1. Frozen Evaluation Framework
 
-This protocol provides the authoritative specification for replicating all technical benchmarks and establishes the methodological blueprint for future empirical human participant studies.
-
----
-
-## 2. Technical Evaluation Protocols (Fully Reproducible Now)
-
-### Protocol A: Software Verification & Deterministic Invariant Suite
-- **Objective:** Verify mathematical correctness of all 20 algorithm engines and Three.js visualizers.
-- **Execution Command:**
-  ```bash
-  npx tsx scripts/run_all_tests.ts
-  ```
-- **Acceptance Criterion:** 16 suites pass, 1,355 assertions pass, 0 failures.
-
-### Protocol B: Software Consistency Benchmark (30 Scenarios)
-- **Objective:** Verify internal decision consistency of `EGEAPolicyEngine` across 6 scenario families against Fixed Hint and Simple Error Rule baselines.
-- **Execution Command:**
-  ```bash
-  npx tsx scripts/run_egea_benchmark.ts
-  ```
-- **Output Artifact:** `research-results/egea_evaluation_report.json`.
-- **Classification:** White-box software consistency verification.
-
-### Protocol C: Independent Engineering Challenge Suite (18 Scenarios)
-- **Objective:** Evaluate instructional discrimination on complex, realistic learner trajectories with balanced class distribution (3 scenarios per class) against human expert pedagogical rubrics.
-- **Execution Command:**
-  ```bash
-  npx tsx scripts/evaluate_independent_challenge_set.ts
-  ```
-- **Output Artifact:** `research-results/engineering_challenge_suite_report.json`.
-- **Metrics Calculated:** Per-class Precision, Recall, F1, Unweighted Macro-F1, Harmonic Macro-F1, and Confusion Matrices.
-
-### Protocol D: Empirical Latency & JIT Microbenchmark
-- **Objective:** Measure sub-millisecond execution timing under controlled microbenchmarking conditions.
-- **Execution Command:**
-  ```bash
-  npx tsx scripts/measure_empirical_latency.ts
-  ```
-- **Parameters:** 200 warm-up cycles, $N = 1,000$ decisions, high-resolution `performance.now()`.
-- **Acceptance Threshold:** Steady-state mean $< 1.0\text{ms}$ ($P_{95} < 1.0\text{ms}$).
+To eliminate evaluation leakage and post-hoc tuning, this protocol establishes the formal, frozen experimental conditions for evaluating AR-DSA Tutor and its pedagogical adaptation components.
 
 ---
 
-## 3. Human Participant Study Protocol (Future Study Blueprint)
+## 2. Predeclared Intervention Taxonomy
 
-> [!NOTE]
-> This protocol specifies the design for the future human empirical evaluation. It is **NOT RUN** in the present software prototype release.
+The pedagogical policy engine operates over a frozen 6-tier intervention taxonomy grounded in Cognitive Load Theory and Scaffolding Fading:
 
-### 3.1 Study Design & Cohort Allocation
-- **Target Population:** Undergraduate computer science students enrolled in Data Structures (CS2). Target sample size $N = 60$ ($30$ per condition, randomized between-subjects).
-- **Condition 1 (Control / Baseline):** 2D Desktop Interactive Visualizer with static textual feedback.
-- **Condition 2 (Experimental / AR-DSA):** Mobile WebXR Immersive AR with EGEA adaptive scaffolding.
+| Intervention Class | Pedagogical Trigger | Spatial / Visual Manifestation |
+|---|---|---|
+| `CONTEXTUAL_HINT` | Isolated invariant error following progress or deliberate pause ($\Delta t \ge 1500\text{ms}$) | Direct corrective mathematical comparison anchored near active 3D element |
+| `STEPWISE_SLOWDOWN` | Impulsive trial-and-error guessing (consecutive errors with $\Delta t < 1500\text{ms}$) | Interaction controls temporarily dimmed with a 3-second reflection prompt |
+| `HIGHLIGHT_ELEMENT` | Spatial disorientation, invalid graph traversal, or cyclic revisit | Emissive pulsing glow applied directly to target 3D node/vertex |
+| `WORKED_EXAMPLE` | Persistent impasse ($\ge 3$ consecutive errors on identical `stepIdentifier`) | Step-by-step 3D animated playback demonstrating correct spatial move |
+| `PREREQUISITE_REVIEW` | Systemic collapse ($\ge 4$ errors with failure rate $\ge 60\%$ across $\ge 5$ events) | Modal recommending foundational curriculum topic review |
+| `REDUCE_GUIDANCE` | Mastery streak ($\ge 3$ correct without hints) or correct exploratory move | Scaffolding calipers, comparison labels, and guidance arrows fade out |
 
-### 3.2 Instruments & Measures
-1. **Pre-Assessment (15 Items):** Baseline DSA knowledge (BST operations, sorting stability, binary search bounds, BFS queueing, stack LIFO).
-2. **Learning Phase (30 Minutes):** Practice 5 core algorithms with real-time feedback.
-3. **Post-Assessment (15 Items):** Isomorphic test measuring identical learning outcomes.
-4. **Normalized Learning Gain ($g$):**
-   $$g = \frac{\text{Post} - \text{Pre}}{100 - \text{Pre}}$$
-5. **Cognitive Load:** NASA-TLX 6-dimensional workload scale.
-6. **Interaction Telemetry:** Error rates, time-to-completion, and independent success rate ($ISR$).
+---
+
+## 3. Input Event Schema & Invariant Rules
+
+Interaction telemetry ingested by adaptation policies must strictly adhere to `EGEAInteractionEvent`:
+- $k \in \mathbb{N}^+$: Strictly monotonic sequence number per session.
+- $\tau_k \in \mathbb{R}^+$: ISO 8601 timestamp.
+- $\Delta t_k \ge 0$: Milliseconds elapsed since event $k-1$.
+- $\alpha_k \in \{\text{BST}, \text{BubbleSort}, \text{BinarySearch}, \text{BFS}, \text{Stack}\}$: Algorithm identifier.
+- $a_k^*$: Deterministic ground-truth expected action.
+- $a_k$: Learner's attempted action.
+- $c_k \in \{0, 1\}$: Binary correctness indicator ($c_k = 1 \iff a_k = a_k^*$).
+- $\kappa_k \in \mathcal{K}$: Error category ($\text{NONE}$ if $c_k=1$).
+- $h_k \in \mathbb{N}$: Cumulative hints accessed.
+- $\sigma_k$: Serialized algorithm state context snapshot.
+
+---
+
+## 4. Evaluated Systems & Baselines
+
+All systems receive identical event histories and are evaluated against identical frozen scenario trajectories:
+
+1. **Fixed Hint Baseline:** Represents traditional static educational feedback. Emits a generic message on errors ("Check rules") and allows exploration on correct moves. Incapable of pacing detection, highlighting, or multi-step scaffolding.
+2. **Simple Error Rule Baseline:** Represents stateless category-lookup heuristics. Maps the immediate error category $\kappa_k$ to a localized hint text (e.g., traversal $\to$ highlight). Has zero memory of past steps and cannot track pacing.
+3. **Matched-History Baseline (`MatchedHistoryBaseline`):** Receives full event history and inter-action latencies $\Delta t$. Emits slowdown on rapid pacing and prerequisite review on high cumulative error counts, but lacks step-identifier persistence tracking (`WORKED_EXAMPLE`) and hierarchical priority resolution.
+4. **EGEA Adaptive Policy (`EGEAPolicyEngine`):** Pure deterministic priority cascade combining millisecond pacing detection, step-level persistence tracking, systemic collapse detection, and scaffolding fading.
+
+---
+
+## 5. Frozen Metric Calculations
+
+For a set of classes $C$ and confusion matrix $M$ where $M_{i,j}$ denotes actual class $i$ predicted as class $j$:
+
+1. **Class-Level Metrics:**
+   $$\text{Precision}_c = \frac{M_{c,c}}{\sum_{i \in C} M_{i,c}}, \quad \text{Recall}_c = \frac{M_{c,c}}{\sum_{j \in C} M_{c,j}}, \quad F_1(c) = \frac{2 \cdot \text{Precision}_c \cdot \text{Recall}_c}{\text{Precision}_c + \text{Recall}_c}$$
+2. **Standard Unweighted Macro-$F_1$:**
+   $$\text{Macro-}F_1^{\text{unweighted}} = \frac{1}{|C|} \sum_{c \in C} F_1(c)$$
+3. **Harmonic Macro-$F_1$ (for comparative reference):**
+   $$\text{Macro-}F_1^{\text{harmonic}} = \frac{2 \cdot P_{\text{macro}} \cdot R_{\text{macro}}}{P_{\text{macro}} + R_{\text{macro}}}$$
+4. **Overall Accuracy:**
+   $$\text{Accuracy} = \frac{\sum_{c \in C} M_{c,c}}{N_{\text{total}}} \times 100\%$$
+
+---
+
+## 6. Inclusion, Exclusion & Ambiguity Resolution Rules
+
+1. **Independent Challenge Definition:** A challenge scenario must represent an authentic learning behavioral pattern (e.g. deliberate pause before error, fluent expert pace, touch jitter, repeated failure on midpoint) rather than a direct copy of an internal policy boolean predicate.
+2. **Ambiguity Resolution:**
+   - If an error is both rapid ($\Delta t < 1500\text{ms}$) and a traversal error, pedagogical priority dictates that pacing reflection (`STEPWISE_SLOWDOWN`) takes precedence over spatial highlighting (`HIGHLIGHT_ELEMENT`). Highlighting a target element for an impulsive clicker reinforces trial-and-error guessing.
+   - If a learner achieves 3 correct moves but accessed hints during the streak, scaffolding fading (`REDUCE_GUIDANCE`) is suspended because the learner has not demonstrated independent retrieval.
+3. **Label Provenance Disclose:** Target labels in the challenge suite represent an **Engineering Challenge Suite** authored using published cognitive scaffolding rubrics. They must NOT be represented as external third-party human annotator consensus.
+
+---
+
+## 7. Execution Commands
+
+- **Run 16 Test Suites:** `npx tsx scripts/run_all_tests.ts`
+- **Run Software Consistency Benchmark:** `npx tsx scripts/run_egea_benchmark.ts`
+- **Run Independent Challenge Suite:** `npx tsx scripts/evaluate_independent_challenge_set.ts`
+- **Run Failure Mode Counterexamples:** `npx tsx scripts/evaluate_failure_mode_benchmark.ts`
+- **Run Empirical Latency Microbenchmark:** `npx tsx scripts/measure_empirical_latency.ts`
