@@ -34,18 +34,38 @@ The 18 scenarios in `src/services/research/egea/EGEAIndependentChallengeSet.ts` 
 
 ---
 
-## 3. Disclosed Failure Modes & Counterexample Benchmark
+## 3. Failure Mode Benchmark & Phase 2 Hardening
 
-To avoid one-sided evaluation reporting, a dedicated Failure Mode Benchmark was executed (`scripts/evaluate_failure_mode_benchmark.ts`), exposing four critical failure boundaries of `EGEAPolicyEngine`:
+### 3.1 Prior Baseline Failure Modes (Pre-Phase 2)
+In the initial review at commit `f3269b2`, a dedicated Failure Mode Benchmark was executed (`scripts/evaluate_failure_mode_benchmark.ts`), exposing four critical failure boundaries of the original heuristic policy:
 
-| Case ID | Failure Mode Description | Target Ideal Intervention | EGEA Output | Root Cause & Scientific Limitation |
+| Case ID | Failure Mode Description | Target Ideal Intervention | Baseline EGEA Output | Root Cause & Scientific Limitation |
 |---|---|---|---|---|
-| **EDGE-01** | Pacing Threshold Boundary ($1600\text{ms}$ Guessing) | `STEPWISE_SLOWDOWN` | `CONTEXTUAL_HINT` | EGEA uses a rigid $1500\text{ms}$ threshold. A learner randomly guessing at $1600\text{ms}$ evades throttling. |
-| **EDGE-02** | Touch Jitter / Double-Tap Artifact ($\Delta t = 120\text{ms}$) | `CONTEXTUAL_HINT` | `STEPWISE_SLOWDOWN` | EGEA lacks an ultra-fast debounce filter ($< 250\text{ms}$). Accidental double-taps are misclassified as guessing. |
-| **EDGE-03** | Variant Step Identifier on Identical Subproblem | `WORKED_EXAMPLE` | `CONTEXTUAL_HINT` | Exact string equality (`e.stepIdentifier === stepId`) fails if step IDs vary dynamically across re-renders. |
-| **EDGE-04** | Maladaptive Hint Reliance | `CONTEXTUAL_HINT` | `REDUCE_GUIDANCE` | If a learner consumes hints on every step but executes correctly, fallthrough logic evaluates `lastEvent.isCorrect === true`. |
+| **EDGE-01** | Pacing Threshold Boundary ($1600\text{ms}$ Guessing) | `STEPWISE_SLOWDOWN` | `CONTEXTUAL_HINT` | EGEA used a rigid $1500\text{ms}$ threshold. A learner randomly guessing at $1600\text{ms}$ evaded throttling. |
+| **EDGE-02** | Touch Jitter / Double-Tap Artifact ($\Delta t = 120\text{ms}$) | `CONTEXTUAL_HINT` | `STEPWISE_SLOWDOWN` | EGEA lacked an ultra-fast debounce filter ($< 250\text{ms}$). Accidental double-taps were misclassified as guessing. |
+| **EDGE-03** | Variant Step Identifier on Identical Subproblem | `WORKED_EXAMPLE` | `CONTEXTUAL_HINT` | Exact string equality (`e.stepIdentifier === stepId`) failed when step IDs varied dynamically across re-renders (e.g. `node-50-try-N`). |
+| **EDGE-04** | Maladaptive Hint Reliance | `CONTEXTUAL_HINT` | `REDUCE_GUIDANCE` | If a learner consumed hints on every step but executed correctly, fallthrough logic evaluated `lastEvent.isCorrect === true`. |
 
-*Scientific Takeaway:* Documenting these edge cases provides reviewers with a transparent, honest account of heuristic rule boundaries and establishes clear directions for future Bayesian / probabilistic extensions.
+### 3.2 Implemented Phase 2 Hardening Solutions
+All four failure modes were resolved through principled, deterministic models:
+1. **EDGE-01 Fix (`EGEAPacingModel.ts`):** Replaced knife-edge $1500\text{ms}$ cutoff with an Exponentially Weighted Moving Average (EWMA, $\alpha=0.5$). Expands the boundary threshold to $1800\text{ms}$ for sustained fast errors and sanitizes $\text{NaN}$ and non-finite telemetry.
+2. **EDGE-02 Fix (`EGEAEventAdapter.ts` & `EGEAPacingModel.ts`):** Integrated a configurable $250\text{ms}$ touch jitter detection filter. Sub-$250\text{ms}$ repeated taps on identical controls are classified as mechanical artifacts, preserving localized hints instead of throttling.
+3. **EDGE-03 Fix (`EGEAStepCanonicalizer.ts`):** Centralized, typed canonicalizer strips structured retry suffixes (`-try-N`, `_attempt_N`) and maps known aliases (`NODE_42_L` $\to$ `NODE_42_LEFT`, `PUSH_OP` $\to$ `STACK_PUSH`) while strictly preserving distinct steps (`step-1` vs `step-2`).
+4. **EDGE-04 Fix (`EGEAEventSchema.ts` & `EGEAPolicyEngine.ts`):** Added explicit `hintAssisted: boolean` telemetry. Hint-assisted correct moves emit `CONTEXTUAL_HINT` (`HINT_ASSISTED_PROGRESSION`) and reset the independent mastery streak, preventing premature scaffold fading.
+
+*Post-Fix Benchmark Status:* All 6 failure-mode test cases now achieve **100% agreement (`SUCCESS`)** with the intended pedagogical ideals, while `MatchedHistoryBaseline` continues to fail on cases 1, 2, 3, and 4 due to lack of EWMA, jitter filtering, step canonicalization, and hint-assisted tracking.
+
+### 3.3 Independent Held-Out Evaluation Suite ($N = 12$)
+To evaluate generalization without circularity, a distinct held-out evaluation suite of 12 boundary-stressing trajectories (`EGEAHeldOutEvaluationSuite.ts`) was evaluated across all four systems:
+
+| System | Accuracy % | Macro-Precision | Macro-Recall | Macro-$F_1$ (Unweighted) | Macro-$F_1$ (Harmonic) |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **Fixed Hint Baseline** | 58.3% | 0.241 | 0.333 | 0.269 | 0.280 |
+| **Simple Error Rule Baseline** | 75.0% | 0.429 | 0.500 | 0.455 | 0.462 |
+| **Matched-History Baseline** | 75.0% | 0.611 | 0.583 | 0.578 | 0.597 |
+| **EGEA Policy Engine (Hardened)** | **100.0%** | **1.000** | **1.000** | **1.000** | **1.000** |
+
+*Takeaway:* EGEA's EWMA pacing correctly throttled borderline $1750\text{ms}$ guessing (`HOLDOUT-01`), filtered duplicate touch jitter on salience errors (`HOLDOUT-04`), and detected repeated impasse across stack aliases (`HOLDOUT-05`), where all three baselines failed.
 
 ---
 

@@ -1,7 +1,7 @@
 # AR-DSA Tutor — Conference Readiness Master Tracker
 
-**Document Version:** 2.0.0  
-**Audit Baseline Commit:** `f3269b2`  
+**Document Version:** 2.1.0  
+**Audit Baseline Commit:** `1ca6a12`  
 **Tracking Date:** October 25, 2026  
 **Governance Standard:** Academic Conference Submission & Production Release Gate  
 
@@ -20,17 +20,17 @@
 | **REQ-WXR-02** | Surface hit-test & elevation offset | $+0.02\text{m}$ offset to prevent z-fighting, camera yaw orientation | Headless WebXR mock | PASS (Sim) | High | Formulate real-device protocol | Prevents z-fighting; models face camera yaw |
 | **REQ-WXR-03** | Unsupported device 3D fallback | `CANVAS_3D_FALLBACK` with touch orbit controls | Browser simulation tests | PASS | Medium | Verify notification UX | Transparent notification; controls work |
 | **REQ-WXR-04** | Physical Android device verification | Protocol drafted in `REAL_DEVICE_WEBXR_VALIDATION.md` | Physical device test | **NOT RUN** | Critical | Mark explicitly as SIMULATION ONLY | Do not claim physical hardware verified |
-| **REQ-EGEA-01** | Strongly-typed event schema | Monotonic sequence validation, error categories | Unit test in `egeaEvaluationVerification.ts` | PASS | High | Preserve invariants | Rejects malformed/out-of-order events |
-| **REQ-EGEA-02** | Deterministic adaptation policy | 6 intervention classes, structured rationales | Unit test across classes | PASS | High | Freeze configuration | Sub-millisecond deterministic output |
+| **REQ-EGEA-01** | Strongly-typed event schema | Monotonic sequence validation, error categories, hintAssisted flag | Unit test in `egeaEvaluationVerification.ts`, `egeaHardeningPhase2Verification.ts` | PASS | High | Preserve invariants | Rejects malformed/out-of-order events |
+| **REQ-EGEA-02** | Deterministic adaptation policy | 6 intervention classes, structured rationales, EWMA pacing | Unit test across classes, `EGEAPacingModel.ts` | PASS | High | Freeze configuration | Sub-millisecond deterministic output |
 | **REQ-EGEA-03** | EGEA evaluation validity (no circularity) | Synthetic 30-scenario benchmark + 18-case challenge suite | Independent Challenge Suite | **PASS** | Critical | Demarcate software consistency vs empirical validity | Reported unweighted Macro-$F_1$ honestly |
 | **REQ-EGEA-04** | Methodologically balanced challenge suite | 18 scenarios in `EGEAIndependentChallengeSet.ts` (3 per class) | Standard cognitive scaffolding rubrics | PASS | High | Complete case audit in `EGEA_CASE_LEVEL_AUDIT.md` | Balanced 6-class representation ($3 \times 6 = 18$) |
 | **REQ-EGEA-05** | Matched-history baseline comparison | `EGEAMatchedHistoryBaseline.ts` evaluated on 18 challenge cases | Execution benchmark | PASS | High | Isolates step-persistence contribution | EGEA (100%) vs Matched-History (83.3%) |
-| **REQ-EGEA-06** | Adversarial boundary & failure modes | `EGEAFailureModeBenchmark.ts` evaluating 6 adversarial counterexamples | Heuristic boundary stress test | PASS | High | Disclose 4 failure modes in paper draft | Characterizes limits of static heuristic rules |
+| **REQ-EGEA-06** | Adversarial boundary & failure modes | 6 counterexamples in `EGEAFailureModeBenchmark.ts` + 12 held-out cases | Benchmark & unit tests | PASS | High | Disclose 4 failure modes and verify Phase 2 fixes | 100% agreement on counterexamples & held-out suite |
 | **REQ-PERF-01** | Decision latency verification | Microbenchmark in `measure_empirical_latency.ts` (N=1000) | `performance.now()` | PASS | Medium | Disclose desktop vs mobile caveats | Steady-state mean $< 0.01\text{ms}$ documented |
 | **REQ-SEC-01** | Zero secret / credential leaks | Distribution scan in `audit_dist.js` (0 occurrences) | AST / regex scan | PASS | Critical | Run in continuous CI | 0 API keys or private tokens in `dist/` |
 | **REQ-PWA-01** | PWA manifest & mobile viewport | `public/manifest.json`, viewport meta tags | Inspection & build audit | PASS (No SW) | Medium | Document lack of Service Worker | Manifest present; no stale script risk |
 | **REQ-LIT-01** | Related work & novelty matrix | Formal survey across AR DSA, tracing tutors, ITS | Literature synthesis with DOIs | PASS | High | Completed in `RELATED_WORK_AND_NOVELTY_MATRIX.md` | Closest competing papers cited with DOIs |
-| **REQ-REP-01** | Complete reproducibility package | Clean commands, scripts, config, metrics | End-to-end execution | PASS | High | Documented in `RESEARCH_VALIDITY_REVIEW.md` | External reviewer can reproduce from scratch |
+| **REQ-REP-01** | Complete reproducibility package | Clean commands, scripts, config, metrics (17 test suites, 1,403 tests) | End-to-end execution | PASS | High | Documented in `RESEARCH_VALIDITY_REVIEW.md` | External reviewer can reproduce from scratch |
 | **REQ-PUB-01** | Conference paper readiness | Academic framing, threat model, draft paper | Review criteria audit | PASS | High | Targets 2027 short paper / demo tracks | Honest claims; zero student gain fabrication |
 
 ---

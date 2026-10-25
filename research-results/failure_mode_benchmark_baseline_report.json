@@ -1,0 +1,74 @@
+[
+  {
+    "caseId": "EDGE-01",
+    "name": "Pacing Threshold Boundary (1600ms Guessing)",
+    "intendedIdeal": "STEPWISE_SLOWDOWN",
+    "fixedHintPrediction": "CONTEXTUAL_HINT",
+    "simpleRulePrediction": "CONTEXTUAL_HINT",
+    "matchedHistoryPrediction": "CONTEXTUAL_HINT",
+    "egeaPrediction": "CONTEXTUAL_HINT",
+    "egeaMatchesIdeal": false,
+    "behaviorClassification": "DISCLOSED_LIMITATION",
+    "technicalRootCause": "EGEA relies on a crisp cutoff (1500ms). Latency of 1600ms evades detection, resulting in CONTEXTUAL_HINT."
+  },
+  {
+    "caseId": "EDGE-02",
+    "name": "Touch Jitter / Double-Tap Artifact (< 200ms)",
+    "intendedIdeal": "CONTEXTUAL_HINT",
+    "fixedHintPrediction": "CONTEXTUAL_HINT",
+    "simpleRulePrediction": "CONTEXTUAL_HINT",
+    "matchedHistoryPrediction": "STEPWISE_SLOWDOWN",
+    "egeaPrediction": "STEPWISE_SLOWDOWN",
+    "egeaMatchesIdeal": false,
+    "behaviorClassification": "DISCLOSED_LIMITATION",
+    "technicalRootCause": "EGEA lacks an ultra-low latency debounce filter (< 250ms). It interprets accidental touch jitter as impulsive guessing and triggers STEPWISE_SLOWDOWN."
+  },
+  {
+    "caseId": "EDGE-03",
+    "name": "Variant Step Identifier for Identical Problem",
+    "intendedIdeal": "WORKED_EXAMPLE",
+    "fixedHintPrediction": "CONTEXTUAL_HINT",
+    "simpleRulePrediction": "CONTEXTUAL_HINT",
+    "matchedHistoryPrediction": "CONTEXTUAL_HINT",
+    "egeaPrediction": "CONTEXTUAL_HINT",
+    "egeaMatchesIdeal": false,
+    "behaviorClassification": "DISCLOSED_LIMITATION",
+    "technicalRootCause": "EGEA performs exact string matching on stepIdentifier. Variant suffixes prevent persistent impasse detection, falling through to CONTEXTUAL_HINT."
+  },
+  {
+    "caseId": "EDGE-04",
+    "name": "Maladaptive Hint-Reliance on Correct Steps",
+    "intendedIdeal": "CONTEXTUAL_HINT",
+    "fixedHintPrediction": "REDUCE_GUIDANCE",
+    "simpleRulePrediction": "REDUCE_GUIDANCE",
+    "matchedHistoryPrediction": "REDUCE_GUIDANCE",
+    "egeaPrediction": "REDUCE_GUIDANCE",
+    "egeaMatchesIdeal": false,
+    "behaviorClassification": "DISCLOSED_LIMITATION",
+    "technicalRootCause": "EGEA correctly checks that hintExposureCount did not change during the streak. Because hints were consumed, it does NOT falsely fade scaffolds."
+  },
+  {
+    "caseId": "EDGE-05",
+    "name": "Transient Error After 10-Step Mastery Streak",
+    "intendedIdeal": "CONTEXTUAL_HINT",
+    "fixedHintPrediction": "CONTEXTUAL_HINT",
+    "simpleRulePrediction": "CONTEXTUAL_HINT",
+    "matchedHistoryPrediction": "CONTEXTUAL_HINT",
+    "egeaPrediction": "CONTEXTUAL_HINT",
+    "egeaMatchesIdeal": true,
+    "behaviorClassification": "SUCCESS",
+    "technicalRootCause": "EGEA treats the mistake as an isolated conceptual error rather than jumping to severe remediation."
+  },
+  {
+    "caseId": "EDGE-06",
+    "name": "Floundering Across Steps (3 Errors on 3 Distinct Steps)",
+    "intendedIdeal": "CONTEXTUAL_HINT",
+    "fixedHintPrediction": "CONTEXTUAL_HINT",
+    "simpleRulePrediction": "CONTEXTUAL_HINT",
+    "matchedHistoryPrediction": "CONTEXTUAL_HINT",
+    "egeaPrediction": "CONTEXTUAL_HINT",
+    "egeaMatchesIdeal": true,
+    "behaviorClassification": "SUCCESS",
+    "technicalRootCause": "Because errors occur on different steps, EGEA does not falsely trigger WORKED_EXAMPLE. Because total errors = 3 (< 4), it does not falsely trigger PREREQUISITE_REVIEW."
+  }
+]

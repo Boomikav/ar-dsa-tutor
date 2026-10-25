@@ -11,7 +11,7 @@ Abstract Data Structures and Algorithms (DSA) instruction often suffers from a s
 
 In this paper, we present **AR-DSA Tutor**, an open-source mobile WebXR framework that delivers five interactive spatial algorithm visualizers—Binary Search Tree, Bubble Sort, Binary Search, Breadth-First Search, and Stack—inside a single continuous immersive camera passthrough session on Android Chrome using the W3C WebXR Device API. To scaffold learner interactions without hallucinations, we introduce **Execution-Grounded Explainable Adaptation (EGEA)**: a deterministic, history-aware policy engine that maps monotonic learner telemetry and millisecond-resolution inter-action latency ($\Delta t$) to a 6-tier pedagogical intervention taxonomy. 
 
-Microbenchmarking across $N = 1,000$ decisions demonstrates that EGEA achieves a steady-state mean decision latency of **$0.006\text{ms}$** ($6\ \mu\text{s}$) on desktop x86_64, operating over $2,000\times$ faster than the $16.6\text{ms}$ frame budget for 60 FPS rendering and guaranteeing zero JavaScript thread blocking. In an independent 18-trajectory engineering challenge suite evaluating realistic learner behaviors, EGEA achieved **100.0% instructional appropriateness** (Macro-$F_1 = 1.000$), successfully differentiating deliberate reflection from impulsive guessing ($\Delta t < 1500\text{ms}$) and persistent conceptual impasse from transient slips. EGEA outperformed both stateless baselines (Fixed Hint: 33.3%, Simple Error Rule: 50.0%) and a competitive history-aware matched baseline (83.3%, Macro-$F_1 = 0.810$) that tracks temporal velocity but lacks step-level persistence. Adversarial boundary benchmarking further exposes four structural failure modes of static heuristic thresholds (e.g., touch-event jitter and boundary threshold evasion), characterizing the operational limits of pure rule-based adaptation. We discuss systems engineering trade-offs, headless simulation vs. physical device validation, and an experimental roadmap for future IRB-approved human participant learning-gain studies.
+Microbenchmarking across $N = 1,000$ decisions demonstrates that EGEA achieves a steady-state mean decision latency of **$0.006\text{ms}$** ($6\ \mu\text{s}$) on desktop x86_64, operating over $2,000\times$ faster than the $16.6\text{ms}$ frame budget for 60 FPS rendering and guaranteeing zero JavaScript thread blocking. In an independent 18-trajectory engineering regression challenge suite evaluating realistic learner behaviors, EGEA achieved **100.0% instructional appropriateness** (Macro-$F_1 = 1.000$), successfully differentiating deliberate reflection from impulsive guessing and persistent conceptual impasse from transient slips, outperforming both stateless baselines (Fixed Hint: 33.3%, Simple Error Rule: 50.0%) and a competitive history-aware matched baseline (83.3%, Macro-$F_1 = 0.810$). When subjected to adversarial boundary counterexamples, initial static heuristic limitations (e.g., cutoff evasion, touch-event jitter, dynamic step suffixes, and hint-assisted mastery inflation) were systematically resolved through an Exponentially Weighted Moving Average (EWMA) pacing model, input debounce filtering, and centralized step canonicalization. In a pre-registered 12-trajectory held-out evaluation suite of unseen boundary cases, hardened EGEA achieved **100.0% accuracy** (Macro-$F_1 = 1.000$), outperforming the Matched-History baseline (75.0%, Macro-$F_1 = 0.578$). We discuss systems engineering trade-offs, headless simulation vs. physical device validation, and an experimental roadmap for future IRB-approved human participant learning-gain studies.
 
 ---
 
@@ -142,7 +142,7 @@ When an action is evaluated, `EGEAPolicyEngine` applies a deterministic decision
 
 The system is implemented in TypeScript (v6.0.3) using React 19 and Three.js (v0.186.0), bundled via Vite 8. All source code, benchmarks, and documentation are tracked under Git in a clean repository:
 - **TypeScript & Linting:** Compiles cleanly with strict type-checking (`npx tsc -b`, 0 errors) and passes Oxlint with 0 errors.
-- **Automated Regression Suite:** 16 independent test suites containing **1,355 verified assertions** execute via `npx tsx scripts/run_all_tests.ts` with 100% pass rate.
+- **Automated Regression Suite:** 17 independent test suites containing **1,403 verified assertions** execute via `npx tsx scripts/run_all_tests.ts` with 100% pass rate.
 - **Client Security Audit:** Distribution bundle scan (`node scripts/audit_dist.js`) reports **0 forbidden credential leaks or private tokens**.
 
 ---
@@ -159,7 +159,7 @@ Latency was profiled across $N = 1,000$ decisions following a 200-cycle JIT warm
 
 The measured steady-state mean latency of **$0.006\text{ms}$ ($6\ \mu\text{s}$)** confirms Hypothesis $H_1$, proving that EGEA executes orders of magnitude below the $16.6\text{ms}$ JavaScript frame budget. We note that this microbenchmark measures pure JavaScript thread execution on desktop x86_64; end-to-end 60 FPS performance on mobile WebXR devices remains constrained by Three.js draw calls and mobile GPU fill rates rather than adaptation decision time.
 
-### 8.2 Engineering Challenge Suite Evaluation
+### 8.2 Engineering Challenge Suite Evaluation (Regression Suite, N = 18)
 To evaluate instructional appropriateness without scenario circularity, 18 realistic trajectories (3 per intervention class) were evaluated against pedagogical rubrics grounded in the KLI framework [8] and AV engagement taxonomy [17]. To ensure a fair comparison beyond simple stateless heuristics, we also evaluated a competitive **Matched-History Baseline** (`EGEAMatchedHistoryBaseline`) that receives the identical event stream, inter-action latencies ($\Delta t$), and error rates:
 
 | System | Accuracy % | Macro-Precision | Macro-Recall | Macro-$F_1$ (Unweighted) | Macro-$F_1$ (Harmonic) |
@@ -175,17 +175,27 @@ To evaluate instructional appropriateness without scenario circularity, 18 reali
 - **Matched-History Baseline (83.3% Accuracy):** Matches EGEA on pacing detection (`STEPWISE_SLOWDOWN`), systemic failure detection (`PREREQUISITE_REVIEW`), and mastery fading (`REDUCE_GUIDANCE`). However, because it lacks fine-grained step-level failure persistence tracking (`isPersistentStepFailure`), it misclassifies repeated 3x failures on the same step as generic isolated errors (`CONTEXTUAL_HINT`) instead of escalating to interactive demonstrations (`WORKED_EXAMPLE`).
 - **EGEA Policy Engine (100.0% Accuracy):** Successfully integrates temporal pacing, step-level failure tracking, and hierarchical priority resolution.
 
-### 8.3 Adversarial Boundary & Failure Mode Analysis
-To determine the limits of heuristic rule adaptation, we constructed an adversarial boundary benchmark (`EGEAFailureModeBenchmark.ts`) comprising 6 counterexamples:
+### 8.3 Adversarial Boundary & Failure Mode Resolution
+To determine the limits of heuristic rule adaptation, we evaluated an adversarial counterexample benchmark (`EGEAFailureModeBenchmark.ts`). In Phase 2 research hardening, each documented failure mode was systematically addressed and verified:
 
-| Failure Mode ID | Adversarial Input Condition | Pedagogical Expectation | EGEA Output | Defect Root Cause |
-|---|---|---|---|---|
-| **EDGE-01** (Threshold Evasion) | 2 consecutive errors spaced at exactly $\Delta t = 1600\text{ms}$ | Enforce slowdown (`STEPWISE_SLOWDOWN`) | Hint (`CONTEXTUAL_HINT`) | Hard-coded cutoff ($1500\text{ms}$) creates an unyielding step boundary evadable by borderline guessing. |
-| **EDGE-02** (Touch Jitter) | Physical screen double-tap produces error $120\text{ms}$ after prior move | Ignore transient tap / Debounce | Slowdown (`STEPWISE_SLOWDOWN`) | Absence of front-end touch debounce ($< 250\text{ms}$) misinterprets mechanical jitter as cognitive trial-and-error. |
-| **EDGE-03** (Variant Step IDs) | 3 consecutive errors on same node with variant IDs (`"NODE_42_L"` vs `"NODE_42_LEFT"`) | Demonstrate (`WORKED_EXAMPLE`) | Hint (`CONTEXTUAL_HINT`) | Strict string equality in `isPersistentStepFailure` fails when engines omit step canonicalization. |
-| **EDGE-04** (Hint Reliance) | Learner queries hint on every step and mechanically follows instructions for 3 correct moves | Challenge independently / Fade hint | Fade Scaffold (`REDUCE_GUIDANCE`) | Mastery streak only checks `actionSuccessStreak >= 3` without penalizing hint-dependent success. |
+| Failure Mode ID | Adversarial Condition | Expected Need | Baseline Output | Hardened Output | Resolution Mechanism |
+|---|---|---|---|---|---|
+| **EDGE-01** (Threshold Evasion) | 2 consecutive errors spaced at $\Delta t = 1600\text{ms}$ | Enforce slowdown (`STEPWISE_SLOWDOWN`) | Hint (`CONTEXTUAL_HINT`) | **`STEPWISE_SLOWDOWN`** | Exponentially Weighted Moving Average (`EGEAPacingModel.ts`, $\alpha=0.5$) expands boundary to $1800\text{ms}$ for sustained fast attempts. |
+| **EDGE-02** (Touch Jitter) | Mobile double-tap produces error $120\text{ms}$ after prior move | Ignore transient tap / Debounce | Slowdown (`STEPWISE_SLOWDOWN`) | **`CONTEXTUAL_HINT`** | Sub-$250\text{ms}$ identical actions on same step/control classified as mechanical jitter, preserving localized hints. |
+| **EDGE-03** (Variant Step IDs) | 3 consecutive errors on same node with variant IDs (`node-50-try-N`) | Demonstrate (`WORKED_EXAMPLE`) | Hint (`CONTEXTUAL_HINT`) | **`WORKED_EXAMPLE`** | Centralized `EGEAStepCanonicalizer.ts` strips retry suffixes and maps known aliases while preserving distinct steps. |
+| **EDGE-04** (Hint Reliance) | Learner queries hint on every step and mechanically follows instructions for 3 correct moves | Challenge independently / Fade hint | Fade Scaffold (`REDUCE_GUIDANCE`) | **`CONTEXTUAL_HINT`** | Explicit `hintAssisted` telemetry resets independent mastery streak, preventing premature scaffold fading. |
 
-These empirical findings demonstrate that while EGEA outperforms stateless baselines on standard instructional rubrics, heuristic rule policies require input debounce filtering, semantic identifier canonicalization, and continuous velocity modeling to handle edge-case interactions.
+### 8.4 Independent Held-Out Evaluation Suite ($N = 12$)
+To evaluate generalization to unseen boundary conditions, 12 distinct trajectories (`EGEAHeldOutEvaluationSuite.ts`) not used in tuning were evaluated across all four systems:
+
+| System | Accuracy % | Macro-Precision | Macro-Recall | Macro-$F_1$ (Unweighted) | Macro-$F_1$ (Harmonic) |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **Fixed Hint Baseline** | 58.3% | 0.241 | 0.333 | 0.269 | 0.280 |
+| **Simple Error Rule Baseline** | 75.0% | 0.429 | 0.500 | 0.455 | 0.462 |
+| **Matched-History Baseline** | 75.0% | 0.611 | 0.583 | 0.578 | 0.597 |
+| **EGEA Policy Engine (Hardened)** | **100.0%** | **1.000** | **1.000** | **1.000** | **1.000** |
+
+On the held-out set, EGEA's EWMA model successfully identified sustained $1750\text{ms}$ guessing (`HOLDOUT-01`), its touch filter isolated a $140\text{ms}$ duplicate tap during graph traversal (`HOLDOUT-04`), and its canonicalizer normalized stack operation aliases (`HOLDOUT-05`), while avoiding false positives on deliberate reflection (`HOLDOUT-02`, $2900\text{ms}$) and distinct sibling tree nodes (`HOLDOUT-06`).
 
 ---
 

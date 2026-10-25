@@ -29,8 +29,9 @@ export interface FailureModeCase {
   name: string;
   description: string;
   intendedIdealIntervention: EGEAInterventionType;
-  expectedEGEAFailureOrSuccess: 'EXPECTED_SUCCESS' | 'DOCUMENTED_LIMITATION_OR_FAILURE';
+  expectedEGEAFailureOrSuccess: 'RESOLVED_SUCCESS' | 'BASELINE_LIMITATION';
   failureAnalysis: string;
+  resolutionMechanism: string;
   buildHistory: () => readonly EGEAInteractionEvent[];
 }
 
@@ -40,8 +41,9 @@ export const FAILURE_MODE_CASES: FailureModeCase[] = [
     name: 'Pacing Threshold Boundary (1600ms Guessing)',
     description: 'Learner guesses impulsively without reading, but inter-action latency is 1600ms (just above 1500ms cutoff).',
     intendedIdealIntervention: 'STEPWISE_SLOWDOWN',
-    expectedEGEAFailureOrSuccess: 'DOCUMENTED_LIMITATION_OR_FAILURE',
-    failureAnalysis: 'EGEA relies on a crisp cutoff (1500ms). Latency of 1600ms evades detection, resulting in CONTEXTUAL_HINT.',
+    expectedEGEAFailureOrSuccess: 'RESOLVED_SUCCESS',
+    failureAnalysis: 'Prior baseline used a crisp 1500ms cutoff evadable by 1600ms attempts.',
+    resolutionMechanism: 'EGEAPacingModel with EWMA smoothing expands the sustained velocity boundary to 1800ms.',
     buildHistory: () => {
       const adapter = new EGEAEventAdapter('edge-sess-01', 'algo-bubble-sort');
       adapter.recordInteraction({
@@ -60,7 +62,7 @@ export const FAILURE_MODE_CASES: FailureModeCase[] = [
         errorCategory: 'VALUE_COMPARISON',
         stateContext: {},
       });
-      ev.timeSinceLastActionMs = 1600; // 1600ms: evades 1500ms cutoff
+      ev.timeSinceLastActionMs = 1600; // 1600ms: caught via EWMA
       return adapter.getEvents();
     },
   },
@@ -69,8 +71,9 @@ export const FAILURE_MODE_CASES: FailureModeCase[] = [
     name: 'Touch Jitter / Double-Tap Artifact (< 200ms)',
     description: 'Learner accidentally triggers a double-tap touch event (120ms delta) on mobile viewport.',
     intendedIdealIntervention: 'CONTEXTUAL_HINT',
-    expectedEGEAFailureOrSuccess: 'DOCUMENTED_LIMITATION_OR_FAILURE',
-    failureAnalysis: 'EGEA lacks an ultra-low latency debounce filter (< 250ms). It interprets accidental touch jitter as impulsive guessing and triggers STEPWISE_SLOWDOWN.',
+    expectedEGEAFailureOrSuccess: 'RESOLVED_SUCCESS',
+    failureAnalysis: 'Prior baseline lacked a touch debounce filter, misclassifying 120ms double-tap as cognitive guessing.',
+    resolutionMechanism: 'Sub-250ms identical actions on same step/control are detected as mechanical jitter and preserve initial hint.',
     buildHistory: () => {
       const adapter = new EGEAEventAdapter('edge-sess-02', 'ds-stack');
       adapter.recordInteraction({
@@ -98,8 +101,9 @@ export const FAILURE_MODE_CASES: FailureModeCase[] = [
     name: 'Variant Step Identifier for Identical Problem',
     description: 'Learner fails 3 times on the same BST node, but step identifiers are named dynamically (node-50-try-1, node-50-try-2, node-50-try-3).',
     intendedIdealIntervention: 'WORKED_EXAMPLE',
-    expectedEGEAFailureOrSuccess: 'DOCUMENTED_LIMITATION_OR_FAILURE',
-    failureAnalysis: 'EGEA performs exact string matching on stepIdentifier. Variant suffixes prevent persistent impasse detection, falling through to CONTEXTUAL_HINT.',
+    expectedEGEAFailureOrSuccess: 'RESOLVED_SUCCESS',
+    failureAnalysis: 'Prior baseline performed raw string equality, failing when dynamic retry suffixes were attached.',
+    resolutionMechanism: 'Centralized EGEAStepCanonicalizer normalizes retry/attempt suffixes to canonical step ID.',
     buildHistory: () => {
       const adapter = new EGEAEventAdapter('edge-sess-03', 'ds-binary-search-tree');
       for (let i = 1; i <= 3; i++) {
@@ -121,8 +125,9 @@ export const FAILURE_MODE_CASES: FailureModeCase[] = [
     name: 'Maladaptive Hint-Reliance on Correct Steps',
     description: 'Learner executes 3 correct moves, but requested a hint before every single move.',
     intendedIdealIntervention: 'CONTEXTUAL_HINT',
-    expectedEGEAFailureOrSuccess: 'EXPECTED_SUCCESS',
-    failureAnalysis: 'EGEA correctly checks that hintExposureCount did not change during the streak. Because hints were consumed, it does NOT falsely fade scaffolds.',
+    expectedEGEAFailureOrSuccess: 'RESOLVED_SUCCESS',
+    failureAnalysis: 'Prior baseline reduced guidance on any 3 correct actions regardless of hint scaffolding.',
+    resolutionMechanism: 'Explicit hintAssisted telemetry prevents hint-assisted correct actions from fading scaffolding.',
     buildHistory: () => {
       const adapter = new EGEAEventAdapter('edge-sess-04', 'algo-binary-search');
       for (let i = 1; i <= 3; i++) {
@@ -144,8 +149,9 @@ export const FAILURE_MODE_CASES: FailureModeCase[] = [
     name: 'Transient Error After 10-Step Mastery Streak',
     description: 'Learner completes 10 consecutive correct operations autonomously, then makes an isolated comparison slip.',
     intendedIdealIntervention: 'CONTEXTUAL_HINT',
-    expectedEGEAFailureOrSuccess: 'EXPECTED_SUCCESS',
+    expectedEGEAFailureOrSuccess: 'RESOLVED_SUCCESS',
     failureAnalysis: 'EGEA treats the mistake as an isolated conceptual error rather than jumping to severe remediation.',
+    resolutionMechanism: 'Preserves localized single-error hint response.',
     buildHistory: () => {
       const adapter = new EGEAEventAdapter('edge-sess-05', 'ds-binary-search-tree');
       for (let i = 1; i <= 10; i++) {
@@ -174,8 +180,9 @@ export const FAILURE_MODE_CASES: FailureModeCase[] = [
     name: 'Floundering Across Steps (3 Errors on 3 Distinct Steps)',
     description: 'Learner fails 3 times, but each failure is on a different step at deliberate 3s pacing.',
     intendedIdealIntervention: 'CONTEXTUAL_HINT',
-    expectedEGEAFailureOrSuccess: 'EXPECTED_SUCCESS',
-    failureAnalysis: 'Because errors occur on different steps, EGEA does not falsely trigger WORKED_EXAMPLE. Because total errors = 3 (< 4), it does not falsely trigger PREREQUISITE_REVIEW.',
+    expectedEGEAFailureOrSuccess: 'RESOLVED_SUCCESS',
+    failureAnalysis: 'Because errors occur on different steps, EGEA does not falsely trigger WORKED_EXAMPLE.',
+    resolutionMechanism: 'Canonicalizer keeps distinct steps isolated, preventing false persistence triggers.',
     buildHistory: () => {
       const adapter = new EGEAEventAdapter('edge-sess-06', 'algo-breadth-first-search');
       for (let i = 1; i <= 3; i++) {
@@ -205,6 +212,7 @@ export interface FailureModeEvaluationResult {
   egeaMatchesIdeal: boolean;
   behaviorClassification: 'SUCCESS' | 'DISCLOSED_LIMITATION';
   technicalRootCause: string;
+  resolutionMechanism: string;
 }
 
 export function evaluateFailureModeBenchmark(): FailureModeEvaluationResult[] {
@@ -228,6 +236,7 @@ export function evaluateFailureModeBenchmark(): FailureModeEvaluationResult[] {
       egeaMatchesIdeal: matches,
       behaviorClassification: matches ? 'SUCCESS' : 'DISCLOSED_LIMITATION',
       technicalRootCause: c.failureAnalysis,
+      resolutionMechanism: c.resolutionMechanism,
     };
   });
 }

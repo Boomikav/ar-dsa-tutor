@@ -17,7 +17,8 @@ const testSuites = [
   'arAiIntegrationVerification.ts',
   'appExperienceVerification.ts',
   'researchEvaluationVerification.ts',
-  'egeaEvaluationVerification.ts'
+  'egeaEvaluationVerification.ts',
+  'egeaHardeningPhase2Verification.ts'
 ];
 
 let totalPassed = 0;
@@ -38,7 +39,7 @@ for (const suite of testSuites) {
   const output = result.stdout + '\n' + result.stderr;
   
   // Extract summary if present: e.g. "121 / 121 passed" or "25 / 25 passed" or similar
-  const passMatch = output.match(/(\d+)\s*\/\s*(\d+)\s*passed/i) || output.match(/Passed:\s*(\d+)/i) || output.match(/(\d+)\s*tests passed/i);
+  const passMatch = output.match(/(\d+)\s*\/\s*(\d+)\s*passed/i) || output.match(/Passed:\s*(\d+)/i) || output.match(/(\d+)\s*tests passed/i) || output.match(/(\d+)\s*assertions verified/i);
   let passedCount = 0;
 
   if (passMatch) {

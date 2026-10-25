@@ -1,6 +1,6 @@
 # AR-DSA Tutor — Frozen Experimental Protocol & Evaluation Methodology
 
-**Protocol Version:** 2.0.0 (Frozen Pre-Submission Specification)  
+**Protocol Version:** 2.1.0 (Frozen Post-Hardening Specification)  
 **Authors:** Academic Review & Systems Architecture Team  
 **Standards Compliance:** ACM / IEEE Experimental Replication Standards  
 
@@ -8,7 +8,7 @@
 
 ## 1. Frozen Evaluation Framework
 
-To eliminate evaluation leakage and post-hoc tuning, this protocol establishes the formal, frozen experimental conditions for evaluating AR-DSA Tutor and its pedagogical adaptation components.
+To eliminate evaluation leakage and post-hoc tuning, this protocol establishes the formal, frozen experimental conditions for evaluating AR-DSA Tutor and its pedagogical adaptation components across both regression and held-out evaluation sets.
 
 ---
 
@@ -18,12 +18,12 @@ The pedagogical policy engine operates over a frozen 6-tier intervention taxonom
 
 | Intervention Class | Pedagogical Trigger | Spatial / Visual Manifestation |
 |---|---|---|
-| `CONTEXTUAL_HINT` | Isolated invariant error following progress or deliberate pause ($\Delta t \ge 1500\text{ms}$) | Direct corrective mathematical comparison anchored near active 3D element |
-| `STEPWISE_SLOWDOWN` | Impulsive trial-and-error guessing (consecutive errors with $\Delta t < 1500\text{ms}$) | Interaction controls temporarily dimmed with a 3-second reflection prompt |
+| `CONTEXTUAL_HINT` | Isolated invariant error following progress or deliberate pause ($\Delta t \ge 1800\text{ms}$ or deliberate EWMA) | Direct corrective mathematical comparison anchored near active 3D element |
+| `STEPWISE_SLOWDOWN` | Impulsive trial-and-error guessing (consecutive errors with $\Delta t < 1500\text{ms}$ or sustained fast EWMA $\le 1800\text{ms}$) | Interaction controls temporarily dimmed with a 3-second reflection prompt |
 | `HIGHLIGHT_ELEMENT` | Spatial disorientation, invalid graph traversal, or cyclic revisit | Emissive pulsing glow applied directly to target 3D node/vertex |
-| `WORKED_EXAMPLE` | Persistent impasse ($\ge 3$ consecutive errors on identical `stepIdentifier`) | Step-by-step 3D animated playback demonstrating correct spatial move |
+| `WORKED_EXAMPLE` | Persistent impasse ($\ge 3$ consecutive errors on identical canonical `stepIdentifier`) | Step-by-step 3D animated playback demonstrating correct spatial move |
 | `PREREQUISITE_REVIEW` | Systemic collapse ($\ge 4$ errors with failure rate $\ge 60\%$ across $\ge 5$ events) | Modal recommending foundational curriculum topic review |
-| `REDUCE_GUIDANCE` | Mastery streak ($\ge 3$ correct without hints) or correct exploratory move | Scaffolding calipers, comparison labels, and guidance arrows fade out |
+| `REDUCE_GUIDANCE` | Autonomous mastery streak ($\ge 3$ correct without hints) or independent exploratory move | Scaffolding calipers, comparison labels, and guidance arrows fade out |
 
 ---
 
@@ -32,13 +32,15 @@ The pedagogical policy engine operates over a frozen 6-tier intervention taxonom
 Interaction telemetry ingested by adaptation policies must strictly adhere to `EGEAInteractionEvent`:
 - $k \in \mathbb{N}^+$: Strictly monotonic sequence number per session.
 - $\tau_k \in \mathbb{R}^+$: ISO 8601 timestamp.
-- $\Delta t_k \ge 0$: Milliseconds elapsed since event $k-1$.
+- $\Delta t_k \ge 0$: Milliseconds elapsed since event $k-1$ (sanitized against $\text{NaN}$ and non-finite values).
 - $\alpha_k \in \{\text{BST}, \text{BubbleSort}, \text{BinarySearch}, \text{BFS}, \text{Stack}\}$: Algorithm identifier.
 - $a_k^*$: Deterministic ground-truth expected action.
 - $a_k$: Learner's attempted action.
 - $c_k \in \{0, 1\}$: Binary correctness indicator ($c_k = 1 \iff a_k = a_k^*$).
 - $\kappa_k \in \mathcal{K}$: Error category ($\text{NONE}$ if $c_k=1$).
 - $h_k \in \mathbb{N}$: Cumulative hints accessed.
+- $\text{hintAssisted} \in \{0, 1\}$: Explicit indicator whether the action received hint scaffolding.
+- $\text{canonicalStepIdentifier}$: Normalized step string stripping retry suffixes and mapping aliases.
 - $\sigma_k$: Serialized algorithm state context snapshot.
 
 ---
@@ -49,8 +51,8 @@ All systems receive identical event histories and are evaluated against identica
 
 1. **Fixed Hint Baseline:** Represents traditional static educational feedback. Emits a generic message on errors ("Check rules") and allows exploration on correct moves. Incapable of pacing detection, highlighting, or multi-step scaffolding.
 2. **Simple Error Rule Baseline:** Represents stateless category-lookup heuristics. Maps the immediate error category $\kappa_k$ to a localized hint text (e.g., traversal $\to$ highlight). Has zero memory of past steps and cannot track pacing.
-3. **Matched-History Baseline (`MatchedHistoryBaseline`):** Receives full event history and inter-action latencies $\Delta t$. Emits slowdown on rapid pacing and prerequisite review on high cumulative error counts, but lacks step-identifier persistence tracking (`WORKED_EXAMPLE`) and hierarchical priority resolution.
-4. **EGEA Adaptive Policy (`EGEAPolicyEngine`):** Pure deterministic priority cascade combining millisecond pacing detection, step-level persistence tracking, systemic collapse detection, and scaffolding fading.
+3. **Matched-History Baseline (`MatchedHistoryBaseline`):** Receives full event history and inter-action latencies $\Delta t$. Emits slowdown on rapid pacing and prerequisite review on high cumulative error counts, but lacks step-identifier persistence tracking (`WORKED_EXAMPLE`), EWMA pacing modeling, and touch jitter filtering.
+4. **EGEA Adaptive Policy (`EGEAPolicyEngine`):** Pure deterministic priority cascade combining EWMA pacing detection, step-level canonical persistence tracking, systemic collapse detection, and scaffold fading.
 
 ---
 
@@ -72,17 +74,21 @@ For a set of classes $C$ and confusion matrix $M$ where $M_{i,j}$ denotes actual
 ## 6. Inclusion, Exclusion & Ambiguity Resolution Rules
 
 1. **Independent Challenge Definition:** A challenge scenario must represent an authentic learning behavioral pattern (e.g. deliberate pause before error, fluent expert pace, touch jitter, repeated failure on midpoint) rather than a direct copy of an internal policy boolean predicate.
-2. **Ambiguity Resolution:**
-   - If an error is both rapid ($\Delta t < 1500\text{ms}$) and a traversal error, pedagogical priority dictates that pacing reflection (`STEPWISE_SLOWDOWN`) takes precedence over spatial highlighting (`HIGHLIGHT_ELEMENT`). Highlighting a target element for an impulsive clicker reinforces trial-and-error guessing.
+2. **Separation of Suites:**
+   - **Regression Challenge Suite ($N = 18$):** Preserved for continuous regression tracking across development iterations.
+   - **Held-Out Evaluation Suite ($N = 12$):** Pre-registered boundary, perturbation, and adversarial scenarios not used during algorithm tuning.
+3. **Ambiguity Resolution:**
+   - If an error is both rapid ($\Delta t < 1500\text{ms}$ or EWMA $\le 1800\text{ms}$) and a traversal error, pedagogical priority dictates that pacing reflection (`STEPWISE_SLOWDOWN`) takes precedence over spatial highlighting (`HIGHLIGHT_ELEMENT`). Highlighting a target element for an impulsive clicker reinforces trial-and-error guessing.
    - If a learner achieves 3 correct moves but accessed hints during the streak, scaffolding fading (`REDUCE_GUIDANCE`) is suspended because the learner has not demonstrated independent retrieval.
-3. **Label Provenance Disclose:** Target labels in the challenge suite represent an **Engineering Challenge Suite** authored using published cognitive scaffolding rubrics. They must NOT be represented as external third-party human annotator consensus.
+4. **Label Provenance Disclose:** Target labels represent an **Engineering Challenge Suite** authored using published cognitive scaffolding rubrics. They must NOT be represented as external third-party human annotator consensus.
 
 ---
 
 ## 7. Execution Commands
 
-- **Run 16 Test Suites:** `npx tsx scripts/run_all_tests.ts`
-- **Run Software Consistency Benchmark:** `npx tsx scripts/run_egea_benchmark.ts`
-- **Run Independent Challenge Suite:** `npx tsx scripts/evaluate_independent_challenge_set.ts`
-- **Run Failure Mode Counterexamples:** `npx tsx scripts/evaluate_failure_mode_benchmark.ts`
+- **Run 17 Test Suites:** `npx tsx scripts/run_all_tests.ts`
+- **Run Phase 2 Hardening Test Suite:** `npx tsx test/egeaHardeningPhase2Verification.ts`
+- **Run Independent Challenge Suite ($N=18$):** `npx tsx scripts/evaluate_independent_challenge_set.ts`
+- **Run Failure Mode Counterexamples ($N=6$):** `npx tsx scripts/evaluate_failure_mode_benchmark.ts`
+- **Run Held-Out Evaluation Suite ($N=12$):** `npx tsx scripts/evaluate_held_out_suite.ts`
 - **Run Empirical Latency Microbenchmark:** `npx tsx scripts/measure_empirical_latency.ts`

@@ -10,6 +10,8 @@ import {
   EGEAInteractionEvent,
   validateEventSequence,
 } from './EGEAEventSchema';
+import { EGEAPacingModel } from './EGEAPacingModel';
+import { canonicalizeStepIdentifier } from './EGEAStepCanonicalizer';
 
 export type EGEAInterventionType =
   | 'CONTEXTUAL_HINT'       // Isolated error: directional spatial guidance
@@ -26,6 +28,7 @@ export type EGEARationaleCode =
   | 'ATTENTION_SALIENCE_LAPSE'
   | 'ISOLATED_CONCEPTUAL_MISCONCEPTION'
   | 'INDEPENDENT_MASTERY_STREAK'
+  | 'HINT_ASSISTED_PROGRESSION'
   | 'NORMAL_PROGRESSION';
 
 export interface EGEAInterventionDecision {
@@ -80,12 +83,30 @@ export class EGEAPolicyEngine {
       };
     }
 
-    // If the latest event is correct but not yet a long streak, maintain reduced scaffolding
+    // If the latest event is correct:
     if (lastEvent.isCorrect) {
+      // If the action was assisted by a hint, maintain guidance instead of fading scaffolding
+      const isHintScaffolded = Boolean(
+        lastEvent.hintAssisted ||
+        (eventHistory.length >= 2 && lastEvent.hintExposureCount > eventHistory[eventHistory.length - 2].hintExposureCount)
+      );
+
+      if (isHintScaffolded) {
+        return {
+          interventionType: 'CONTEXTUAL_HINT',
+          targetElementId: String(lastEvent.stateContext.targetElementId || lastEvent.stepIdentifier),
+          rationaleCode: 'HINT_ASSISTED_PROGRESSION',
+          explanationText: 'Correct move completed with active hint assistance. Maintaining instructional scaffolding until independent recall is demonstrated.',
+          confidence: 0.88,
+          groundingState,
+          timestamp: new Date().toISOString(),
+        };
+      }
+
       return {
         interventionType: 'REDUCE_GUIDANCE',
         rationaleCode: 'NORMAL_PROGRESSION',
-        explanationText: 'Correct action executed. Maintaining active learning progression.',
+        explanationText: 'Correct action executed independently. Maintaining active learning progression.',
         confidence: 0.85,
         groundingState,
         timestamp: new Date().toISOString(),
@@ -94,23 +115,25 @@ export class EGEAPolicyEngine {
 
     // Learner committed an error on the latest event. Now evaluate pedagogical priority:
 
-    // Priority 1: Rapid Guessing / Rushing (< 1500ms between attempts with consecutive errors)
-    if (this.isRapidGuessing(eventHistory)) {
+    // Priority 1: Rapid Guessing / Rushing evaluated via EWMA Pacing Model
+    const pacingAnalysis = EGEAPacingModel.evaluatePacing(eventHistory);
+    if (pacingAnalysis.isRapidGuessing) {
       return {
         interventionType: 'STEPWISE_SLOWDOWN',
         rationaleCode: 'RAPID_GUESSING_DETECTED',
-        explanationText: 'Impulsive pacing detected (actions < 1.5s apart). Pausing interaction to prompt deliberate evaluation of invariant rules.',
+        explanationText: pacingAnalysis.rationale,
         confidence: 0.92,
         groundingState,
         timestamp: new Date().toISOString(),
       };
     }
 
-    // Priority 2: Persistent Repeated Failure on the exact same step (>= 3 errors on stepIdentifier)
+    // Priority 2: Persistent Repeated Failure on the exact same canonical step (>= 3 errors)
     if (this.isPersistentStepFailure(eventHistory)) {
+      const canonicalStep = canonicalizeStepIdentifier(lastEvent.canonicalStepIdentifier || lastEvent.stepIdentifier);
       return {
         interventionType: 'WORKED_EXAMPLE',
-        targetElementId: String(lastEvent.stateContext.targetElementId || lastEvent.stepIdentifier),
+        targetElementId: String(lastEvent.stateContext.targetElementId || canonicalStep),
         rationaleCode: 'PERSISTENT_STEP_FAILURE',
         explanationText: `Persistent failure on step ${lastEvent.stepIdentifier} across 3+ consecutive attempts. Presenting spatial worked-example demonstration.`,
         confidence: 0.98,
@@ -158,32 +181,35 @@ export class EGEAPolicyEngine {
   }
 
   /**
-   * Evaluates if learner has achieved >= 3 consecutive correct actions without hints.
+   * Evaluates if learner has achieved >= 3 consecutive correct actions independently (without hints).
    */
   private static isMasteryStreak(events: readonly EGEAInteractionEvent[]): boolean {
     if (events.length < 3) return false;
     const recent = events.slice(-3);
-    return recent.every(e => e.isCorrect && e.hintExposureCount === events[events.length - 3].hintExposureCount);
+    const allCorrect = recent.every(e => e.isCorrect);
+    if (!allCorrect) return false;
+
+    // Must be completely free of hint assistance across all 3 actions
+    const zeroHintsAssisted = recent.every(e => !e.hintAssisted);
+    const hintCountUnchanged = recent[2].hintExposureCount === events[events.length - 3].hintExposureCount;
+
+    return zeroHintsAssisted && hintCountUnchanged;
   }
 
   /**
-   * Evaluates if learner is impulsively guessing (< 1500ms latency on consecutive incorrect actions).
-   */
-  private static isRapidGuessing(events: readonly EGEAInteractionEvent[]): boolean {
-    if (events.length < 2) return false;
-    const last = events[events.length - 1];
-    const prev = events[events.length - 2];
-    return !last.isCorrect && !prev.isCorrect && last.timeSinceLastActionMs < 1500;
-  }
-
-  /**
-   * Evaluates if learner has failed 3 or more times consecutively on the exact same step.
+   * Evaluates if learner has failed 3 or more times consecutively on the exact same canonical step.
    */
   private static isPersistentStepFailure(events: readonly EGEAInteractionEvent[]): boolean {
     if (events.length < 3) return false;
     const lastThree = events.slice(-3);
-    const stepId = lastThree[2].stepIdentifier;
-    return lastThree.every(e => !e.isCorrect && e.stepIdentifier === stepId);
+    const targetStep = canonicalizeStepIdentifier(lastThree[2].canonicalStepIdentifier || lastThree[2].stepIdentifier);
+    if (targetStep === '__UNKNOWN_STEP__') return false;
+
+    return lastThree.every(e => {
+      if (e.isCorrect) return false;
+      const canon = canonicalizeStepIdentifier(e.canonicalStepIdentifier || e.stepIdentifier);
+      return canon === targetStep;
+    });
   }
 
   /**

@@ -6,10 +6,11 @@
     "fixedHintPrediction": "CONTEXTUAL_HINT",
     "simpleRulePrediction": "CONTEXTUAL_HINT",
     "matchedHistoryPrediction": "CONTEXTUAL_HINT",
-    "egeaPrediction": "CONTEXTUAL_HINT",
-    "egeaMatchesIdeal": false,
-    "behaviorClassification": "DISCLOSED_LIMITATION",
-    "technicalRootCause": "EGEA relies on a crisp cutoff (1500ms). Latency of 1600ms evades detection, resulting in CONTEXTUAL_HINT."
+    "egeaPrediction": "STEPWISE_SLOWDOWN",
+    "egeaMatchesIdeal": true,
+    "behaviorClassification": "SUCCESS",
+    "technicalRootCause": "Prior baseline used a crisp 1500ms cutoff evadable by 1600ms attempts.",
+    "resolutionMechanism": "EGEAPacingModel with EWMA smoothing expands the sustained velocity boundary to 1800ms."
   },
   {
     "caseId": "EDGE-02",
@@ -18,10 +19,11 @@
     "fixedHintPrediction": "CONTEXTUAL_HINT",
     "simpleRulePrediction": "CONTEXTUAL_HINT",
     "matchedHistoryPrediction": "STEPWISE_SLOWDOWN",
-    "egeaPrediction": "STEPWISE_SLOWDOWN",
-    "egeaMatchesIdeal": false,
-    "behaviorClassification": "DISCLOSED_LIMITATION",
-    "technicalRootCause": "EGEA lacks an ultra-low latency debounce filter (< 250ms). It interprets accidental touch jitter as impulsive guessing and triggers STEPWISE_SLOWDOWN."
+    "egeaPrediction": "CONTEXTUAL_HINT",
+    "egeaMatchesIdeal": true,
+    "behaviorClassification": "SUCCESS",
+    "technicalRootCause": "Prior baseline lacked a touch debounce filter, misclassifying 120ms double-tap as cognitive guessing.",
+    "resolutionMechanism": "Sub-250ms identical actions on same step/control are detected as mechanical jitter and preserve initial hint."
   },
   {
     "caseId": "EDGE-03",
@@ -30,10 +32,11 @@
     "fixedHintPrediction": "CONTEXTUAL_HINT",
     "simpleRulePrediction": "CONTEXTUAL_HINT",
     "matchedHistoryPrediction": "CONTEXTUAL_HINT",
-    "egeaPrediction": "CONTEXTUAL_HINT",
-    "egeaMatchesIdeal": false,
-    "behaviorClassification": "DISCLOSED_LIMITATION",
-    "technicalRootCause": "EGEA performs exact string matching on stepIdentifier. Variant suffixes prevent persistent impasse detection, falling through to CONTEXTUAL_HINT."
+    "egeaPrediction": "WORKED_EXAMPLE",
+    "egeaMatchesIdeal": true,
+    "behaviorClassification": "SUCCESS",
+    "technicalRootCause": "Prior baseline performed raw string equality, failing when dynamic retry suffixes were attached.",
+    "resolutionMechanism": "Centralized EGEAStepCanonicalizer normalizes retry/attempt suffixes to canonical step ID."
   },
   {
     "caseId": "EDGE-04",
@@ -42,10 +45,11 @@
     "fixedHintPrediction": "REDUCE_GUIDANCE",
     "simpleRulePrediction": "REDUCE_GUIDANCE",
     "matchedHistoryPrediction": "REDUCE_GUIDANCE",
-    "egeaPrediction": "REDUCE_GUIDANCE",
-    "egeaMatchesIdeal": false,
-    "behaviorClassification": "DISCLOSED_LIMITATION",
-    "technicalRootCause": "EGEA correctly checks that hintExposureCount did not change during the streak. Because hints were consumed, it does NOT falsely fade scaffolds."
+    "egeaPrediction": "CONTEXTUAL_HINT",
+    "egeaMatchesIdeal": true,
+    "behaviorClassification": "SUCCESS",
+    "technicalRootCause": "Prior baseline reduced guidance on any 3 correct actions regardless of hint scaffolding.",
+    "resolutionMechanism": "Explicit hintAssisted telemetry prevents hint-assisted correct actions from fading scaffolding."
   },
   {
     "caseId": "EDGE-05",
@@ -57,7 +61,8 @@
     "egeaPrediction": "CONTEXTUAL_HINT",
     "egeaMatchesIdeal": true,
     "behaviorClassification": "SUCCESS",
-    "technicalRootCause": "EGEA treats the mistake as an isolated conceptual error rather than jumping to severe remediation."
+    "technicalRootCause": "EGEA treats the mistake as an isolated conceptual error rather than jumping to severe remediation.",
+    "resolutionMechanism": "Preserves localized single-error hint response."
   },
   {
     "caseId": "EDGE-06",
@@ -69,6 +74,7 @@
     "egeaPrediction": "CONTEXTUAL_HINT",
     "egeaMatchesIdeal": true,
     "behaviorClassification": "SUCCESS",
-    "technicalRootCause": "Because errors occur on different steps, EGEA does not falsely trigger WORKED_EXAMPLE. Because total errors = 3 (< 4), it does not falsely trigger PREREQUISITE_REVIEW."
+    "technicalRootCause": "Because errors occur on different steps, EGEA does not falsely trigger WORKED_EXAMPLE.",
+    "resolutionMechanism": "Canonicalizer keeps distinct steps isolated, preventing false persistence triggers."
   }
 ]

@@ -43,6 +43,8 @@ export interface EGEAInteractionEvent {
   timeSinceLastActionMs: number;   // Action latency in ms (used for pacing / guessing detection)
   stateContext: Record<string, unknown>; // Deterministic engine state snapshot
   timestamp: string;               // ISO 8601
+  canonicalStepIdentifier?: string; // Centralized canonical step identifier (preserves stepIdentifier for audits)
+  hintAssisted?: boolean;          // Explicitly indicates whether this action was assisted by a hint
 }
 
 export interface EGEAValidationResult {
@@ -129,6 +131,14 @@ export function validateEGEAEvent(event: unknown): EGEAValidationResult {
 
   if (typeof e.timestamp !== 'string' || isNaN(Date.parse(e.timestamp))) {
     errors.push('timestamp must be a valid ISO 8601 date string');
+  }
+
+  if (e.canonicalStepIdentifier !== undefined && (typeof e.canonicalStepIdentifier !== 'string' || e.canonicalStepIdentifier.trim() === '')) {
+    errors.push('canonicalStepIdentifier must be a non-empty string when provided');
+  }
+
+  if (e.hintAssisted !== undefined && typeof e.hintAssisted !== 'boolean') {
+    errors.push('hintAssisted must be a boolean when provided');
   }
 
   return {

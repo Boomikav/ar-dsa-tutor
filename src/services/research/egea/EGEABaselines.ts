@@ -18,7 +18,7 @@ import {
 } from './EGEAPolicyEngine';
 
 export interface BaselineDecision {
-  baselineName: 'FIXED_HINT' | 'SIMPLE_ERROR_RULE' | 'EGEA_ADAPTIVE';
+  baselineName: 'FIXED_HINT' | 'SIMPLE_ERROR_RULE' | 'MATCHED_HISTORY' | 'EGEA_ADAPTIVE';
   interventionType: EGEAInterventionType;
   hintText: string;
   isHistoryAware: boolean;

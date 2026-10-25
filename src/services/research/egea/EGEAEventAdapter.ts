@@ -13,6 +13,7 @@ import {
   validateEGEAEvent,
   VALID_EGEA_ALGORITHM_IDS,
 } from './EGEAEventSchema';
+import { canonicalizeStepIdentifier } from './EGEAStepCanonicalizer';
 
 export interface RawInteractionInput {
   stepIdentifier: string;
@@ -24,21 +25,39 @@ export interface RawInteractionInput {
   hintUsed?: boolean;
 }
 
+export interface EGEAAdapterOptions {
+  /** Configurable input debounce threshold in ms. Default 250ms. */
+  debounceIntervalMs?: number;
+  /** Whether to completely suppress duplicate debounce events from event stream. Default false. */
+  suppressDuplicateEvents?: boolean;
+}
+
 export class EGEAEventAdapter {
   private sessionId: string;
   private algorithmId: EGEAAlgorithmId;
   private sequenceCounter: number = 0;
   private cumulativeHints: number = 0;
+  private pendingHintUsage: boolean = false;
   private lastActionTimestamp: number;
   private events: EGEAInteractionEvent[] = [];
+  private debounceIntervalMs: number;
+  private suppressDuplicateEvents: boolean;
 
-  constructor(sessionId: string, algorithmId: EGEAAlgorithmId) {
+  constructor(
+    sessionId: string,
+    algorithmId: EGEAAlgorithmId,
+    options?: EGEAAdapterOptions
+  ) {
     if (!VALID_EGEA_ALGORITHM_IDS.includes(algorithmId)) {
       throw new Error(`Unsupported algorithm ID for EGEA session: ${algorithmId}`);
     }
     this.sessionId = sessionId;
     this.algorithmId = algorithmId;
     this.lastActionTimestamp = Date.now();
+    this.debounceIntervalMs = typeof options?.debounceIntervalMs === 'number'
+      ? Math.max(0, options.debounceIntervalMs)
+      : 250;
+    this.suppressDuplicateEvents = Boolean(options?.suppressDuplicateEvents);
   }
 
   public getSessionId(): string {
@@ -47,6 +66,10 @@ export class EGEAEventAdapter {
 
   public getAlgorithmId(): EGEAAlgorithmId {
     return this.algorithmId;
+  }
+
+  public getDebounceIntervalMs(): number {
+    return this.debounceIntervalMs;
   }
 
   public getEvents(): readonly EGEAInteractionEvent[] {
@@ -70,6 +93,7 @@ export class EGEAEventAdapter {
     }
     this.sequenceCounter = 0;
     this.cumulativeHints = 0;
+    this.pendingHintUsage = false;
     this.lastActionTimestamp = Date.now();
     this.events = [];
   }
@@ -79,6 +103,7 @@ export class EGEAEventAdapter {
    */
   public recordHintUsage(): void {
     this.cumulativeHints += 1;
+    this.pendingHintUsage = true;
   }
 
   /**
@@ -89,9 +114,20 @@ export class EGEAEventAdapter {
     const latency = Math.max(0, now - this.lastActionTimestamp);
     this.lastActionTimestamp = now;
 
+    // Check for duplicate rapid touch jitter on identical step and control
+    const prevEvent = this.events.length > 0 ? this.events[this.events.length - 1] : null;
+    const isDuplicate = Boolean(
+      prevEvent &&
+      latency < this.debounceIntervalMs &&
+      prevEvent.stepIdentifier === input.stepIdentifier &&
+      prevEvent.attemptedAction === input.attemptedAction
+    );
+
     if (input.hintUsed) {
       this.cumulativeHints += 1;
     }
+    const isHintAssisted = Boolean(input.hintUsed || this.pendingHintUsage);
+    this.pendingHintUsage = false;
 
     this.sequenceCounter += 1;
 
@@ -100,19 +136,26 @@ export class EGEAEventAdapter {
       errorCategory = input.errorCategory || this.inferErrorCategory(input.attemptedAction, input.expectedAction);
     }
 
+    const stateContext: Record<string, unknown> = { ...input.stateContext };
+    if (isDuplicate) {
+      stateContext.debouncedDuplicate = true;
+    }
+
     const event: EGEAInteractionEvent = {
       eventId: `${this.sessionId}-seq-${this.sequenceCounter}-${Math.random().toString(36).slice(2, 7)}`,
       sequenceNumber: this.sequenceCounter,
       sessionId: this.sessionId,
       algorithmId: this.algorithmId,
       stepIdentifier: input.stepIdentifier,
+      canonicalStepIdentifier: canonicalizeStepIdentifier(input.stepIdentifier),
       attemptedAction: input.attemptedAction,
       expectedAction: input.expectedAction,
       isCorrect: input.isCorrect,
       errorCategory,
       hintExposureCount: this.cumulativeHints,
+      hintAssisted: isHintAssisted,
       timeSinceLastActionMs: latency,
-      stateContext: { ...input.stateContext },
+      stateContext,
       timestamp: new Date(now).toISOString(),
     };
 
@@ -121,7 +164,10 @@ export class EGEAEventAdapter {
       throw new Error(`EGEA Event Validation Failed: ${validation.errors.join(', ')}`);
     }
 
-    this.events.push(event);
+    if (!isDuplicate || !this.suppressDuplicateEvents) {
+      this.events.push(event);
+    }
+
     return event;
   }
 

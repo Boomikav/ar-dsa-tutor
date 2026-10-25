@@ -22,7 +22,7 @@ export class MatchedHistoryBaseline {
   public static evaluate(events: readonly EGEAInteractionEvent[]): BaselineDecision {
     if (!events || events.length === 0) {
       return {
-        baselineName: 'EGEA_ADAPTIVE', // Matched-history type
+        baselineName: 'MATCHED_HISTORY',
         interventionType: 'REDUCE_GUIDANCE',
         hintText: 'Initial state ready.',
         isHistoryAware: true,
@@ -36,7 +36,7 @@ export class MatchedHistoryBaseline {
     // Rule 1: Correct move -> maintain normal progress
     if (last.isCorrect) {
       return {
-        baselineName: 'EGEA_ADAPTIVE',
+        baselineName: 'MATCHED_HISTORY',
         interventionType: 'REDUCE_GUIDANCE',
         hintText: 'Correct step executed.',
         isHistoryAware: true,
@@ -50,7 +50,7 @@ export class MatchedHistoryBaseline {
       const prev = events[events.length - 2];
       if (!prev.isCorrect && last.timeSinceLastActionMs < 1500) {
         return {
-          baselineName: 'EGEA_ADAPTIVE',
+          baselineName: 'MATCHED_HISTORY',
           interventionType: 'STEPWISE_SLOWDOWN',
           hintText: 'Pacing alert: Take a moment to inspect before acting.',
           isHistoryAware: true,
@@ -64,7 +64,7 @@ export class MatchedHistoryBaseline {
     const totalErrors = events.filter(e => !e.isCorrect).length;
     if (events.length >= 5 && totalErrors >= 4) {
       return {
-        baselineName: 'EGEA_ADAPTIVE',
+        baselineName: 'MATCHED_HISTORY',
         interventionType: 'PREREQUISITE_REVIEW',
         hintText: 'Multiple errors logged: Review prerequisite concepts.',
         isHistoryAware: true,
@@ -76,7 +76,7 @@ export class MatchedHistoryBaseline {
     // Rule 4: Traversal orientation lapse
     if (last.errorCategory === 'TRAVERSAL_DIRECTION' || last.errorCategory === 'CYCLE_OR_UNVISITED') {
       return {
-        baselineName: 'EGEA_ADAPTIVE',
+        baselineName: 'MATCHED_HISTORY',
         interventionType: 'HIGHLIGHT_ELEMENT',
         hintText: 'Attention: Review the directed branch or queue.',
         isHistoryAware: true,
@@ -88,7 +88,7 @@ export class MatchedHistoryBaseline {
 
     // Rule 5: Default localized hint
     return {
-      baselineName: 'EGEA_ADAPTIVE',
+      baselineName: 'MATCHED_HISTORY',
       interventionType: 'CONTEXTUAL_HINT',
       hintText: 'Verify your decision against algorithm rules.',
       isHistoryAware: true,
