@@ -76,7 +76,7 @@ For a set of classes $C$ and confusion matrix $M$ where $M_{i,j}$ denotes actual
 1. **Independent Challenge Definition:** A challenge scenario must represent an authentic learning behavioral pattern (e.g. deliberate pause before error, fluent expert pace, touch jitter, repeated failure on midpoint) rather than a direct copy of an internal policy boolean predicate.
 2. **Separation of Suites:**
    - **Regression Challenge Suite ($N = 18$):** Preserved for continuous regression tracking across development iterations.
-   - **Held-Out Evaluation Suite ($N = 12$):** Pre-registered boundary, perturbation, and adversarial scenarios not used during algorithm tuning.
+   - **Post-Hardening Boundary Stress Suite ($N = 12$):** Targeted boundary, perturbation, and adversarial scenarios authored alongside Phase 2 hardening to evaluate boundary stability and the 4 identified failure modes.
 3. **Ambiguity Resolution:**
    - If an error is both rapid ($\Delta t < 1500\text{ms}$ or EWMA $\le 1800\text{ms}$) and a traversal error, pedagogical priority dictates that pacing reflection (`STEPWISE_SLOWDOWN`) takes precedence over spatial highlighting (`HIGHLIGHT_ELEMENT`). Highlighting a target element for an impulsive clicker reinforces trial-and-error guessing.
    - If a learner achieves 3 correct moves but accessed hints during the streak, scaffolding fading (`REDUCE_GUIDANCE`) is suspended because the learner has not demonstrated independent retrieval.

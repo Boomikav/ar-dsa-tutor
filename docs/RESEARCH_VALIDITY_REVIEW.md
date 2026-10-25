@@ -55,8 +55,8 @@ All four failure modes were resolved through principled, deterministic models:
 
 *Post-Fix Benchmark Status:* All 6 failure-mode test cases now achieve **100% agreement (`SUCCESS`)** with the intended pedagogical ideals, while `MatchedHistoryBaseline` continues to fail on cases 1, 2, 3, and 4 due to lack of EWMA, jitter filtering, step canonicalization, and hint-assisted tracking.
 
-### 3.3 Independent Held-Out Evaluation Suite ($N = 12$)
-To evaluate generalization without circularity, a distinct held-out evaluation suite of 12 boundary-stressing trajectories (`EGEAHeldOutEvaluationSuite.ts`) was evaluated across all four systems:
+### 3.3 Targeted Post-Hardening Boundary Stress Suite ($N = 12$)
+To evaluate boundary stability and invariance to the four failure modes, a targeted suite of 12 boundary-stressing trajectories (`EGEAHeldOutEvaluationSuite.ts`) was authored and evaluated across all four systems:
 
 | System | Accuracy % | Macro-Precision | Macro-Recall | Macro-$F_1$ (Unweighted) | Macro-$F_1$ (Harmonic) |
 |---|:---:|:---:|:---:|:---:|:---:|
