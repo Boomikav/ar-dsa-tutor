@@ -40,21 +40,17 @@ for (const suite of testSuites) {
   // Extract summary if present: e.g. "121 / 121 passed" or "25 / 25 passed" or similar
   const passMatch = output.match(/(\d+)\s*\/\s*(\d+)\s*passed/i) || output.match(/Passed:\s*(\d+)/i) || output.match(/(\d+)\s*tests passed/i);
   let passedCount = 0;
-  let totalCount = 0;
 
   if (passMatch) {
     if (passMatch[2]) {
       passedCount = parseInt(passMatch[1], 10);
-      totalCount = parseInt(passMatch[2], 10);
     } else {
       passedCount = parseInt(passMatch[1], 10);
-      totalCount = passedCount;
     }
   } else {
     // Count individual check marks or test passes
     const passedLines = (output.match(/✓|PASSED|PASS/g) || []).length;
     passedCount = passedLines;
-    totalCount = passedLines;
   }
 
   if (result.status === 0) {

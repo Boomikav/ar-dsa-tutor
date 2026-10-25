@@ -15,7 +15,6 @@
 import {
   EGEAAlgorithmId,
   EGEAInteractionEvent,
-  validateEGEAEvent,
 } from './EGEAEventSchema';
 import { EGEAEventAdapter } from './EGEAEventAdapter';
 import {

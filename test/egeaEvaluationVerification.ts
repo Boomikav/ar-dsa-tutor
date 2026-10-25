@@ -22,7 +22,6 @@ import {
   FixedHintBaseline,
   SimpleErrorRuleBaseline,
 } from '../src/services/research/egea/EGEABaselines';
-import { EGEAEvaluationHarness } from '../src/services/research/egea/EGEAEvaluationHarness';
 
 let passedTests = 0;
 let failedTests = 0;

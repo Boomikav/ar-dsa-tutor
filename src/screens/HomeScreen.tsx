@@ -11,10 +11,7 @@ import {
   Box, 
   ArrowRight, 
   MessageSquareCode, 
-  Compass, 
   BrainCircuit,
-  Award,
-  TrendingUp,
   Sparkles
 } from 'lucide-react';
 

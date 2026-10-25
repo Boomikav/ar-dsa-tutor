@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../state/AppContext';
 import { HeaderBar } from '../components/HeaderBar';
 import { ProgressBar } from '../components/ProgressBar';
-import { CheckCircle2, XCircle, ArrowRight, BrainCircuit, Sparkles, Award } from 'lucide-react';
+import { CheckCircle2, XCircle, ArrowRight, BrainCircuit, Award } from 'lucide-react';
 import { AdaptiveDifficultyLevel } from '../models/adaptiveLearner';
 
 interface DiagnosticQuestionItem {
