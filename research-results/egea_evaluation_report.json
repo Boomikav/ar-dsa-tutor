@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T12:44:00.019Z",
+  "timestamp": "2026-10-25T14:46:49.956Z",
   "scenarioCount": 30,
   "scenariosPerFamily": {
     "One-Off Minor Mistake": 5,
@@ -106,9 +106,9 @@
           "REDUCE_GUIDANCE": 5
         }
       },
-      "averageLatencyMs": 0.01,
-      "maxLatencyMs": 0.184,
-      "p95LatencyMs": 0.025
+      "averageLatencyMs": 0.006,
+      "maxLatencyMs": 0.075,
+      "p95LatencyMs": 0.033
     },
     "simpleErrorRuleBaseline": {
       "systemName": "Simple Error Rule Baseline",
@@ -206,9 +206,9 @@
           "REDUCE_GUIDANCE": 5
         }
       },
-      "averageLatencyMs": 0.015,
-      "maxLatencyMs": 0.288,
-      "p95LatencyMs": 0.035
+      "averageLatencyMs": 0.006,
+      "maxLatencyMs": 0.125,
+      "p95LatencyMs": 0.015
     },
     "egeaAdaptivePolicy": {
       "systemName": "EGEA Adaptive Policy",
@@ -306,9 +306,9 @@
           "REDUCE_GUIDANCE": 5
         }
       },
-      "averageLatencyMs": 0.075,
-      "maxLatencyMs": 1.22,
-      "p95LatencyMs": 0.181
+      "averageLatencyMs": 0.028,
+      "maxLatencyMs": 0.398,
+      "p95LatencyMs": 0.063
     }
   }
 }
