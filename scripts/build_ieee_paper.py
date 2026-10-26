@@ -47,7 +47,7 @@ def create_paper():
         t._tbl.getparent().remove(t._tbl)
 
     # Helper function for adding paragraphs with style
-    def add_p(text, style='Body Text', space_after=1.8, align=WD_ALIGN_PARAGRAPH.JUSTIFY, bold=False, italic=False):
+    def add_p(text, style='Body Text', space_after=1.5, align=WD_ALIGN_PARAGRAPH.JUSTIFY, bold=False, italic=False):
         p = doc.add_paragraph()
         if style in doc.styles:
             p.style = doc.styles[style]
@@ -131,21 +131,20 @@ def create_paper():
     p_author = doc.add_paragraph()
     p_author.style = doc.styles['Author']
     p_author.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_author.paragraph_format.space_after = Pt(12)
+    p_author.paragraph_format.space_after = Pt(8)
     r_a1 = p_author.add_run("Ajay A\n")
     r_a1.bold = True
     r_a1.font.size = Pt(10.5)
-    r_a2 = p_author.add_run("School of Computer Science and Engineering\n"
-                           "[Institutional Affiliation to be Finalized for Submission]\n"
-                           "Vellore, Tamil Nadu, India • contact: ajay.author@institution.edu\n"
-                           "*(Primary Contributor; Faculty Review Baseline Release)*")
+    r_a2 = p_author.add_run("School of Computer Science and Engineering (SCOPE)\n"
+                           "Vellore Institute of Technology (VIT), Chennai, Tamil Nadu, India\n"
+                           "contact: ajay.a2023@vitstudent.ac.in")
     r_a2.font.size = Pt(8.8)
     r_a2.italic = True
 
     # --- SECTION BREAK TO 2-COLUMN LAYOUT ---
     sec1 = doc.add_section(docx.enum.section.WD_SECTION.CONTINUOUS)
     sec1.top_margin = Pt(45)
-    sec1.bottom_margin = Pt(50)
+    sec1.bottom_margin = Pt(48)
     sec1.left_margin = Pt(44)
     sec1.right_margin = Pt(44)
     cols = parse_xml(f'<w:cols {nsdecls("w")} w:num="2" w:space="360"/>')
@@ -166,7 +165,7 @@ def create_paper():
         "(such as binary search tree rebalancing, logarithmic search boundary halving, and breadth-first search queue frontiers) "
         "onto passive, two-dimensional textbook diagrams. Meanwhile, recent efforts to integrate conversational artificial "
         "intelligence (AI) tutors introduce unpredictable network latency (1.5s–3.5s), spatial hallucination, and mathematically "
-        "invalid advice that violates formal algorithm invariants. In this paper, we develop and verify AR-DSA Tutor, a production-grade, "
+        "invalid advice that violates formal algorithm invariants. In this paper, we develop and verify AR-DSA Tutor, an interactive, "
         "zero-install mobile WebXR system that renders five distinct algorithm paradigms—Binary Search Tree, Bubble Sort, Binary Search, "
         "Breadth-First Search, and Stack—as interactive, spatially anchored 3D models running directly within commodity mobile web browsers. "
         "To scaffold learning without violating the 16.6ms frame budget required for 60 FPS mobile WebXR, we engineer Execution-Grounded "
@@ -242,7 +241,7 @@ def create_paper():
         "our system differentiates rapid trial-and-error clicking (latency < 1500ms) from deliberate reflection, dynamically enforcing deliberate "
         "pauses and fading scaffolding upon verified independent mastery.\n"
         "• Rigorous Verification and Open Release: The application compiles into a lightweight 319 kB gzipped bundle, satisfies 1,437 automated "
-        "test assertions across 18 verification suites, and is validated against an authored 30-case synthetic evaluation suite."
+        "test assertions across 18 verification suites, and is evaluated across an authored 18-case engineering challenge suite and a separate 12-case boundary stress suite."
     )
 
     # --- SECTION II: RELATED WORK ---
@@ -661,19 +660,19 @@ def create_paper():
         "[1] C. D. Hundhausen, S. A. Douglas, and J. T. Stasko, 'A meta-study of algorithm visualization effectiveness,' J. Visual Lang. Comput., vol. 13, no. 3, pp. 259–290, Jun. 2002, doi: 10.1006/jvlc.2002.0237.",
         "[2] J. Sweller, 'Cognitive load during problem solving: Effects on learning,' Cognitive Science, vol. 12, no. 2, pp. 257–285, Apr. 1988, doi: 10.1207/s15516709cog1202_4.",
         "[3] S. Halim, Z. C. Koh, V. B. H. Loh, and F. Halim, 'Learning algorithms with VisuAlgo,' Olympiads in Informatics, vol. 6, pp. 49–59, 2012.",
-        "[4] E. Fouh, M. Akbar, and C. A. Shaffer, 'The OpenDSA system for algorithm visualization,' ACM Inroads, vol. 3, no. 3, pp. 58–66, Sep. 2012, doi: 10.1145/2339055.2339076.",
+        "[4] E. Fouh, V. Karavirta, D. A. Breakiron, S. Hamouda, S. Hall, T. L. Naps, and C. A. Shaffer, 'Design and architecture of an interactive eTextbook – The OpenDSA system,' Science of Computer Programming, vol. 88, pp. 22–40, Aug. 2014, doi: 10.1016/j.scico.2013.11.040.",
         "[5] P. Denny, V. Kumar, and N. Giacaman, 'Conversing with copilot: Investigating prompt engineering for CS education,' in Proc. 54th ACM Tech. Symp. Comput. Sci. Educ. (SIGCSE), 2023, pp. 792–798, doi: 10.1145/3545945.3569823.",
         "[6] W3C WebXR Device API, W3C Working Draft, World Wide Web Consortium, 2024. [Online]. Available: https://www.w3.org/TR/webxr/",
-        "[7] B. MacIntyre and T. F. Smith, 'Thoughts on the future of commercial AR and the Web,' in Proc. IEEE VR Workshop K-12+ VR/AR Educ., 2018, pp. 1–4, doi: 10.1109/VR.2018.8446453.",
-        "[8] K. Guo et al., 'Characterizing WebXR performance on mobile devices,' in Proc. 12th ACM Multimedia Syst. Conf. (MMSys), 2021, pp. 112–124, doi: 10.1145/3458305.3463384.",
-        "[9] M. H. Brown, 'Exploring algorithms with Balsa-II,' IEEE Computer, vol. 21, no. 5, pp. 14–36, May 1988, doi: 10.1109/2.55.",
-        "[10] J. T. Stasko, 'Tango: A framework and system for algorithm animation,' IEEE Computer, vol. 23, no. 9, pp. 27–39, Sep. 1990, doi: 10.1109/2.58246.",
+        "[7] B. MacIntyre, A. Hill, H. Rouzati, M. Gandy, and P. B. Davidson, 'The Argon AR Web Browser and standards-based AR application environment,' in Proc. 10th IEEE Int. Symp. Mixed and Augmented Reality (ISMAR), 2011, pp. 65–74, doi: 10.1109/ISMAR.2011.6092371.",
+        "[8] Y. Liu, Z. Chen, L. Wang, and G. Huang, 'Demystifying mobile extended reality in web browsers: How far can we go?,' in Proc. ACM Web Conf. (WWW), 2023, pp. 1195–1205, doi: 10.1145/3543507.3583329.",
+        "[9] M. H. Brown, 'Exploring algorithms using Balsa-II,' IEEE Computer, vol. 21, no. 5, pp. 14–36, May 1988, doi: 10.1109/2.56.",
+        "[10] J. T. Stasko, 'Tango: A framework and system for algorithm animation,' IEEE Computer, vol. 23, no. 9, pp. 27–39, Sep. 1990, doi: 10.1109/2.58216.",
         "[11] J. Sorva, V. Karavirta, and L. Malmi, 'A review of generic program visualization systems for introductory programming education,' ACM Trans. Comput. Educ., vol. 13, no. 4, pp. 15:1–15:64, Nov. 2013, doi: 10.1145/2490822.",
-        "[12] M. Billinghurst, H. Kato, and I. Poupyrev, 'The MagicBook: A transitional AR interface,' IEEE Comput. Graphics Appl., vol. 21, no. 3, pp. 74–81, May 2001, doi: 10.1109/38.920626.",
+        "[12] M. Billinghurst, H. Kato, and I. Poupyrev, 'The MagicBook: A transitional AR interface,' Computers & Graphics, vol. 25, no. 5, pp. 745–753, Oct. 2001, doi: 10.1016/S0097-8493(01)00117-0.",
         "[13] I. Radu, 'Augmented reality in education: A meta-review and cross-media analysis,' Personal Ubiquitous Comput., vol. 18, no. 6, pp. 1533–1543, Aug. 2014, doi: 10.1007/s00779-013-0747-y.",
-        "[14] K. VanLehn, 'The behavior of tutoring systems,' Int. J. Artif. Intell. Educ., vol. 16, no. 3, pp. 227–265, 2006.",
+        "[14] K. VanLehn, 'The relative effectiveness of human tutoring, intelligent tutoring systems, and other tutoring systems,' Educational Psychologist, vol. 46, no. 4, pp. 197–221, Oct. 2011, doi: 10.1080/00461520.2011.611369.",
         "[15] J. R. Anderson, A. T. Corbett, K. R. Koedinger, and R. Pelletier, 'Cognitive tutors: Lessons learned,' J. Learn. Sci., vol. 4, no. 2, pp. 167–207, 1995, doi: 10.1207/s15327809jls0402_2.",
-        "[16] K. R. Koedinger, A. T. Corbett, and C. Perfetti, 'The Knowledge-Learning-Instruction (KLI) framework,' Cognitive Science, vol. 36, no. 5, pp. 757–798, Jul. 2012, doi: 10.1111/j.1551-6709.2012.01245.x.",
+        "[16] K. R. Koedinger, A. T. Corbett, and C. Perfetti, 'The Knowledge-Learning-Instruction (KLI) framework: Bridging the science-practice chasm to enhance robust student learning,' Cognitive Science, vol. 36, no. 5, pp. 757–798, Jul. 2012, doi: 10.1111/j.1551-6709.2012.01245.x.",
         "[17] C. Conati and R. Maclaren, 'Empirically building and evaluating a probabilistic model of user affect and behavior,' User Modeling User-Adapted Interact., vol. 19, no. 3, pp. 267–303, Aug. 2009, doi: 10.1007/s11257-009-9062-8.",
         "[18] T. L. Naps et al., 'Exploring the role of visualization and engagement in computer science education,' ACM SIGCSE Bull., vol. 35, no. 2, pp. 131–152, Jun. 2002, doi: 10.1145/782941.782998.",
         "[19] A. N. Kumar, 'Results from the evaluation of the effectiveness of an active learning tutor for binary trees,' in Proc. 36th SIGCSE Tech. Symp. Comput. Sci. Educ., 2005, pp. 216–220, doi: 10.1145/1047344.1047422.",
@@ -687,7 +686,7 @@ def create_paper():
         if 'references' in doc.styles:
             p_ref.style = doc.styles['references']
         p_ref.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-        p_ref.paragraph_format.space_after = Pt(1.0)
+        p_ref.paragraph_format.space_after = Pt(0.5)
         p_ref.paragraph_format.line_spacing = 1.01
         r_ref = p_ref.add_run(clean_ref)
         r_ref.font.name = 'Times New Roman'

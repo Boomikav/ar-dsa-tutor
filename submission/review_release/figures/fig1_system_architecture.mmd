@@ -2,75 +2,71 @@ flowchart LR
     %% ========================================================================
     %% PILLAR I: CLIENT & SESSION LAYER
     %% ========================================================================
-    subgraph COL1 ["<b>PILLAR I: CLIENT &amp; SESSION LAYER</b>"]
+    subgraph P1 ["<b>PILLAR I: CLIENT &amp; SESSION LAYER</b>"]
         direction TB
-        M1["<b>Module 1: Learner Viewport &amp; UI</b><br/>• Viewport: Mobile WebXR canvas + spatial HUD<br/>• Interaction: Screen touch &amp; raycast hit-testing<br/>• Telemetry: Dispatches action, step key, latency"]
+        M1["<b>Module 1: Learner Viewport &amp; UI</b><br/>• Mobile WebXR Canvas &amp; Frustum Overlay<br/>• Touch &amp; Raycast Hit-Testing Ingestion<br/>• 1-Click Zero-Tear Algorithm Hot-Swapping<br/>• Dispatches Action, Step ID, and Latency"]
         
-        M2["<b>Module 2: WebXR Session Core</b><br/>• Lifecycle: Single persistent XRSession across topics<br/>• Hot-Swapping: Retains WebGL &amp; GPU resources<br/>• <i>Boundary: Android ARCore unverified (simulation)</i>"]
-        
-        M3["<b>Module 3: Non-XR Fallback Engine</b><br/>• CANVAS_3D_FALLBACK: OrbitControls navigation<br/>• Alignment: Strict upright (+Y) spatial axis<br/>• Parity: Executes identical algorithms &amp; EGEA rules"]
+        M2["<b>Module 2: WebXR Session Core</b><br/>• Persistent Single XRSession Lifecycle<br/>• Preserves WebGLRenderer &amp; GPU Resources<br/>• Seamless Multi-Algorithm Scene Binding<br/><i>(Boundary: Physical ARCore Simulation Only)</i>"]
+
+        M3["<b>Module 3: Non-XR 3D Fallback Engine</b><br/>• CANVAS_3D_FALLBACK with OrbitControls<br/>• Multi-Touch &amp; Mouse Drag / Rotate / Pan<br/>• Enforces Upright (+Y) Spatial Gravitational Axis<br/>• Full Algorithmic &amp; EGEA Scaffolding Parity"]
 
         M1 -->|Session Config| M2
-        M2 -.->|Fallback on Unsupported| M3
+        M2 -.->|Fallback on Non-XR| M3
     end
 
     %% ========================================================================
-    %% PILLAR II: ALGORITHM CORE & 3D ENGINE
+    %% PILLAR II: ALGORITHM CORE & 3D RENDERING
     %% ========================================================================
-    subgraph COL2 ["<b>PILLAR II: ALGORITHM CORE &amp; 3D ENGINE</b>"]
+    subgraph P2 ["<b>PILLAR II: ALGORITHM CORE &amp; 3D ENGINE</b>"]
         direction TB
-        M4["<b>Module 4: 5 Deterministic DSA Engines</b><br/>• BST: Left &lt; Node &lt; Right invariant reducer<br/>• Bubble Sort: Adjacent swaps • Binary: [low, mid, high]<br/>• BFS: FIFO queue • Stack: LIFO (depth limit 6)"]
+        M4["<b>Module 4: 5 Deterministic DSA Engines</b><br/>• <b>BST:</b> Left &lt; Node &lt; Right Invariant Reducer<br/>• <b>Bubble Sort:</b> Adjacent Inversion Step Swaps<br/>• <b>Binary Search:</b> [Low, Mid, High] Range Halving<br/>• <b>BFS:</b> Topological FIFO Queue Expansion<br/>• <b>Stack:</b> LIFO Push / Pop (Max Depth 6)"]
 
-        M5["<b>Module 5: Procedural 3D Visualizers</b><br/>• BST: Spherical nodes &amp; directed link cylinders<br/>• Bubble Sort: Scaled cylinder bars &amp; swap cues<br/>• BFS: Graph dock • Stack: Chamber &amp; slab meshes"]
+        M5["<b>Module 5: Procedural Three.js Visualizers</b><br/>• <b>ThreeBST:</b> Spherical Nodes &amp; Link Cylinders<br/>• <b>ThreeBubbleSort:</b> Scaled Bar Cylinders &amp; Swaps<br/>• <b>ThreeBinarySearch:</b> Indexed Block Array<br/>• <b>ThreeBFS:</b> Graph Network &amp; Floating Queue Dock<br/>• <b>ThreeStack:</b> 3D Glass Chamber &amp; Stacked Slabs"]
 
-        M6["<b>Module 6: Scene Assembler &amp; Sync</b><br/>• Scene Graph: Pure-render state mapping<br/>• Transitions: Smooth swap interpolation &amp; hits<br/>• Disposal: Clean GPU memory on algorithm swap"]
+        M6["<b>Module 6: Scene Assembler &amp; Sync</b><br/>• Pure-Render Scene Graph State Mapping<br/>• Parametric Animation &amp; Step Interpolation<br/>• Direct WebGL Frame Buffer Synchronization<br/>• Instant Mesh Disposal on Topic Hot-Swap"]
 
         M4 ==>|Invariant State| M5
-        M5 -->|Mesh Scene Graph| M6
+        M5 -->|Mesh Geometry| M6
     end
 
     %% ========================================================================
     %% PILLAR III: EGEA ADAPTATION & HUD FEEDBACK
     %% ========================================================================
-    subgraph COL3 ["<b>PILLAR III: EGEA ADAPTATION &amp; HUD FEEDBACK</b>"]
+    subgraph P3 ["<b>PILLAR III: EGEA ADAPTATION &amp; HUD</b>"]
         direction TB
-        M7["<b>Module 7: Event Adapter &amp; Pacing</b><br/>• Adapter: Monotonic k counter, 250ms debounce<br/>• canonicalizeStep: Normalizes retry step keys<br/>• EWMA Pacing: S_k = α·L_k + (1-α)S_{k-1} (α=0.3)"]
+        M7["<b>Module 7: Event Adapter &amp; Pacing Model</b><br/>• Monotonic Sequence Counter (k)<br/>• 250ms Touch Debounce Filtering<br/>• <b>canonicalizeStep:</b> Alias &amp; Suffix Mapping<br/>• <b>EWMA Pacing:</b> S_k = α·L_k + (1-α)S_{k-1} (α=0.3)<br/>• Rapid Guessing (&lt;1.5s) vs Deliberate (≥3.0s)"]
 
-        M8["<b>Module 8: 6-Tier Scaffolding Engine</b><br/>• [1] HINT • [2] SLOWDOWN • [3] HIGHLIGHT<br/>• [4] WORKED • [5] PREREQ • [6] REDUCE<br/>• Latency: Pure Policy 7 μs | Pipeline 14 μs"]
+        M8["<b>Module 8: EGEA Deterministic Policy Engine</b><br/>• <b>6-Tier Grounded Scaffolding Taxonomy:</b><br/>  [1] CONTEXTUAL_HINT (Directional Cue)<br/>  [2] STEPWISE_SLOWDOWN (Reflection Pause)<br/>  [3] HIGHLIGHT_ELEMENT (Salience Pulse)<br/>  [4] WORKED_EXAMPLE (Full Step Demo)<br/>  [5] PREREQUISITE_REVIEW (Concept Recall)<br/>  [6] REDUCE_GUIDANCE (Scaffold Fading)<br/>• Latency: Pure Policy 7 μs | Full Pipeline 14 μs"]
 
-        M9["<b>Module 9: Spatial AR Tutor HUD</b><br/>• ARTutorHUD: Real-time AR viewport overlay<br/>• Explainability: Grounded code &amp; conf (0.95)<br/>• <i>Offline: 18 Challenge / 12 Stress Suites (100%)</i>"]
+        M9["<b>Module 9: Spatial AR Tutor HUD Feedback</b><br/>• Real-Time Viewport AR Frustum Overlay<br/>• Grounded Rationale Code &amp; Confidence (0.80–0.95)<br/>• Dynamic Scaffolding Badges &amp; Cues<br/>• Closed-Loop Pedagogical Feedback to Learner"]
 
         M7 ==>|Canonical Trace &amp; Pacing| M8
-        M8 ==>|Policy Decision &amp; Rationale| M9
+        M8 ==>|Scaffolding Decision| M9
     end
 
     %% ========================================================================
-    %% NUMBERED DATAFLOW CONNECTIONS
+    %% INTER-MODULE CROSS-COLUMN DATAFLOWS
     %% ========================================================================
     M1 ==>|1. User Attempted Action| M4
-    M4 ==>|2. State Reducer Output| M5
-    M5 ==>|3. Procedural Meshes| M6
-    M6 ==>|4. WebGL Render Presentation| M1
-    M4 -.->|5. Invariant Telemetry Stream| M7
-    M7 -.->|6. Canonical Trace &amp; Pacing| M8
-    M8 -.->|7. Scaffolding Decision| M9
-    M9 -.->|8. Closed-Loop HUD Guidance| M1
+    M6 ==>|2. WebGL Frame Presentation| M1
+    M4 -.->|3. Invariant Telemetry Stream| M7
+    M9 -.->|4. Closed-Loop HUD Guidance| M1
 
-    %% Styling
-    classDef col1Style fill:#f8fafc,stroke:#94a3b8,stroke-width:1.5px;
-    classDef col2Style fill:#f0f9ff,stroke:#38bdf8,stroke-width:1.5px;
-    classDef col3Style fill:#ecfdf5,stroke:#34d399,stroke-width:1.5px;
-    
-    classDef mod1Style fill:#ffffff,stroke:#cbd5e1,stroke-width:1.2px;
-    classDef mod2Style fill:#ffffff,stroke:#bae6fd,stroke-width:1.2px;
-    classDef mod3Style fill:#ffffff,stroke:#a7f3d0,stroke-width:1.2px;
-    classDef hudStyle fill:#ffffff,stroke:#fcd34d,stroke-width:1.2px;
+    %% ========================================================================
+    %% RESTRAINED SCIENTIFIC STYLING (MATCHING REFERENCE A)
+    %% ========================================================================
+    classDef clientCol fill:#f8fafc,stroke:#64748b,stroke-width:1.5px;
+    classDef engineCol fill:#f0f9ff,stroke:#0284c7,stroke-width:1.5px;
+    classDef egeaCol fill:#ecfdf5,stroke:#059669,stroke-width:1.5px;
 
-    class COL1 col1Style;
-    class COL2 col2Style;
-    class COL3 col3Style;
+    classDef card1 fill:#ffffff,stroke:#94a3b8,stroke-width:1.2px;
+    classDef card2 fill:#ffffff,stroke:#38bdf8,stroke-width:1.2px;
+    classDef card3 fill:#ffffff,stroke:#34d399,stroke-width:1.2px;
 
-    class M1,M2,M3 mod1Style;
-    class M4,M5,M6 mod2Style;
-    class M7,M8 mod3Style;
-    class M9 hudStyle;
+    class P1 clientCol;
+    class P2 engineCol;
+    class P3 egeaCol;
+
+    class M1,M2,M3 card1;
+    class M4,M5,M6 card2;
+    class M7,M8,M9 card3;
