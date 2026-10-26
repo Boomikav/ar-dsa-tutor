@@ -258,16 +258,29 @@ export const ARSessionScreen: React.FC = () => {
     async function init() {
       if (!canvasRef.current) return;
 
-      await services.arService.initializeSession(canvasRef.current, overlayRef.current);
-      if (!isMounted) return;
-
-      // Subscribe to state machine
+      // Subscribe to state machine before initialization
       const unsubscribe = services.arService.onStateChange(state => {
         if (isMounted) setSessionState(state);
       });
 
-      // Initial 3D BST render
-      update3DVisualization(practiceSession);
+      await services.arService.initializeSession(canvasRef.current, overlayRef.current);
+      if (!isMounted) return;
+
+      // Ensure immediate sync of current session state
+      setSessionState(services.arService.sessionState);
+
+      // Initial 3D visualizer render for active topic
+      if (activeAlgorithmId === 'ds-binary-search-tree') {
+        update3DVisualization(practiceSession);
+      } else if (activeAlgorithmId === 'algo-bubble-sort') {
+        services.arService.renderBubbleSort?.(bubbleSortState);
+      } else if (activeAlgorithmId === 'algo-binary-search') {
+        services.arService.renderBinarySearch?.(binarySearchState);
+      } else if (activeAlgorithmId === 'algo-breadth-first-search') {
+        services.arService.renderBFS?.(bfsState);
+      } else if (activeAlgorithmId === 'ds-stack') {
+        services.arService.renderStack?.(stackState);
+      }
 
       return () => {
         unsubscribe();
@@ -354,6 +367,14 @@ export const ARSessionScreen: React.FC = () => {
     setActiveAlgorithmId(canonicalId);
     setShowAlgorithmSelector(false);
     services.arService.setActiveAlgorithm?.(canonicalId);
+
+    // Cleanly reset EGEA telemetry to prevent cross-algorithm history leakage
+    const egeaAlgoId = resolveEgeaAlgorithmId(canonicalId);
+    egeaAdapterRef.current = new EGEAEventAdapter(`session-${Date.now()}`, egeaAlgoId, {
+      debounceIntervalMs: 250,
+      suppressDuplicateEvents: false
+    });
+    setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
 
     if (canonicalId === 'ds-binary-search-tree') {
       update3DVisualization(practiceSession);
@@ -976,6 +997,11 @@ export const ARSessionScreen: React.FC = () => {
   // Reset Session (Resets Placement Anchor & Active Algorithm)
   const handleResetSession = () => {
     services.arService.resetAnchor();
+
+    // Reset EGEA adapter for clean demonstration replay
+    const egeaAlgoId = resolveEgeaAlgorithmId(activeAlgorithmId);
+    egeaAdapterRef.current?.reset(`session-${Date.now()}`, egeaAlgoId);
+    setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
 
     if (activeAlgorithmId === 'ds-binary-search-tree') {
       previousTargetsRef.current = [40];
@@ -1982,12 +2008,37 @@ export const ARSessionScreen: React.FC = () => {
           <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.08)' }} />
 
           {/* Row: Quick tips & AI Tutor trigger */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px' }}>
-            <span style={{ color: '#64748b' }}>
-              {selectedNode
-                ? `Node ${selectedNode.value} (Depth: ${selectedNode.depth})`
-                : 'Tip: Tap "Switch Algorithm" above to practice another topic.'}
-            </span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', flexWrap: 'wrap', gap: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ color: '#64748b' }}>
+                {selectedNode
+                  ? `Node ${selectedNode.value} (Depth: ${selectedNode.depth})`
+                  : 'Tip: Tap "Switch Algorithm" to change topic.'}
+              </span>
+              {egeaDecision && (
+                <button
+                  type="button"
+                  onClick={() => setShowTutorHUD(true)}
+                  style={{
+                    background: 'rgba(56, 189, 248, 0.12)',
+                    border: '1px solid rgba(56, 189, 248, 0.3)',
+                    color: '#38bdf8',
+                    borderRadius: '5px',
+                    padding: '2px 6px',
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                  title={`EGEA Decision: ${egeaDecision.interventionType}\nRationale: ${egeaDecision.rationaleCode}\nConfidence: ${Math.round(egeaDecision.confidence * 100)}%`}
+                >
+                  <span>EGEA:</span>
+                  <span style={{ color: '#f8fafc', fontWeight: 600 }}>{egeaDecision.interventionType.replace(/_/g, ' ')}</span>
+                </button>
+              )}
+            </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <button

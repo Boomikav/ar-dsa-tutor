@@ -66,12 +66,35 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | null>(null);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentScreen, setCurrentScreen] = useState<ScreenId>('home'); // Default to home for easy direct inspection, splash can be triggered anytime
+  const [currentScreen, setCurrentScreen] = useState<ScreenId>(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const screenParam = urlParams.get('screen') as ScreenId;
+        if (screenParam) return screenParam;
+      }
+    } catch {
+      // safe fallback
+    }
+    return 'home';
+  });
   const [previousScreen, setPreviousScreen] = useState<ScreenId | undefined>();
   const [activeTab, setActiveTabState] = useState<BottomNavTab>('home');
-  const [selectedTopic, setSelectedTopic] = useState<DSATopic>(() => 
-    INITIAL_DSA_TOPICS.find(t => t.id === 'ds-binary-search-tree') || INITIAL_DSA_TOPICS[5]
-  );
+  const [selectedTopic, setSelectedTopic] = useState<DSATopic>(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const topicParam = urlParams.get('topic');
+        if (topicParam) {
+          const found = INITIAL_DSA_TOPICS.find(t => t.id === topicParam);
+          if (found) return found;
+        }
+      }
+    } catch {
+      // safe fallback
+    }
+    return INITIAL_DSA_TOPICS.find(t => t.id === 'ds-binary-search-tree') || INITIAL_DSA_TOPICS[5];
+  });
   const [learnerState, setLearnerState] = useState<LearnerState>(() => {
     return {
       profile: {

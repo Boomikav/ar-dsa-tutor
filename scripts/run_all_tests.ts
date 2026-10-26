@@ -18,7 +18,8 @@ const testSuites = [
   'appExperienceVerification.ts',
   'researchEvaluationVerification.ts',
   'egeaEvaluationVerification.ts',
-  'egeaHardeningPhase2Verification.ts'
+  'egeaHardeningPhase2Verification.ts',
+  'egeaRuntimeWiringIntegration.ts'
 ];
 
 let totalPassed = 0;

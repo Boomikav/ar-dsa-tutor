@@ -141,7 +141,7 @@ export class WebXRARService implements IARService {
       return;
     }
 
-    const previousState = this._state;
+    const _previousState = this._state;
     this._state = newState;
     const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
 
@@ -316,10 +316,12 @@ export class WebXRARService implements IARService {
       window.addEventListener('resize', this.onWindowResize);
     }
 
-    // Start render loop
-    this.renderer.setAnimationLoop((time, frame) => {
-      this.onAnimationFrame(time, frame);
-    });
+    // Start render loop if renderer has not been disposed
+    if (this.renderer) {
+      this.renderer.setAnimationLoop((time, frame) => {
+        this.onAnimationFrame(time, frame);
+      });
+    }
 
     return true;
   }

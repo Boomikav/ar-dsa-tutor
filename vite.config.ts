@@ -7,7 +7,10 @@ export default defineConfig({
   plugins: [react(), aiBackendVitePlugin()],
   server: {
     host: '0.0.0.0',
-    port: 5173
+    port: 5173,
+    watch: {
+      ignored: ['**/submission/**', '**/*.tmp', '**/research-results/**']
+    }
   }
 })
 
