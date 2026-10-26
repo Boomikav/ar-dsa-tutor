@@ -1,231 +1,214 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 310" width="720" height="310" style="background:#ffffff; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 710 300" width="710" height="300" style="background:#ffffff; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <defs>
     <!-- Arrowhead markers -->
-    <marker id="arrow-solid" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0f172a" />
+    <marker id="arr-dark" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1e293b" />
     </marker>
-    <marker id="arrow-telemetry" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
       <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0284c7" />
     </marker>
-    <marker id="arrow-feedback" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#059669" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
       <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d97706" />
     </marker>
-    <filter id="card-shadow" x="-3%" y="-4%" width="106%" height="110%" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="1.2" stdDeviation="1.2" flood-color="#0f172a" flood-opacity="0.05"/>
+    <marker id="arr-dash" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b" />
+    </marker>
+
+    <!-- Card shadow for subtle depth -->
+    <filter id="shadow" x="-3%" y="-4%" width="106%" height="110%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="1.2" stdDeviation="1" flood-color="#0f172a" flood-opacity="0.06"/>
     </filter>
   </defs>
 
   <!-- ====================================================================== -->
-  <!-- TOP HEADER BANNER (y: 6 to 34) -->
+  <!-- ROW 1: CLIENT SESSION & DETERMINISTIC ALGORITHM ENGINES (y = 20, h = 64) -->
   <!-- ====================================================================== -->
-  <rect x="8" y="5" width="704" height="30" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.1" />
-  <text x="360" y="18" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a" letter-spacing="0.3">AR-DSA TUTOR: FULL SYSTEM ARCHITECTURE &amp; DATAFLOW PIPELINE</text>
-  <text x="360" y="29.5" text-anchor="middle" font-size="8.8" font-weight="500" fill="#475569">Deterministic State Reducers • Three.js WebXR Spatial Runtime • Sub-Millisecond EGEA Adaptation Loop</text>
 
-  <!-- ====================================================================== -->
-  <!-- COLUMN 1: CLIENT & SESSION LAYER (x: 10 to 232, width = 222) -->
-  <!-- ====================================================================== -->
-  <rect x="10" y="39" width="222" height="216" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.1" />
-  <rect x="10" y="39" width="222" height="19" rx="6" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.1" />
-  <rect x="10" y="52" width="222" height="6" fill="#e2e8f0" />
-  <text x="121" y="52.5" text-anchor="middle" font-size="9.5" font-weight="800" fill="#1e293b" letter-spacing="0.3">PILLAR I: CLIENT &amp; SESSION LAYER</text>
-
-  <!-- Module 1: Learner Viewport & UI (y: 62 to 118, h = 56) -->
-  <g filter="url(#card-shadow)">
-    <rect x="16" y="61" width="210" height="58" rx="5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.1" />
-    <path d="M 16 66 A 5 5 0 0 1 21 61 L 221 61 A 5 5 0 0 1 226 66 L 226 76 L 16 76 Z" fill="#f1f5f9" />
-    <text x="23" y="72" font-size="9.5" font-weight="700" fill="#0f172a">Module 1: Learner Viewport &amp; UI</text>
-    <rect x="180" y="63" width="42" height="11" rx="2.5" fill="#e2e8f0" />
-    <text x="201" y="71.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#334155">CLIENT</text>
-    <text x="23" y="86.5" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Viewport:</tspan> Mobile WebXR canvas + spatial HUD</text>
-    <text x="23" y="97" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Interaction:</tspan> Screen touch &amp; raycast hit-testing</text>
-    <text x="23" y="107.5" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Telemetry:</tspan> Dispatches action, step key, latency</text>
+  <!-- Module 1: Learner Viewport & Input (x = 10 to 226, w = 216) -->
+  <g filter="url(#shadow)">
+    <rect x="10" y="20" width="216" height="64" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.3" />
+    <path d="M 10 25 A 5 5 0 0 1 15 20 L 221 20 A 5 5 0 0 1 226 25 L 226 34 L 10 34 Z" fill="#e2e8f0" />
+    <text x="17" y="31" font-size="9.5" font-weight="700" fill="#0f172a">Module 1: Learner Viewport &amp; Input</text>
+    <rect x="182" y="21.5" width="40" height="11" rx="2" fill="#cbd5e1" />
+    <text x="202" y="30" text-anchor="middle" font-size="7.5" font-weight="700" fill="#1e293b">CLIENT</text>
+    <text x="17" y="46" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Viewport:</tspan> Mobile WebXR canvas &amp; AR frustum</text>
+    <text x="17" y="58" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Interaction:</tspan> Touch screen &amp; 3D raycast hit-testing</text>
+    <text x="17" y="70" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Control:</tspan> 1-click zero-tear algorithm hot-swapping</text>
   </g>
 
-  <!-- Module 2: WebXR Session Core (y: 124 to 180, h = 56) -->
-  <g filter="url(#card-shadow)">
-    <rect x="16" y="123" width="210" height="58" rx="5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.1" />
-    <path d="M 16 128 A 5 5 0 0 1 21 123 L 221 123 A 5 5 0 0 1 226 128 L 226 138 L 16 138 Z" fill="#f1f5f9" />
-    <text x="23" y="134" font-size="9.5" font-weight="700" fill="#0f172a">Module 2: WebXR Session Core</text>
-    <rect x="174" y="125" width="48" height="11" rx="2.5" fill="#e2e8f0" />
-    <text x="198" y="133.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#334155">SESSION</text>
-    <text x="23" y="148.5" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Lifecycle:</tspan> Single persistent XRSession across topics</text>
-    <text x="23" y="159" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Hot-Swapping:</tspan> Retains WebGL &amp; GPU resources</text>
-    <text x="23" y="169.5" font-size="8.0" font-style="italic" fill="#64748b">• Boundary: Android ARCore unverified (simulation)</text>
+  <!-- Module 2: WebXR Session Core & 3D Fallback (x = 247 to 463, w = 216) -->
+  <g filter="url(#shadow)">
+    <rect x="247" y="20" width="216" height="64" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.3" />
+    <path d="M 247 25 A 5 5 0 0 1 252 20 L 458 20 A 5 5 0 0 1 463 25 L 463 34 L 247 34 Z" fill="#e2e8f0" />
+    <text x="254" y="31" font-size="9.5" font-weight="700" fill="#0f172a">Module 2: WebXR Session Core</text>
+    <rect x="415" y="21.5" width="44" height="11" rx="2" fill="#cbd5e1" />
+    <text x="437" y="30" text-anchor="middle" font-size="7.5" font-weight="700" fill="#1e293b">SESSION</text>
+    <text x="254" y="46" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Session:</tspan> Single persistent XRSession (retains WebGL)</text>
+    <text x="254" y="58" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Fallback:</tspan> CANVAS_3D_FALLBACK with OrbitControls</text>
+    <text x="254" y="70" font-size="8.0" fill="#64748b" font-style="italic">• (Boundary: physical Android ARCore unverified)</text>
   </g>
 
-  <!-- Module 3: Non-WebXR Fallback Engine (y: 186 to 244, h = 58) -->
-  <g filter="url(#card-shadow)">
-    <rect x="16" y="185" width="210" height="60" rx="5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.1" />
-    <path d="M 16 190 A 5 5 0 0 1 21 185 L 221 185 A 5 5 0 0 1 226 190 L 226 200 L 16 200 Z" fill="#f1f5f9" />
-    <text x="23" y="196" font-size="9.5" font-weight="700" fill="#0f172a">Module 3: Non-XR Fallback Engine</text>
-    <rect x="170" y="187" width="52" height="11" rx="2.5" fill="#e2e8f0" />
-    <text x="196" y="195.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#334155">FALLBACK</text>
-    <text x="23" y="210.5" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">CANVAS_3D_FALLBACK:</tspan> OrbitControls navigation</text>
-    <text x="23" y="221" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Alignment:</tspan> Strict upright (+Y) spatial axis</text>
-    <text x="23" y="231.5" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Parity:</tspan> Executes identical algorithms &amp; EGEA rules</text>
+  <!-- Module 3: Deterministic Engines (x = 484 to 700, w = 216) -->
+  <g filter="url(#shadow)">
+    <rect x="484" y="20" width="216" height="64" rx="5" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.3" />
+    <path d="M 484 25 A 5 5 0 0 1 489 20 L 695 20 A 5 5 0 0 1 700 25 L 700 34 L 484 34 Z" fill="#bae6fd" />
+    <text x="491" y="31" font-size="9.5" font-weight="700" fill="#0369a1">Module 3: Deterministic Engines</text>
+    <rect x="653" y="21.5" width="43" height="11" rx="2" fill="#7dd3fc" />
+    <text x="674" y="30" text-anchor="middle" font-size="7.5" font-weight="700" fill="#0c4a6e">ENGINES</text>
+    <text x="491" y="46" font-size="8.1" fill="#0c4a6e">• <tspan font-weight="600">BST:</tspan> L &lt; Node &lt; R • <tspan font-weight="600">Bubble Sort:</tspan> Inversion swaps</text>
+    <text x="491" y="58" font-size="8.1" fill="#0c4a6e">• <tspan font-weight="600">Binary Search:</tspan> [Low, Mid, High] interval halving</text>
+    <text x="491" y="70" font-size="8.1" fill="#0c4a6e">• <tspan font-weight="600">BFS:</tspan> FIFO queue dock • <tspan font-weight="600">Stack:</tspan> LIFO (depth ≤ 6)</text>
   </g>
 
   <!-- ====================================================================== -->
-  <!-- COLUMN 2: ALGORITHM CORE & 3D ENGINE (x: 249 to 471, width = 222) -->
+  <!-- ROW 2: PROCEDURAL 3D ENGINE & TELEMETRY INGESTION (y = 104, h = 64) -->
   <!-- ====================================================================== -->
-  <rect x="249" y="39" width="222" height="216" rx="6" fill="#f0f9ff" stroke="#38bdf8" stroke-width="1.1" />
-  <rect x="249" y="39" width="222" height="19" rx="6" fill="#bae6fd" stroke="#38bdf8" stroke-width="1.1" />
-  <rect x="249" y="52" width="222" height="6" fill="#bae6fd" />
-  <text x="360" y="52.5" text-anchor="middle" font-size="9.5" font-weight="800" fill="#0369a1" letter-spacing="0.3">PILLAR II: ALGORITHM CORE &amp; 3D ENGINE</text>
 
-  <!-- Module 4: Deterministic DSA Engines (y: 61 to 119) -->
-  <g filter="url(#card-shadow)">
-    <rect x="255" y="61" width="210" height="58" rx="5" fill="#ffffff" stroke="#bae6fd" stroke-width="1.1" />
-    <path d="M 255 66 A 5 5 0 0 1 260 61 L 460 61 A 5 5 0 0 1 465 66 L 465 76 L 255 76 Z" fill="#e0f2fe" />
-    <text x="262" y="72" font-size="9.5" font-weight="700" fill="#0369a1">Module 4: 5 Deterministic Engines</text>
-    <rect x="424" y="63" width="37" height="11" rx="2.5" fill="#bae6fd" />
-    <text x="442.5" y="71.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#0369a1">STATE</text>
-    <text x="262" y="86.5" font-size="8.2" fill="#334155">• <tspan font-weight="700" fill="#0f172a">BST:</tspan> Left &lt; Node &lt; Right invariant reducer</text>
-    <text x="262" y="97" font-size="8.2" fill="#334155">• <tspan font-weight="700" fill="#0f172a">Bubble Sort:</tspan> Adjacent swaps • <tspan font-weight="700" fill="#0f172a">Binary:</tspan> [low, mid, high]</text>
-    <text x="262" y="107.5" font-size="8.2" fill="#334155">• <tspan font-weight="700" fill="#0f172a">BFS:</tspan> FIFO queue • <tspan font-weight="700" fill="#0f172a">Stack:</tspan> LIFO (depth limit 6)</text>
+  <!-- Module 6: EGEA Event Adapter (x = 10 to 226, w = 216) -->
+  <g filter="url(#shadow)">
+    <rect x="10" y="104" width="216" height="64" rx="5" fill="#ecfdf5" stroke="#059669" stroke-width="1.3" />
+    <path d="M 10 109 A 5 5 0 0 1 15 104 L 221 104 A 5 5 0 0 1 226 109 L 226 118 L 10 118 Z" fill="#a7f3d0" />
+    <text x="17" y="115" font-size="9.5" font-weight="700" fill="#065f46">Module 6: EGEA Event Adapter</text>
+    <rect x="180" y="105.5" width="42" height="11" rx="2" fill="#6ee7b7" />
+    <text x="201" y="114" text-anchor="middle" font-size="7.5" font-weight="700" fill="#064e3b">ADAPTER</text>
+    <text x="17" y="130" font-size="8.3" fill="#064e3b">• <tspan font-weight="600">Sequencing:</tspan> Monotonic counter (k) &amp; timestamp</text>
+    <text x="17" y="142" font-size="8.3" fill="#064e3b">• <tspan font-weight="600">Debounce:</tspan> 250ms touch debounce &amp; event filter</text>
+    <text x="17" y="154" font-size="8.3" fill="#064e3b">• <tspan font-weight="600">canonicalizeStep:</tspan> Normalizes retry step keys</text>
   </g>
 
-  <!-- Module 5: Procedural Three.js Visualizers (y: 123 to 181) -->
-  <g filter="url(#card-shadow)">
-    <rect x="255" y="123" width="210" height="58" rx="5" fill="#ffffff" stroke="#bae6fd" stroke-width="1.1" />
-    <path d="M 255 128 A 5 5 0 0 1 260 123 L 460 123 A 5 5 0 0 1 465 128 L 465 138 L 255 138 Z" fill="#e0f2fe" />
-    <text x="262" y="134" font-size="9.5" font-weight="700" fill="#0369a1">Module 5: Procedural 3D Visualizers</text>
-    <rect x="418" y="125" width="43" height="11" rx="2.5" fill="#bae6fd" />
-    <text x="439.5" y="133.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#0369a1">THREE.JS</text>
-    <text x="262" y="148.5" font-size="8.2" fill="#334155">• <tspan font-weight="600" fill="#0f172a">BST:</tspan> Spherical nodes &amp; directed link cylinders</text>
-    <text x="262" y="159" font-size="8.2" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Bubble Sort:</tspan> Scaled cylinder bars &amp; swap cues</text>
-    <text x="262" y="169.5" font-size="8.2" fill="#334155">• <tspan font-weight="600" fill="#0f172a">BFS:</tspan> Graph dock • <tspan font-weight="600" fill="#0f172a">Stack:</tspan> Chamber &amp; slab meshes</text>
+  <!-- Module 5: Scene Assembler & GPU Sync (x = 247 to 463, w = 216) -->
+  <g filter="url(#shadow)">
+    <rect x="247" y="104" width="216" height="64" rx="5" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.3" />
+    <path d="M 247 109 A 5 5 0 0 1 252 104 L 458 104 A 5 5 0 0 1 463 109 L 463 118 L 247 118 Z" fill="#bae6fd" />
+    <text x="254" y="115" font-size="9.5" font-weight="700" fill="#0369a1">Module 5: Scene Assembler &amp; Sync</text>
+    <rect x="414" y="105.5" width="45" height="11" rx="2" fill="#7dd3fc" />
+    <text x="436" y="114" text-anchor="middle" font-size="7.5" font-weight="700" fill="#0c4a6e">RENDER</text>
+    <text x="254" y="130" font-size="8.3" fill="#0c4a6e">• <tspan font-weight="600">Mapping:</tspan> Pure-render Three.js scene graph binding</text>
+    <text x="254" y="142" font-size="8.3" fill="#0c4a6e">• <tspan font-weight="600">Motion:</tspan> Parametric step interpolation &amp; tweens</text>
+    <text x="254" y="154" font-size="8.3" fill="#0c4a6e">• <tspan font-weight="600">Buffer:</tspan> Synchronous WebGL 60 FPS presentation</text>
   </g>
 
-  <!-- Module 6: Scene Assembler & Animations (y: 185 to 245) -->
-  <g filter="url(#card-shadow)">
-    <rect x="255" y="185" width="210" height="60" rx="5" fill="#ffffff" stroke="#bae6fd" stroke-width="1.1" />
-    <path d="M 255 190 A 5 5 0 0 1 260 185 L 460 185 A 5 5 0 0 1 465 190 L 465 200 L 255 200 Z" fill="#e0f2fe" />
-    <text x="262" y="196" font-size="9.5" font-weight="700" fill="#0369a1">Module 6: Scene Assembler &amp; Sync</text>
-    <rect x="422" y="187" width="39" height="11" rx="2.5" fill="#bae6fd" />
-    <text x="441.5" y="195.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#0369a1">RENDER</text>
-    <text x="262" y="210.5" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Scene Graph:</tspan> Pure-render state mapping</text>
-    <text x="262" y="221" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Transitions:</tspan> Smooth swap interpolation &amp; hits</text>
-    <text x="262" y="231.5" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Disposal:</tspan> Clean GPU memory on algorithm swap</text>
+  <!-- Module 4: Procedural Three.js Visualizers (x = 484 to 700, w = 216) -->
+  <g filter="url(#shadow)">
+    <rect x="484" y="104" width="216" height="64" rx="5" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.3" />
+    <path d="M 484 109 A 5 5 0 0 1 489 104 L 695 104 A 5 5 0 0 1 700 109 L 700 118 L 484 118 Z" fill="#bae6fd" />
+    <text x="491" y="115" font-size="9.5" font-weight="700" fill="#0369a1">Module 4: Procedural Visualizers</text>
+    <rect x="648" y="105.5" width="48" height="11" rx="2" fill="#7dd3fc" />
+    <text x="672" y="114" text-anchor="middle" font-size="7.5" font-weight="700" fill="#0c4a6e">THREE.JS</text>
+    <text x="491" y="130" font-size="8.1" fill="#0c4a6e">• <tspan font-weight="600">ThreeBST:</tspan> Dynamic node spheres &amp; link cylinders</text>
+    <text x="491" y="142" font-size="8.1" fill="#0c4a6e">• <tspan font-weight="600">ThreeBubbleSort:</tspan> Scaled bars &amp; swap height arcs</text>
+    <text x="491" y="154" font-size="8.1" fill="#0c4a6e">• <tspan font-weight="600">ThreeBFS / Stack:</tspan> 3D graph dock &amp; glass chamber</text>
   </g>
 
   <!-- ====================================================================== -->
-  <!-- COLUMN 3: EGEA ADAPTATION & HUD (x: 488 to 710, width = 222) -->
+  <!-- ROW 3: PACING MODEL, POLICY & AR HUD (y = 188, h = 64) -->
   <!-- ====================================================================== -->
-  <rect x="488" y="39" width="222" height="216" rx="6" fill="#ecfdf5" stroke="#34d399" stroke-width="1.1" />
-  <rect x="488" y="39" width="222" height="19" rx="6" fill="#a7f3d0" stroke="#34d399" stroke-width="1.1" />
-  <rect x="488" y="52" width="222" height="6" fill="#a7f3d0" />
-  <text x="599" y="52.5" text-anchor="middle" font-size="9.5" font-weight="800" fill="#047857" letter-spacing="0.3">PILLAR III: EGEA ADAPTATION &amp; HUD</text>
 
-  <!-- Module 7: Event Adapter & Pacing Model (y: 61 to 119) -->
-  <g filter="url(#card-shadow)">
-    <rect x="494" y="61" width="210" height="58" rx="5" fill="#ffffff" stroke="#a7f3d0" stroke-width="1.1" />
-    <path d="M 494 66 A 5 5 0 0 1 499 61 L 699 61 A 5 5 0 0 1 704 66 L 704 76 L 494 76 Z" fill="#d1fae5" />
-    <text x="501" y="72" font-size="9.5" font-weight="700" fill="#047857">Module 7: Event Adapter &amp; Pacing</text>
-    <rect x="660" y="63" width="40" height="11" rx="2.5" fill="#a7f3d0" />
-    <text x="680" y="71.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#047857">EGEA</text>
-    <text x="501" y="86.5" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Adapter:</tspan> Monotonic k counter, 250ms debounce</text>
-    <text x="501" y="97" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">canonicalizeStep:</tspan> Normalizes retry step keys</text>
-    <text x="501" y="107.5" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">EWMA Pacing:</tspan> S_k = α·L_k + (1-α)S_{k-1} (α=0.3)</text>
+  <!-- Module 7: EWMA Temporal Pacing Model (x = 10 to 226, w = 216) -->
+  <g filter="url(#shadow)">
+    <rect x="10" y="188" width="216" height="64" rx="5" fill="#ecfdf5" stroke="#059669" stroke-width="1.3" />
+    <path d="M 10 193 A 5 5 0 0 1 15 188 L 221 188 A 5 5 0 0 1 226 193 L 226 202 L 10 202 Z" fill="#a7f3d0" />
+    <text x="17" y="199" font-size="9.5" font-weight="700" fill="#065f46">Module 7: EWMA Pacing Model</text>
+    <rect x="183" y="189.5" width="39" height="11" rx="2" fill="#6ee7b7" />
+    <text x="202" y="198" text-anchor="middle" font-size="7.5" font-weight="700" fill="#064e3b">PACING</text>
+    <text x="17" y="214" font-size="8.3" fill="#064e3b">• <tspan font-weight="600">EWMA Formula:</tspan> S_k = α·L_k + (1-α)S_{k-1} (α = 0.3)</text>
+    <text x="17" y="226" font-size="8.3" fill="#064e3b">• <tspan font-weight="600">Timing Bands:</tspan> Rapid (&lt;1.5s) vs Deliberate (≥3.0s)</text>
+    <text x="17" y="238" font-size="8.3" fill="#064e3b">• <tspan font-weight="600">Mastery Streaks:</tspan> Fades scaffold on ≥ 3 successes</text>
   </g>
 
-  <!-- Module 8: 6-Tier Scaffolding Engine (y: 123 to 181) -->
-  <g filter="url(#card-shadow)">
-    <rect x="494" y="123" width="210" height="58" rx="5" fill="#ffffff" stroke="#a7f3d0" stroke-width="1.1" />
-    <path d="M 494 128 A 5 5 0 0 1 499 123 L 699 123 A 5 5 0 0 1 704 128 L 704 138 L 494 138 Z" fill="#d1fae5" />
-    <text x="501" y="134" font-size="9.5" font-weight="700" fill="#047857">Module 8: 6-Tier Scaffolding Engine</text>
-    <rect x="656" y="125" width="44" height="11" rx="2.5" fill="#a7f3d0" />
-    <text x="678" y="133.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#047857">POLICY</text>
-    <text x="501" y="148.5" font-size="8.0" fill="#334155">• <tspan font-weight="600" fill="#0f172a">[1] HINT</tspan> • <tspan font-weight="600" fill="#0f172a">[2] SLOWDOWN</tspan> • <tspan font-weight="600" fill="#0f172a">[3] HIGHLIGHT</tspan></text>
-    <text x="501" y="159" font-size="8.0" fill="#334155">• <tspan font-weight="600" fill="#0f172a">[4] WORKED</tspan> • <tspan font-weight="600" fill="#0f172a">[5] PREREQ</tspan> • <tspan font-weight="600" fill="#0f172a">[6] REDUCE</tspan></text>
-    <text x="501" y="169.5" font-size="8.2" fill="#047857" font-weight="700">• Latency: Pure Policy 7 μs | Pipeline 14 μs</text>
+  <!-- Module 8: Deterministic EGEA Policy Engine (x = 247 to 463, w = 216) -->
+  <g filter="url(#shadow)">
+    <rect x="247" y="188" width="216" height="64" rx="5" fill="#ecfdf5" stroke="#059669" stroke-width="1.3" />
+    <path d="M 247 193 A 5 5 0 0 1 252 188 L 458 188 A 5 5 0 0 1 463 193 L 463 202 L 247 202 Z" fill="#a7f3d0" />
+    <text x="254" y="199" font-size="9.5" font-weight="700" fill="#065f46">Module 8: EGEA Policy Engine</text>
+    <rect x="420" y="189.5" width="39" height="11" rx="2" fill="#6ee7b7" />
+    <text x="439" y="198" text-anchor="middle" font-size="7.5" font-weight="700" fill="#064e3b">POLICY</text>
+    <text x="254" y="214" font-size="8.1" fill="#064e3b">• <tspan font-weight="600">6 Scaffolds:</tspan> HINT, SLOWDOWN, HIGHLIGHT,</text>
+    <text x="254" y="226" font-size="8.1" fill="#064e3b">  WORKED_EXAMPLE, PREREQ, REDUCE_GUIDANCE</text>
+    <text x="254" y="238" font-size="8.1" fill="#064e3b">• <tspan font-weight="600">Latency:</tspan> Pure Policy 7 μs | Full Pipeline 14 μs</text>
   </g>
 
-  <!-- Module 9: Spatial AR Tutor HUD (y: 185 to 245) -->
-  <g filter="url(#card-shadow)">
-    <rect x="494" y="185" width="210" height="60" rx="5" fill="#ffffff" stroke="#fcd34d" stroke-width="1.1" />
-    <path d="M 494 190 A 5 5 0 0 1 499 185 L 699 185 A 5 5 0 0 1 704 190 L 704 200 L 494 200 Z" fill="#fef3c7" />
-    <text x="501" y="196" font-size="9.5" font-weight="700" fill="#b45309">Module 9: Spatial AR Tutor HUD</text>
-    <rect x="664" y="187" width="36" height="11" rx="2.5" fill="#fde68a" />
-    <text x="682" y="195.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#b45309">HUD</text>
-    <text x="501" y="210.5" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">ARTutorHUD:</tspan> Real-time AR viewport overlay</text>
-    <text x="501" y="221" font-size="8.3" fill="#334155">• <tspan font-weight="600" fill="#0f172a">Explainability:</tspan> Grounded code &amp; conf (0.95)</text>
-    <text x="501" y="231.5" font-size="8.0" font-style="italic" fill="#64748b">• Offline: 18 Challenge / 12 Stress Suites (100%)</text>
+  <!-- Module 9: Spatial AR Tutor HUD (x = 484 to 700, w = 216) -->
+  <g filter="url(#shadow)">
+    <rect x="484" y="188" width="216" height="64" rx="5" fill="#fffbeb" stroke="#d97706" stroke-width="1.3" />
+    <path d="M 484 193 A 5 5 0 0 1 489 188 L 695 188 A 5 5 0 0 1 700 193 L 700 202 L 484 202 Z" fill="#fde68a" />
+    <text x="491" y="199" font-size="9.5" font-weight="700" fill="#92400e">Module 9: Spatial AR Tutor HUD</text>
+    <rect x="650" y="189.5" width="46" height="11" rx="2" fill="#fcd34d" />
+    <text x="673" y="198" text-anchor="middle" font-size="7.5" font-weight="700" fill="#78350f">AR HUD</text>
+    <text x="491" y="214" font-size="8.3" fill="#78350f">• <tspan font-weight="600">Overlay:</tspan> ARTutorHUD frustum AR projection</text>
+    <text x="491" y="226" font-size="8.3" fill="#78350f">• <tspan font-weight="600">Explainability:</tspan> Grounded code &amp; conf (0.80–0.95)</text>
+    <text x="491" y="238" font-size="8.3" fill="#78350f">• <tspan font-weight="600">Scaffolds:</tspan> Directional cues &amp; reflection pauses</text>
   </g>
 
   <!-- ====================================================================== -->
-  <!-- DIRECTIONAL CONNECTING ARROWS & NUMBERED BADGES -->
+  <!-- OFFLINE VERIFICATION BLOCK (Bottom Bar: y = 265 to 295) -->
   <!-- ====================================================================== -->
-  
-  <!-- Arrow 1: Module 1 -> Module 4 (Attempted Action) -->
-  <path d="M 226 80 L 252 80" fill="none" stroke="#0f172a" stroke-width="2.2" marker-end="url(#arrow-solid)" />
-  <circle cx="239" cy="80" r="6" fill="#0f172a" />
-  <text x="239" y="83" text-anchor="middle" font-size="6.8" font-weight="800" fill="#ffffff">1</text>
-
-  <!-- Arrow 2: Module 4 -> Module 5 (State to Visualizer) -->
-  <path d="M 360 119 L 360 123" fill="none" stroke="#0f172a" stroke-width="2" marker-end="url(#arrow-solid)" />
-  <circle cx="360" cy="121" r="5.5" fill="#0f172a" />
-  <text x="360" y="123.5" text-anchor="middle" font-size="6.5" font-weight="800" fill="#ffffff">2</text>
-
-  <!-- Arrow 3: Module 5 -> Module 6 (Meshes to Assembler) -->
-  <path d="M 360 181 L 360 185" fill="none" stroke="#0f172a" stroke-width="2" marker-end="url(#arrow-solid)" />
-  <circle cx="360" cy="183" r="5.5" fill="#0f172a" />
-  <text x="360" y="185.5" text-anchor="middle" font-size="6.5" font-weight="800" fill="#ffffff">3</text>
-
-  <!-- Arrow 4: Module 6 -> Module 1 (WebGL Render presentation flow) -->
-  <path d="M 255 215 L 229 215" fill="none" stroke="#0f172a" stroke-width="2" marker-end="url(#arrow-solid)" />
-  <circle cx="242" cy="215" r="6" fill="#0f172a" />
-  <text x="242" y="218" text-anchor="middle" font-size="6.8" font-weight="800" fill="#ffffff">4</text>
-
-  <!-- Arrow 5: Module 4 -> Module 7 (Invariant Telemetry Stream) -->
-  <path d="M 465 80 L 491 80" fill="none" stroke="#0284c7" stroke-width="2" stroke-dasharray="3.5 2.5" marker-end="url(#arrow-telemetry)" />
-  <circle cx="478" cy="80" r="6" fill="#0284c7" />
-  <text x="478" y="83" text-anchor="middle" font-size="6.8" font-weight="800" fill="#ffffff">5</text>
-
-  <!-- Arrow 6: Module 7 -> Module 8 (Trace & Pacing to Policy) -->
-  <path d="M 599 119 L 599 123" fill="none" stroke="#0284c7" stroke-width="2" stroke-dasharray="3.5 2.5" marker-end="url(#arrow-telemetry)" />
-  <circle cx="599" cy="121" r="5.5" fill="#0284c7" />
-  <text x="599" y="123.5" text-anchor="middle" font-size="6.5" font-weight="800" fill="#ffffff">6</text>
-
-  <!-- Arrow 7: Module 8 -> Module 9 (Policy Decision to HUD) -->
-  <path d="M 599 181 L 599 185" fill="none" stroke="#0284c7" stroke-width="2" stroke-dasharray="3.5 2.5" marker-end="url(#arrow-telemetry)" />
-  <circle cx="599" cy="183" r="5.5" fill="#0284c7" />
-  <text x="599" y="185.5" text-anchor="middle" font-size="6.5" font-weight="800" fill="#ffffff">7</text>
-
-  <!-- Arrow 8: Closed-Loop HUD Guidance Feedback from Module 9 to Module 1 -->
-  <path d="M 494 238 L 476 238 L 476 250 L 238 250 L 238 238 L 229 238" fill="none" stroke="#d97706" stroke-width="1.8" stroke-dasharray="4 2.5" marker-end="url(#arrow-feedback)" />
-  <circle cx="357" cy="250" r="6" fill="#d97706" />
-  <text x="357" y="253" text-anchor="middle" font-size="6.8" font-weight="800" fill="#ffffff">8</text>
+  <g filter="url(#shadow)">
+    <rect x="10" y="265" width="690" height="28" rx="4" fill="#fafafa" stroke="#94a3b8" stroke-width="1.1" stroke-dasharray="4 3" />
+    <text x="18" y="277" font-size="8.2" font-weight="700" fill="#475569">OFFLINE HARNESS (OUT-OF-LOOP VALIDATION):</text>
+    <text x="240" y="277" font-size="8.0" fill="#334155">18 Automated Test Suites (1,437 Assertions Passed) • Full Algorithmic Parity Verification</text>
+    <text x="18" y="289" font-size="8.0" fill="#334155">18-Case Challenge Suite &amp; 12-Case Boundary Suite (100% Policy Spec Conformance) • Scikit-Learn Recomputation (Macro-F1 = 1.000)</text>
+  </g>
 
   <!-- ====================================================================== -->
-  <!-- NUMBERED FLOW SUMMARY BAR (y: 260 to 287) -->
+  <!-- DATAFLOW CONNECTORS & LABELS -->
   <!-- ====================================================================== -->
-  <rect x="10" y="259" width="700" height="28" rx="4" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.0" />
-  
-  <text x="18" y="270" font-size="7.8" font-weight="700" fill="#0f172a"><tspan fill="#0f172a" font-weight="800">[1]</tspan> User Action (Touch/Raycast)</text>
-  <text x="18" y="280.5" font-size="7.8" font-weight="700" fill="#0f172a"><tspan fill="#0f172a" font-weight="800">[2]</tspan> State Reducer to Visualizer</text>
 
-  <text x="185" y="270" font-size="7.8" font-weight="700" fill="#0f172a"><tspan fill="#0f172a" font-weight="800">[3]</tspan> 3D Meshes to Scene Graph</text>
-  <text x="185" y="280.5" font-size="7.8" font-weight="700" fill="#0f172a"><tspan fill="#0f172a" font-weight="800">[4]</tspan> WebGL Render Presentation</text>
+  <!-- Perimeter Loop Path (Drawn FIRST so labels mask it cleanly) -->
+  <path d="M 700 220 L 706 220 L 706 8 L 4 8 L 4 52 L 10 52" stroke="#d97706" stroke-width="1.4" marker-end="url(#arr-amber)" fill="none" />
+  <rect x="210" y="2.5" width="290" height="11.5" rx="2.5" fill="#ffffff" stroke="#fcd34d" stroke-width="0.8" />
+  <text x="355" y="10.5" text-anchor="middle" font-size="6.8" font-weight="700" fill="#92400e">Closed-Loop Spatial AR HUD Guidance Feedback</text>
 
-  <text x="360" y="270" font-size="7.8" font-weight="700" fill="#0284c7"><tspan fill="#0284c7" font-weight="800">[5]</tspan> Invariant Telemetry Stream</text>
-  <text x="360" y="280.5" font-size="7.8" font-weight="700" fill="#0284c7"><tspan fill="#0284c7" font-weight="800">[6]</tspan> Canonical Trace &amp; Pacing State</text>
+  <!-- Row 1: M1 -> M2 -->
+  <path d="M 226 52 L 247 52" stroke="#1e293b" stroke-width="1.3" marker-end="url(#arr-dark)" />
+  <rect x="229" y="44.5" width="15" height="7.5" fill="#ffffff" />
+  <text x="236.5" y="50.5" text-anchor="middle" font-size="6.5" font-weight="600" fill="#475569">Config</text>
 
-  <text x="525" y="270" font-size="7.8" font-weight="700" fill="#0284c7"><tspan fill="#0284c7" font-weight="800">[7]</tspan> Scaffolding Decision to HUD</text>
-  <text x="525" y="280.5" font-size="7.8" font-weight="700" fill="#d97706"><tspan fill="#d97706" font-weight="800">[8]</tspan> Closed-Loop Spatial HUD Feedback</text>
+  <!-- Row 1: M2 -> M3 -->
+  <path d="M 463 52 L 484 52" stroke="#1e293b" stroke-width="1.3" marker-end="url(#arr-dark)" />
+  <rect x="466" y="44.5" width="15" height="7.5" fill="#ffffff" />
+  <text x="473.5" y="50.5" text-anchor="middle" font-size="6.5" font-weight="600" fill="#475569">Action</text>
 
-  <!-- ====================================================================== -->
-  <!-- BOTTOM LEGEND (y: 290 to 306) -->
-  <!-- ====================================================================== -->
-  <rect x="10" y="290" width="700" height="16" rx="3" fill="#ffffff" stroke="#e2e8f0" stroke-width="0.8" />
-  
-  <line x1="20" y1="298" x2="38" y2="298" stroke="#0f172a" stroke-width="2.2" />
-  <text x="43" y="301" font-size="7.8" font-weight="600" fill="#1e293b">Solid Line: Authoritative Execution &amp; Rendering Flow</text>
+  <!-- Vertical: M3 -> M4 -->
+  <path d="M 592 84 L 592 104" stroke="#0284c7" stroke-width="1.4" marker-end="url(#arr-blue)" />
+  <rect x="555" y="89.5" width="74" height="9" rx="2" fill="#ffffff" stroke="#bae6fd" stroke-width="0.8" />
+  <text x="592" y="96" text-anchor="middle" font-size="6.8" font-weight="700" fill="#0369a1">Invariant State Delta</text>
 
-  <line x1="260" y1="298" x2="278" y2="298" stroke="#0284c7" stroke-width="1.8" stroke-dasharray="3.5 2" />
-  <text x="283" y="301" font-size="7.8" font-weight="600" fill="#0284c7">Blue Dashed: Invariant Telemetry &amp; Adaptation Pipeline</text>
+  <!-- Row 2: M4 -> M5 (Leftwards in Row 2) -->
+  <path d="M 484 136 L 463 136" stroke="#0284c7" stroke-width="1.3" marker-end="url(#arr-blue)" />
+  <rect x="466" y="128.5" width="15" height="7.5" fill="#ffffff" />
+  <text x="473.5" y="134.5" text-anchor="middle" font-size="6.5" font-weight="600" fill="#0369a1">Meshes</text>
 
-  <line x1="510" y1="298" x2="528" y2="298" stroke="#d97706" stroke-width="1.8" stroke-dasharray="3.5 2" />
-  <text x="533" y="301" font-size="7.8" font-weight="600" fill="#d97706">Amber Dashed: Closed-Loop HUD Guidance</text>
+  <!-- Row 2: M5 -> M1 (Frame presentation back to learner viewport) -->
+  <path d="M 247 124 L 235 124 L 235 68 L 226 68" stroke="#0284c7" stroke-width="1.3" stroke-dasharray="3 2" marker-end="url(#arr-blue)" fill="none" />
+  <rect x="228" y="91" width="14" height="15" fill="#ffffff" />
+  <text x="235" y="98" text-anchor="middle" font-size="6.2" font-weight="600" fill="#0369a1">WebGL</text>
+  <text x="235" y="105" text-anchor="middle" font-size="6.2" font-weight="600" fill="#0369a1">Frame</text>
+
+  <!-- Vertical: M1 -> M6 (Telemetry Stream) -->
+  <path d="M 118 84 L 118 104" stroke="#059669" stroke-width="1.3" marker-end="url(#arr-green)" />
+  <rect x="76" y="89.5" width="84" height="9" rx="2" fill="#ffffff" stroke="#a7f3d0" stroke-width="0.8" />
+  <text x="118" y="96" text-anchor="middle" font-size="6.8" font-weight="700" fill="#065f46">Interaction Telemetry (k, Δt)</text>
+
+  <!-- Vertical: M6 -> M7 (Canonical Trace) -->
+  <path d="M 118 168 L 118 188" stroke="#059669" stroke-width="1.3" marker-end="url(#arr-green)" />
+  <rect x="74" y="173.5" width="88" height="9" rx="2" fill="#ffffff" stroke="#a7f3d0" stroke-width="0.8" />
+  <text x="118" y="180" text-anchor="middle" font-size="6.8" font-weight="700" fill="#065f46">Canonical Trace &amp; Latency</text>
+
+  <!-- Row 3: M7 -> M8 -->
+  <path d="M 226 220 L 247 220" stroke="#059669" stroke-width="1.3" marker-end="url(#arr-green)" />
+  <rect x="229" y="212.5" width="15" height="7.5" fill="#ffffff" />
+  <text x="236.5" y="218.5" text-anchor="middle" font-size="6.5" font-weight="600" fill="#065f46">Pacing</text>
+
+  <!-- Row 3: M8 -> M9 -->
+  <path d="M 463 220 L 484 220" stroke="#059669" stroke-width="1.3" marker-end="url(#arr-green)" />
+  <rect x="466" y="212.5" width="15" height="7.5" fill="#ffffff" />
+  <text x="473.5" y="218.5" text-anchor="middle" font-size="6.5" font-weight="600" fill="#065f46">Decision</text>
+
+  <!-- Dashed Validation Lines from Module 10 to Module 3 and Module 8 -->
+  <path d="M 640 265 L 640 84" stroke="#64748b" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#arr-dash)" fill="none" />
+  <path d="M 355 265 L 355 252" stroke="#64748b" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#arr-dash)" fill="none" />
 </svg>

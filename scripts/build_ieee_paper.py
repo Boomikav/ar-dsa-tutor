@@ -37,6 +37,12 @@ def create_paper():
 
     doc = docx.Document(template_path)
 
+    # Section 0 margins
+    doc.sections[0].top_margin = Pt(40)
+    doc.sections[0].bottom_margin = Pt(40)
+    doc.sections[0].left_margin = Pt(42)
+    doc.sections[0].right_margin = Pt(42)
+
     # Clear all paragraphs from template while preserving styles and section definitions
     p0 = doc.paragraphs[0]
     p0.text = ""
@@ -47,13 +53,13 @@ def create_paper():
         t._tbl.getparent().remove(t._tbl)
 
     # Helper function for adding paragraphs with style
-    def add_p(text, style='Body Text', space_after=1.5, align=WD_ALIGN_PARAGRAPH.JUSTIFY, bold=False, italic=False):
+    def add_p(text, style='Body Text', space_after=1.0, align=WD_ALIGN_PARAGRAPH.JUSTIFY, bold=False, italic=False):
         p = doc.add_paragraph()
         if style in doc.styles:
             p.style = doc.styles[style]
         p.alignment = align
         p.paragraph_format.space_after = Pt(space_after)
-        p.paragraph_format.line_spacing = 1.01
+        p.paragraph_format.line_spacing = 1.00
         if text:
             run = p.add_run(text)
             run.bold = bold
@@ -66,8 +72,8 @@ def create_paper():
         if 'Heading 1' in doc.styles:
             p.style = doc.styles['Heading 1']
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p.paragraph_format.space_before = Pt(4.5)
-        p.paragraph_format.space_after = Pt(1.5)
+        p.paragraph_format.space_before = Pt(3.5)
+        p.paragraph_format.space_after = Pt(1.0)
         clean_text = re.sub(r'^[IVXLCDM]+\.\s*', '', text.strip())
         run = p.add_run(clean_text.upper())
         run.bold = True
@@ -80,8 +86,8 @@ def create_paper():
         if 'Heading 2' in doc.styles:
             p.style = doc.styles['Heading 2']
         p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        p.paragraph_format.space_before = Pt(3.0)
-        p.paragraph_format.space_after = Pt(1.0)
+        p.paragraph_format.space_before = Pt(2.2)
+        p.paragraph_format.space_after = Pt(0.8)
         clean_text = re.sub(r'^[A-Z]\.\s*', '', text.strip())
         run = p.add_run(clean_text)
         run.bold = True
@@ -95,8 +101,8 @@ def create_paper():
         if 'Heading 5' in doc.styles:
             p.style = doc.styles['Heading 5']
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p.paragraph_format.space_before = Pt(4.5)
-        p.paragraph_format.space_after = Pt(1.5)
+        p.paragraph_format.space_before = Pt(3.5)
+        p.paragraph_format.space_after = Pt(1.0)
         clean_text = re.sub(r'^[IVXLCDM]+\.\s*', '', text.strip())
         run = p.add_run(clean_text)
         run.bold = False
@@ -143,10 +149,10 @@ def create_paper():
 
     # --- SECTION BREAK TO 2-COLUMN LAYOUT ---
     sec1 = doc.add_section(docx.enum.section.WD_SECTION.CONTINUOUS)
-    sec1.top_margin = Pt(45)
-    sec1.bottom_margin = Pt(48)
-    sec1.left_margin = Pt(44)
-    sec1.right_margin = Pt(44)
+    sec1.top_margin = Pt(40)
+    sec1.bottom_margin = Pt(40)
+    sec1.left_margin = Pt(42)
+    sec1.right_margin = Pt(42)
     cols = parse_xml(f'<w:cols {nsdecls("w")} w:num="2" w:space="360"/>')
     sec1._sectPr.append(cols)
 
@@ -316,49 +322,65 @@ def create_paper():
                 p.runs[0].font.bold = True
             p.alignment = WD_ALIGN_PARAGRAPH.LEFT if j < 2 else WD_ALIGN_PARAGRAPH.CENTER
 
-    add_p("", space_after=3)
-
     # --- SECTION III: SYSTEM ARCHITECTURE ---
     add_heading_1("System Architecture and Functional Design")
     add_p(
-        "AR-DSA Tutor is organized into a modular, decoupled client-side architecture that eliminates cross-thread synchronization "
-        "bottlenecks. As illustrated in Fig. 1, the system partitions responsibilities across three decoupled layers: deterministic "
-        "algorithm state machines, procedural spatial WebXR visualizers, and the EGEA adaptation pipeline."
+        "AR-DSA Tutor is organized into a modular client-side architecture that eliminates network round-trip bottlenecks. "
+        "As illustrated in Fig. 1, the system coordinates nine runtime modules arranged across three horizontal functional stages, "
+        "coupled with an out-of-loop offline verification harness."
     )
 
     # Transition to 1-column section for full-width Figure 1 (matching IEEE figure* standard)
     sec_fig1 = doc.add_section(docx.enum.section.WD_SECTION.CONTINUOUS)
-    sec_fig1.top_margin = Pt(45)
-    sec_fig1.bottom_margin = Pt(50)
-    sec_fig1.left_margin = Pt(44)
-    sec_fig1.right_margin = Pt(44)
+    sec_fig1.top_margin = Pt(40)
+    sec_fig1.bottom_margin = Pt(40)
+    sec_fig1.left_margin = Pt(42)
+    sec_fig1.right_margin = Pt(42)
     cols_fig1 = parse_xml(f'<w:cols {nsdecls("w")} w:num="1"/>')
     sec_fig1._sectPr.append(cols_fig1)
 
-    # Embed Figure 1 across both columns (width = 6.95 in)
+    # Embed Figure 1 across both columns (width = 6.85 in)
     fig1_path = os.path.abspath('submission/review_release/figures/fig1_system_architecture.png')
     if os.path.exists(fig1_path):
         p_fig1 = doc.add_paragraph()
         p_fig1.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p_fig1.paragraph_format.space_before = Pt(4)
+        p_fig1.paragraph_format.space_before = Pt(3)
         p_fig1.paragraph_format.space_after = Pt(2)
-        p_fig1.add_run().add_picture(fig1_path, width=Inches(6.95))
+        p_fig1.add_run().add_picture(fig1_path, width=Inches(6.85))
         p_cap1 = doc.add_paragraph()
         p_cap1.style = doc.styles['figure caption']
         p_cap1.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p_cap1.paragraph_format.space_after = Pt(4)
-        r_c1 = p_cap1.add_run("Architecture of AR-DSA Tutor showing the five deterministic algorithm engines, interactive Three.js visualizers, WebXR session layer, EGEA telemetry and adaptation pipeline, and closed-loop HUD feedback.")
+        p_cap1.paragraph_format.space_after = Pt(3)
+        r_c1 = p_cap1.add_run(
+            "System architecture of AR-DSA Tutor illustrating the nine runtime modules across client session management, deterministic "
+            "algorithm engines, Three.js spatial visualizers, EGEA adaptive guidance pipeline, and the out-of-loop offline verification harness."
+        )
         r_c1.font.size = Pt(7.8)
         r_c1.italic = True
 
     # Transition back to 2-column section for remaining content
     sec_cont = doc.add_section(docx.enum.section.WD_SECTION.CONTINUOUS)
-    sec_cont.top_margin = Pt(45)
-    sec_cont.bottom_margin = Pt(50)
-    sec_cont.left_margin = Pt(44)
-    sec_cont.right_margin = Pt(44)
+    sec_cont.top_margin = Pt(40)
+    sec_cont.bottom_margin = Pt(40)
+    sec_cont.left_margin = Pt(42)
+    sec_cont.right_margin = Pt(42)
     cols_cont = parse_xml(f'<w:cols {nsdecls("w")} w:num="2" w:space="360"/>')
     sec_cont._sectPr.append(cols_cont)
+
+    add_p(
+        "1) Stage I — Client Session & Deterministic Engines (Modules 1–3): The learner interacts via screen touch or 3D raycast hit-testing "
+        "(Module 1). The persistent WebXR core (Module 2) manages the XRSession lifecycle and non-XR OrbitControls fallback. Candidate operations "
+        "are dispatched to the authoritative deterministic DSA engines (Module 3), which evaluate algorithm invariants (BST, Bubble Sort, "
+        "Binary Search, BFS, Stack) and commit state transitions.\n"
+        "2) Stage II — Procedural 3D Engine & Telemetry (Modules 4–6): Procedural Three.js visualizers (Module 4) generate 3D mesh geometries "
+        "that the scene assembler (Module 5) synchronizes with the 60 FPS WebGL frame buffer. Concurrently, interaction telemetry is intercepted "
+        "by the EGEA event adapter (Module 6) for 250ms debouncing and step canonicalization.\n"
+        "3) Stage III — Pacing, Policy & HUD Guidance (Modules 7–9): The EWMA pacing model (Module 7) tracks latency S_k to isolate rapid guessing "
+        "(< 1500ms) from deliberate reflection. The deterministic EGEA policy engine (Module 8) evaluates the trace across the six-tier scaffolding "
+        "hierarchy in 7 μs. The spatial AR tutor HUD (Module 9) projects grounded guidance and rationale codes back to the learner in a closed loop.\n"
+        "4) Out-of-Loop Verification (Module 10): 18 automated test suites (1,437 assertions) and 30 benchmark cases validate state reducers and "
+        "scaffolding rules offline, ensuring zero live interaction overhead."
+    )
 
     add_heading_2("Persistent WebXR Session Lifecycle")
     add_p(
@@ -419,7 +441,7 @@ def create_paper():
         "Every learner action is intercepted by EGEAEventAdapter.ts and validated against a formal JSON schema (EGEAEventSchema.ts). "
         "Each event is assigned a strictly monotonic sequence number per session:"
     )
-    add_equation("E_k = \\langle \\text{id}_k, k, \\text{algoId}, \\text{stepId}, a_{\\text{att}}, a_{\\text{exp}}, c_k, \\text{err}_k, \\Delta t_k, S_k \\rangle", 1)
+    add_equation("E_k = ⟨id_k, k, algoId, stepId, a_att, a_exp, c_k, err_k, Δt_k, S_k⟩", 1)
     add_p(
         "where k is the sequence counter, a_att is attempted action, a_exp is expected ground truth, c_k in {0, 1} indicates correctness, "
         "err_k is error category (VALUE_COMPARISON, BOUNDARY_OVERFLOW, TRAVERSAL_DIRECTION, CAPACITY_LIMIT, or NONE), Delta t_k is action latency, "
@@ -431,7 +453,7 @@ def create_paper():
         "To distinguish impulsive trial-and-error guessing from deliberate reflection—a persistent challenge in educational technology "
         "formalized by Baker et al. as 'gaming the system' [20]—EGEAPacingModel.ts computes an exponentially smoothed latency metric over recent interaction history:"
     )
-    add_equation("T_k = \\alpha \\cdot \\Delta t_k + (1 - \\alpha) \\cdot T_{k-1}, \\quad \\alpha = 0.5", 2)
+    add_equation("T_k = α · Δt_k + (1 − α) · T_{k−1},    α = 0.5", 2)
     add_p(
         "When a learner commits an error with T_k < 1500ms, the pacing model flags RAPID_GUESSING_DETECTED. If the learner exhibits deliberate pacing "
         "(T_k >= 1500ms), the error is classified as an isolated conceptual misconception rather than impulsive guessing [15]."
@@ -509,7 +531,7 @@ def create_paper():
         cell = table_bench.cell(0, j)
         cell.text = h
         set_cell_background(cell, "0284C7")
-        set_cell_margins(cell, top=80, bottom=80, left=70, right=70)
+        set_cell_margins(cell, top=60, bottom=60, left=60, right=60)
         p = cell.paragraphs[0]
         p.runs[0].font.bold = True
         p.runs[0].font.size = Pt(7.0)
@@ -527,7 +549,7 @@ def create_paper():
         for j, val in enumerate(row):
             cell = table_bench.cell(i+1, j)
             cell.text = val
-            set_cell_margins(cell, top=55, bottom=55, left=70, right=70)
+            set_cell_margins(cell, top=45, bottom=45, left=60, right=60)
             if (i % 2) == 1:
                 set_cell_background(cell, "F1F5F9")
             p = cell.paragraphs[0]
@@ -536,20 +558,18 @@ def create_paper():
                 p.runs[0].font.bold = True
             p.alignment = WD_ALIGN_PARAGRAPH.LEFT if j == 0 else WD_ALIGN_PARAGRAPH.CENTER
 
-    add_p("", space_after=3)
-
     # Embed Figure 2 (Accuracy Comparison)
     fig3_path = os.path.abspath('submission/review_release/figures/fig3_accuracy_comparison.png')
     if os.path.exists(fig3_path):
         p_fig3 = doc.add_paragraph()
         p_fig3.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p_fig3.paragraph_format.space_before = Pt(3)
-        p_fig3.paragraph_format.space_after = Pt(2)
-        p_fig3.add_run().add_picture(fig3_path, width=Inches(3.35))
+        p_fig3.paragraph_format.space_before = Pt(1.5)
+        p_fig3.paragraph_format.space_after = Pt(1)
+        p_fig3.add_run().add_picture(fig3_path, width=Inches(2.95))
         p_cap3 = doc.add_paragraph()
         p_cap3.style = doc.styles['figure caption']
         p_cap3.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p_cap3.paragraph_format.space_after = Pt(4)
+        p_cap3.paragraph_format.space_after = Pt(1.5)
         r_c3 = p_cap3.add_run("Comparative intervention accuracy of EGEA against baseline tutoring policies across the authored challenge and boundary stress suites.")
         r_c3.font.size = Pt(7.8)
         r_c3.italic = True
@@ -569,7 +589,7 @@ def create_paper():
         cell = table_lat.cell(0, j)
         cell.text = h
         set_cell_background(cell, "0284C7")
-        set_cell_margins(cell, top=80, bottom=80, left=70, right=70)
+        set_cell_margins(cell, top=60, bottom=60, left=60, right=60)
         p = cell.paragraphs[0]
         p.runs[0].font.bold = True
         p.runs[0].font.size = Pt(7.0)
@@ -585,7 +605,7 @@ def create_paper():
         for j, val in enumerate(row):
             cell = table_lat.cell(i+1, j)
             cell.text = val
-            set_cell_margins(cell, top=55, bottom=55, left=70, right=70)
+            set_cell_margins(cell, top=45, bottom=45, left=60, right=60)
             if (i % 2) == 1:
                 set_cell_background(cell, "F1F5F9")
             p = cell.paragraphs[0]
@@ -594,27 +614,26 @@ def create_paper():
                 p.runs[0].font.bold = True
             p.alignment = WD_ALIGN_PARAGRAPH.LEFT if j == 0 else WD_ALIGN_PARAGRAPH.CENTER
 
-    add_p("", space_after=3)
-
     # Embed Figure 3 (Latency Benchmark)
     fig2_path = os.path.abspath('submission/review_release/figures/fig2_latency_benchmark.png')
     if os.path.exists(fig2_path):
         p_fig2 = doc.add_paragraph()
         p_fig2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p_fig2.paragraph_format.space_before = Pt(3)
-        p_fig2.paragraph_format.space_after = Pt(2)
-        p_fig2.add_run().add_picture(fig2_path, width=Inches(3.35))
+        p_fig2.paragraph_format.space_before = Pt(2)
+        p_fig2.paragraph_format.space_after = Pt(1)
+        p_fig2.add_run().add_picture(fig2_path, width=Inches(3.05))
         p_cap2 = doc.add_paragraph()
         p_cap2.style = doc.styles['figure caption']
         p_cap2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p_cap2.paragraph_format.space_after = Pt(4)
+        p_cap2.paragraph_format.space_after = Pt(2)
         r_c2 = p_cap2.add_run("Empirical decision latency across 1,000 iterations, demonstrating that EGEA adaptation consumes < 0.15% of the 16.6ms frame budget.")
         r_c2.font.size = Pt(7.8)
         r_c2.italic = True
 
     add_p(
-        "At a median pipeline latency of 14 μs, the entire adaptation decision is executed in less than two-tenths of one percent of the "
-        "16.67 ms frame budget. This guarantees zero frame stutter, rendering drops, or camera jitter during active mobile WebXR tracking."
+        "At a median pipeline latency of 14 μs, the entire adaptation decision is executed in less than 0.15% of the "
+        "16.67 ms frame budget. While microsecond policy evaluation confirms that adaptation logic imposes negligible computational "
+        "overhead on the host CPU, full frame-rate stability and optical tracking fluency on physical hardware remain subject to device GPU limits and thermal throttling."
     )
 
     # --- SECTION VIII: DISCUSSION & LIMITATIONS ---
@@ -686,11 +705,11 @@ def create_paper():
         if 'references' in doc.styles:
             p_ref.style = doc.styles['references']
         p_ref.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-        p_ref.paragraph_format.space_after = Pt(0.5)
-        p_ref.paragraph_format.line_spacing = 1.01
+        p_ref.paragraph_format.space_after = Pt(0.2)
+        p_ref.paragraph_format.line_spacing = 1.00
         r_ref = p_ref.add_run(clean_ref)
         r_ref.font.name = 'Times New Roman'
-        r_ref.font.size = Pt(7.8)
+        r_ref.font.size = Pt(7.4)
 
     temp_docx = os.path.abspath('submission/review_release/_tmp_paper.docx')
     temp_pdf = os.path.abspath('submission/review_release/_tmp_paper.pdf')

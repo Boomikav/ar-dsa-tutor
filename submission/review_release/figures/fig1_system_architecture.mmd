@@ -1,72 +1,75 @@
 flowchart LR
     %% ========================================================================
-    %% PILLAR I: CLIENT & SESSION LAYER
+    %% ROW 1: CLIENT SESSION & DETERMINISTIC ALGORITHM ENGINES
     %% ========================================================================
-    subgraph P1 ["<b>PILLAR I: CLIENT &amp; SESSION LAYER</b>"]
-        direction TB
-        M1["<b>Module 1: Learner Viewport &amp; UI</b><br/>• Mobile WebXR Canvas &amp; Frustum Overlay<br/>• Touch &amp; Raycast Hit-Testing Ingestion<br/>• 1-Click Zero-Tear Algorithm Hot-Swapping<br/>• Dispatches Action, Step ID, and Latency"]
+    subgraph ROW1 ["STAGE I: CLIENT SESSION & DETERMINISTIC ALGORITHM ENGINES"]
+        direction LR
+        M1["<b>Module 1: Learner Viewport & UI</b><br/>• Mobile WebXR Canvas & AR Frustum Overlay<br/>• Touch Screen & 3D Raycast Hit-Testing<br/>• 1-Click Zero-Tear Algorithm Hot-Swapping<br/>• Telemetry: Dispatches action, step, latency"]
         
-        M2["<b>Module 2: WebXR Session Core</b><br/>• Persistent Single XRSession Lifecycle<br/>• Preserves WebGLRenderer &amp; GPU Resources<br/>• Seamless Multi-Algorithm Scene Binding<br/><i>(Boundary: Physical ARCore Simulation Only)</i>"]
-
-        M3["<b>Module 3: Non-XR 3D Fallback Engine</b><br/>• CANVAS_3D_FALLBACK with OrbitControls<br/>• Multi-Touch &amp; Mouse Drag / Rotate / Pan<br/>• Enforces Upright (+Y) Spatial Gravitational Axis<br/>• Full Algorithmic &amp; EGEA Scaffolding Parity"]
+        M2["<b>Module 2: WebXR Session Core</b><br/>• Single Persistent XRSession (Retains WebGL)<br/>• Non-XR 3D Fallback with OrbitControls<br/>• Enforces Upright (+Y) Spatial Gravitational Axis<br/>• <i>(Simulation Boundary: ARCore Unverified)</i>"]
+        
+        M3["<b>Module 3: Deterministic Engines</b><br/>• <b>BST:</b> Left &lt; Node &lt; Right Invariant Reducer<br/>• <b>Bubble Sort:</b> Adjacent Inversion Step Swaps<br/>• <b>Binary Search:</b> Logarithmic Range Halving<br/>• <b>BFS:</b> Topological FIFO Queue Expansion<br/>• <b>Stack:</b> LIFO Push / Pop (Depth Limit ≤ 6)"]
 
         M1 -->|Session Config| M2
-        M2 -.->|Fallback on Non-XR| M3
+        M2 -->|User Attempt| M3
     end
 
     %% ========================================================================
-    %% PILLAR II: ALGORITHM CORE & 3D RENDERING
+    %% ROW 2: PROCEDURAL 3D ENGINE & TELEMETRY INGESTION
     %% ========================================================================
-    subgraph P2 ["<b>PILLAR II: ALGORITHM CORE &amp; 3D ENGINE</b>"]
-        direction TB
-        M4["<b>Module 4: 5 Deterministic DSA Engines</b><br/>• <b>BST:</b> Left &lt; Node &lt; Right Invariant Reducer<br/>• <b>Bubble Sort:</b> Adjacent Inversion Step Swaps<br/>• <b>Binary Search:</b> [Low, Mid, High] Range Halving<br/>• <b>BFS:</b> Topological FIFO Queue Expansion<br/>• <b>Stack:</b> LIFO Push / Pop (Max Depth 6)"]
+    subgraph ROW2 ["STAGE II: PROCEDURAL 3D ENGINE & TELEMETRY INGESTION"]
+        direction LR
+        M6["<b>Module 6: EGEA Event Adapter</b><br/>• Monotonic Sequence Counter (k) & Timestamp<br/>• 250ms Touch Debounce & Event Filtering<br/>• <b>canonicalizeStep:</b> Key Alias Normalization<br/>• Extracts Raw Action Latency (L_k)"]
 
-        M5["<b>Module 5: Procedural Three.js Visualizers</b><br/>• <b>ThreeBST:</b> Spherical Nodes &amp; Link Cylinders<br/>• <b>ThreeBubbleSort:</b> Scaled Bar Cylinders &amp; Swaps<br/>• <b>ThreeBinarySearch:</b> Indexed Block Array<br/>• <b>ThreeBFS:</b> Graph Network &amp; Floating Queue Dock<br/>• <b>ThreeStack:</b> 3D Glass Chamber &amp; Stacked Slabs"]
+        M5["<b>Module 5: Scene Assembler & Sync</b><br/>• Pure-Render Scene Graph State Mapping<br/>• Parametric Animation & Step Interpolation<br/>• Synchronous 60 FPS WebGL Frame Presentation<br/>• Zero-Tear Mesh Disposal on Algorithm Swap"]
 
-        M6["<b>Module 6: Scene Assembler &amp; Sync</b><br/>• Pure-Render Scene Graph State Mapping<br/>• Parametric Animation &amp; Step Interpolation<br/>• Direct WebGL Frame Buffer Synchronization<br/>• Instant Mesh Disposal on Topic Hot-Swap"]
+        M4["<b>Module 4: Procedural Visualizers</b><br/>• <b>ThreeBST:</b> Dynamic Spheres & Link Cylinders<br/>• <b>ThreeBubbleSort:</b> Scaled Bars & Swap Arcs<br/>• <b>ThreeBinarySearch:</b> Indexed Block Array<br/>• <b>ThreeBFS / Stack:</b> Graph Dock & Glass Chamber"]
 
-        M4 ==>|Invariant State| M5
-        M5 -->|Mesh Geometry| M6
+        M4 -->|Mesh Hierarchies| M5
     end
 
     %% ========================================================================
-    %% PILLAR III: EGEA ADAPTATION & HUD FEEDBACK
+    %% ROW 3: PACING MODEL, ADAPTATION POLICY & SPATIAL HUD
     %% ========================================================================
-    subgraph P3 ["<b>PILLAR III: EGEA ADAPTATION &amp; HUD</b>"]
-        direction TB
-        M7["<b>Module 7: Event Adapter &amp; Pacing Model</b><br/>• Monotonic Sequence Counter (k)<br/>• 250ms Touch Debounce Filtering<br/>• <b>canonicalizeStep:</b> Alias &amp; Suffix Mapping<br/>• <b>EWMA Pacing:</b> S_k = α·L_k + (1-α)S_{k-1} (α=0.3)<br/>• Rapid Guessing (&lt;1.5s) vs Deliberate (≥3.0s)"]
+    subgraph ROW3 ["STAGE III: PACING MODEL, ADAPTATION POLICY & SPATIAL HUD"]
+        direction LR
+        M7["<b>Module 7: EWMA Pacing Model</b><br/>• S_k = α·L_k + (1-α)S_{k-1} (Smoothing α = 0.3)<br/>• Rapid Guessing (&lt; 1.5s) vs Deliberate (≥ 3.0s)<br/>• Consecutive Mistake & Error Pattern History<br/>• Autonomous Mastery Streaks (≥ 3 Steps)"]
 
-        M8["<b>Module 8: EGEA Deterministic Policy Engine</b><br/>• <b>6-Tier Grounded Scaffolding Taxonomy:</b><br/>  [1] CONTEXTUAL_HINT (Directional Cue)<br/>  [2] STEPWISE_SLOWDOWN (Reflection Pause)<br/>  [3] HIGHLIGHT_ELEMENT (Salience Pulse)<br/>  [4] WORKED_EXAMPLE (Full Step Demo)<br/>  [5] PREREQUISITE_REVIEW (Concept Recall)<br/>  [6] REDUCE_GUIDANCE (Scaffold Fading)<br/>• Latency: Pure Policy 7 μs | Full Pipeline 14 μs"]
+        M8["<b>Module 8: EGEA Policy Engine</b><br/>• <b>6-Tier Grounded Scaffolding Hierarchy:</b><br/>  [1] HINT • [2] SLOWDOWN • [3] HIGHLIGHT<br/>  [4] WORKED • [5] PREREQ • [6] REDUCE<br/>• Latency: Pure Policy 7 μs | Pipeline 14 μs"]
 
-        M9["<b>Module 9: Spatial AR Tutor HUD Feedback</b><br/>• Real-Time Viewport AR Frustum Overlay<br/>• Grounded Rationale Code &amp; Confidence (0.80–0.95)<br/>• Dynamic Scaffolding Badges &amp; Cues<br/>• Closed-Loop Pedagogical Feedback to Learner"]
+        M9["<b>Module 9: Spatial AR Tutor HUD</b><br/>• Viewport AR Frustum Overlay (ARTutorHUD)<br/>• Grounded Rationale Code & Confidence (0.80–0.95)<br/>• Dynamic Visual Badges & Reflection Pauses<br/>• Closed-Loop Pedagogical Feedback to Learner"]
 
-        M7 ==>|Canonical Trace &amp; Pacing| M8
-        M8 ==>|Scaffolding Decision| M9
+        M7 -->|Pacing & History| M8
+        M8 -->|Decision & Rationale| M9
     end
 
     %% ========================================================================
-    %% INTER-MODULE CROSS-COLUMN DATAFLOWS
+    %% OFFLINE BENCHMARK BLOCK
     %% ========================================================================
-    M1 ==>|1. User Attempted Action| M4
-    M6 ==>|2. WebGL Frame Presentation| M1
-    M4 -.->|3. Invariant Telemetry Stream| M7
-    M9 -.->|4. Closed-Loop HUD Guidance| M1
+    subgraph OFFLINE ["OFFLINE VERIFICATION & BENCHMARK HARNESS (NOT IN LIVE LOOP)"]
+        direction LR
+        M10["<b>Module 10: Automated Verification & Metric Harness</b><br/>• 18 Automated Test Suites (1,437 Assertions Passed)<br/>• 18-Case Challenge Suite & 12-Case Boundary Suite (100% Spec Conformance)<br/>• Independent Scikit-Learn Metric Validation (Macro-F1 = 1.000)"]
+    end
 
-    %% ========================================================================
-    %% RESTRAINED SCIENTIFIC STYLING (MATCHING REFERENCE A)
-    %% ========================================================================
-    classDef clientCol fill:#f8fafc,stroke:#64748b,stroke-width:1.5px;
-    classDef engineCol fill:#f0f9ff,stroke:#0284c7,stroke-width:1.5px;
-    classDef egeaCol fill:#ecfdf5,stroke:#059669,stroke-width:1.5px;
+    %% Inter-row Dataflow Connections
+    M3 -->|Invariant State Delta| M4
+    M5 -.->|Synchronized WebGL Frame Presentation| M1
+    M1 -.->|Interaction Telemetry (k, Δt)| M6
+    M6 -->|Canonical Trace & Latency| M7
+    M9 -.->|Closed-Loop HUD Guidance Feedback| M1
+    M10 -.->|Validates State Transitions| M3
+    M10 -.->|Validates Policy Decision Rules| M8
 
-    classDef card1 fill:#ffffff,stroke:#94a3b8,stroke-width:1.2px;
-    classDef card2 fill:#ffffff,stroke:#38bdf8,stroke-width:1.2px;
-    classDef card3 fill:#ffffff,stroke:#34d399,stroke-width:1.2px;
+    classDef stageStyle fill:#ffffff,stroke:#cbd5e1,stroke-width:1px,color:#475569;
+    classDef offlineStyle fill:#fafafa,stroke:#94a3b8,stroke-width:1.2px,stroke-dasharray:4 4,color:#475569;
+    classDef card1 fill:#f8fafc,stroke:#64748b,stroke-width:1.3px,color:#0f172a;
+    classDef card2 fill:#f0f9ff,stroke:#0284c7,stroke-width:1.3px,color:#0f172a;
+    classDef card3 fill:#ecfdf5,stroke:#059669,stroke-width:1.3px,color:#0f172a;
+    classDef card4 fill:#fffbeb,stroke:#d97706,stroke-width:1.3px,color:#0f172a;
 
-    class P1 clientCol;
-    class P2 engineCol;
-    class P3 egeaCol;
-
-    class M1,M2,M3 card1;
-    class M4,M5,M6 card2;
-    class M7,M8,M9 card3;
+    class ROW1,ROW2,ROW3 stageStyle;
+    class OFFLINE offlineStyle;
+    class M1,M2 card1;
+    class M3,M4,M5 card2;
+    class M6,M7,M8 card3;
+    class M9 card4;
