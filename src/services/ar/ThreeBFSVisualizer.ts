@@ -15,15 +15,23 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
   private readonly disposables: Array<{ dispose: () => void }> = [];
   public readonly vertexMeshes: THREE.Mesh[] = [];
 
-  // Deterministic 3D spatial layout for vertices (balanced, zero-overlap)
-  // Dimensions stay within 45cm x 35cm
-  private static readonly VERTEX_COORDINATES: Record<string, { x: number; y: number; z: number }> = {
-    A: { x: 0.0, y: 0.22, z: 0.0 },
-    B: { x: -0.16, y: 0.12, z: 0.0 },
-    C: { x: 0.16, y: 0.12, z: 0.0 },
-    D: { x: -0.22, y: 0.02, z: 0.0 },
-    E: { x: -0.04, y: 0.02, z: 0.0 },
-    F: { x: 0.18, y: 0.02, z: 0.0 }
+  /**
+   * Deterministic 3D spatial layout for breadth-first search graph traversal.
+   * Hierarchical level-by-level layout:
+   * Level 0: Vertex A (top apex, root)
+   * Level 1: Vertices B, C (first frontier level)
+   * Level 2: Vertices D, E, F (second frontier level with cross edge E-F)
+   *
+   * Form-factor: 37cm width x 33cm height x 10cm depth (aspect ~1.12),
+   * providing optimal visual occupancy on both portrait mobile and landscape desktop.
+   */
+  public static readonly VERTEX_COORDINATES: Record<string, { x: number; y: number; z: number }> = {
+    A: { x: 0.00, y: 0.26, z: -0.03 },
+    B: { x: -0.13, y: 0.15, z: 0.02 },
+    C: { x: 0.13, y: 0.15, z: 0.02 },
+    D: { x: -0.16, y: 0.03, z: -0.03 },
+    E: { x: -0.03, y: 0.02, z: 0.04 },
+    F: { x: 0.15, y: 0.03, z: 0.01 }
   };
 
   constructor() {
@@ -44,9 +52,9 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
     const queue = state.queue || [];
     const visited = state.visited || [];
     const traversalOrder = state.traversalOrder || [];
-    const nodeRadius = 0.038; // 3.8cm radius
+    const nodeRadius = 0.034; // 3.4cm radius (6.8cm diameter, robust medium scale)
 
-    // 1. Render Edges first so nodes sit in front
+    // 1. Render Edges first so spheres sit in front
     const renderedEdges = new Set<string>();
     const adj = state.adjacencyList || {};
 
@@ -66,7 +74,7 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
       }
     }
 
-    // 2. Render Vertices
+    // 2. Render Vertices with prominent 3D sphere geometries and state materials
     for (const v of vertices) {
       const pos = ThreeBFSVisualizer.VERTEX_COORDINATES[v] || { x: 0, y: 0, z: 0 };
       const isCurrent = current === v;
@@ -74,37 +82,37 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
       const isProcessed = traversalOrder.includes(v);
       const isDiscovered = visited.includes(v);
 
-      const geometry = new THREE.SphereGeometry(nodeRadius, 24, 24);
+      const geometry = new THREE.SphereGeometry(nodeRadius, 28, 28);
       this.disposables.push(geometry);
 
       let baseColor = 0x1e293b;
-      let emissiveColor = 0x475569;
-      let emissiveIntensity = 0.2;
+      let emissiveColor = 0x334155;
+      let emissiveIntensity = 0.25;
 
       if (isCurrent) {
         baseColor = 0x78350f;
         emissiveColor = 0xf59e0b;
-        emissiveIntensity = 0.9;
+        emissiveIntensity = 0.95;
       } else if (isProcessed) {
         baseColor = 0x064e3b;
         emissiveColor = 0x10b981;
-        emissiveIntensity = 0.6;
+        emissiveIntensity = 0.70;
       } else if (isInQueue) {
-        baseColor = 0x0369a1;
+        baseColor = 0x075985;
         emissiveColor = 0x38bdf8;
-        emissiveIntensity = 0.7;
+        emissiveIntensity = 0.85;
       } else if (isDiscovered) {
         baseColor = 0x0f766e;
         emissiveColor = 0x14b8a6;
-        emissiveIntensity = 0.4;
+        emissiveIntensity = 0.45;
       }
 
       const material = new THREE.MeshStandardMaterial({
         color: baseColor,
         emissive: emissiveColor,
         emissiveIntensity,
-        roughness: 0.2,
-        metalness: 0.7
+        roughness: 0.25,
+        metalness: 0.65
       });
       this.disposables.push(material);
 
@@ -115,19 +123,19 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
       this.vertexMeshes.push(sphere);
       this.visualGroup.add(sphere);
 
-      // Label sprite
+      // Label sprite positioned at front face of node
       const labelSprite = this.createTextBillboard(v, isCurrent, isProcessed, isInQueue);
       labelSprite.position.set(pos.x, pos.y, pos.z + nodeRadius + 0.005);
       this.visualGroup.add(labelSprite);
 
-      // Badge indicator above node (e.g. "CURRENT", "QUEUE[0]", etc.)
+      // Status badge floating above node
       if (isCurrent) {
         const currentBadge = this.createStatusBadge('CURRENT', '#f59e0b');
-        currentBadge.position.set(pos.x, pos.y + nodeRadius + 0.03, pos.z);
+        currentBadge.position.set(pos.x, pos.y + nodeRadius + 0.028, pos.z);
         this.visualGroup.add(currentBadge);
       } else if (queue.length > 0 && queue[0] === v) {
         const nextBadge = this.createStatusBadge('FRONT', '#38bdf8');
-        nextBadge.position.set(pos.x, pos.y + nodeRadius + 0.03, pos.z);
+        nextBadge.position.set(pos.x, pos.y + nodeRadius + 0.028, pos.z);
         this.visualGroup.add(nextBadge);
       }
     }
@@ -144,15 +152,17 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
     const direction = new THREE.Vector3().subVectors(vB, vA).normalize();
     const midPoint = new THREE.Vector3().addVectors(vA, vB).multiplyScalar(0.5);
 
-    const radius = isTraversed ? 0.005 : 0.003;
-    const geometry = new THREE.CylinderGeometry(radius, radius, distance, 12);
+    // Prominent 3D cylinders (8mm - 12mm diameter) for solid visibility
+    const radius = isTraversed ? 0.006 : 0.004;
+    const geometry = new THREE.CylinderGeometry(radius, radius, distance, 14);
     this.disposables.push(geometry);
 
     const material = new THREE.MeshStandardMaterial({
-      color: isTraversed ? 0x10b981 : 0x475569,
+      color: isTraversed ? 0x10b981 : 0x64748b,
       emissive: isTraversed ? 0x10b981 : 0x334155,
-      emissiveIntensity: isTraversed ? 0.6 : 0.2,
-      roughness: 0.4
+      emissiveIntensity: isTraversed ? 0.65 : 0.25,
+      roughness: 0.35,
+      metalness: 0.6
     });
     this.disposables.push(material);
 
@@ -167,7 +177,7 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
   }
 
   private createTextBillboard(text: string, isCurrent: boolean, isProcessed: boolean, isInQueue: boolean): THREE.Sprite {
-    const spriteSize = 0.045;
+    const spriteSize = 0.046;
 
     if (typeof document === 'undefined') {
       const mat = new THREE.SpriteMaterial({
@@ -182,17 +192,20 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
     }
 
     const canvas = document.createElement('canvas');
-    canvas.width = 128;
-    canvas.height = 128;
+    canvas.width = 256;
+    canvas.height = 256;
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-      ctx.clearRect(0, 0, 128, 128);
-      ctx.font = 'bold 72px "Inter", -apple-system, sans-serif';
+      ctx.clearRect(0, 0, 256, 256);
+      ctx.font = 'bold 140px "Inter", -apple-system, sans-serif';
       ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(text, 64, 64);
+      // Subtle shadow for legibility against bright backgrounds
+      ctx.shadowColor = 'rgba(0,0,0,0.8)';
+      ctx.shadowBlur = 10;
+      ctx.fillText(text, 128, 128);
     }
 
     const texture = new THREE.CanvasTexture(canvas);
@@ -205,7 +218,7 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
   }
 
   private createStatusBadge(text: string, color: string): THREE.Sprite {
-    const spriteSize = 0.025;
+    const spriteSize = 0.026;
 
     if (typeof document === 'undefined') {
       const mat = new THREE.SpriteMaterial({ color: 0x38bdf8, transparent: true, depthTest: false });
@@ -216,22 +229,22 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
     }
 
     const canvas = document.createElement('canvas');
-    canvas.width = 160;
-    canvas.height = 48;
+    canvas.width = 200;
+    canvas.height = 60;
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
-      ctx.clearRect(0, 0, 160, 48);
+      ctx.clearRect(0, 0, 200, 60);
       ctx.fillStyle = color;
       ctx.beginPath();
-      ctx.roundRect(4, 4, 152, 40, 8);
+      ctx.roundRect(4, 4, 192, 52, 10);
       ctx.fill();
 
-      ctx.font = 'bold 24px "Inter", -apple-system, sans-serif';
+      ctx.font = 'bold 30px "Inter", -apple-system, sans-serif';
       ctx.fillStyle = '#0f172a';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(text, 80, 24);
+      ctx.fillText(text, 100, 30);
     }
 
     const texture = new THREE.CanvasTexture(canvas);
@@ -269,9 +282,8 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
 
   public dispose(): void {
     this.clear();
-    while (this.rootGroup.children.length > 0) {
-      const child = this.rootGroup.children[0];
-      this.rootGroup.remove(child);
+    if (this.visualGroup.parent) {
+      this.visualGroup.parent.remove(this.visualGroup);
     }
   }
 }

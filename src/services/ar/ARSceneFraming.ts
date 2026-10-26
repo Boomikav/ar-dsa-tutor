@@ -194,13 +194,13 @@ export class ARSceneFraming {
     // In both desktop landscape and mobile portrait, the top header occupies ~6% and the bottom control card occupies ~26-30% of screen height.
     // Setting paddingV (~1.50) and negative verticalOffset (-0.09 to -0.11) perfectly frames the model in the unobstructed central aperture.
     const isPortrait = aspect < 0.9;
-    const paddingV = options.paddingMultiplier ?? (isPortrait ? 1.55 : 1.50);
-    const paddingH = options.paddingMultiplier ?? (isPortrait ? 1.35 : 1.25);
+    const paddingV = options.paddingMultiplier ?? (isPortrait ? 1.50 : 1.45);
+    const paddingH = options.paddingMultiplier ?? (isPortrait ? 1.30 : 1.25);
     const minDistance = options.minDistance ?? 0.35;
     const maxDistance = options.maxDistance ?? 2.50;
-    const elevation = options.elevationAngleRad ?? 0.28;
-    const azimuth = options.azimuthAngleRad ?? 0.0;
-    const verticalOffset = options.verticalOffsetRatio ?? (isPortrait ? -0.11 : -0.09);
+    const elevation = options.elevationAngleRad ?? 0.32;
+    const azimuth = options.azimuthAngleRad ?? 0.22;
+    const verticalOffset = options.verticalOffsetRatio ?? (isPortrait ? -0.10 : -0.08);
 
     const fovRad = (fov * Math.PI) / 180;
     const halfFovV = fovRad / 2;

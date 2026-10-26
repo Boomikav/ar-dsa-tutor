@@ -146,7 +146,9 @@ export const ARSessionScreen: React.FC = () => {
 
   // Touch / Drag tracking for 3D Fallback Mode
   const isDraggingRef = useRef(false);
+  const dragStartPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const lastMousePos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const hasExceededDeadzoneRef = useRef(false);
 
   // Update 3D visualization whenever BST practice session changes
   const update3DVisualization = useCallback((session: PracticeSessionState) => {
@@ -345,16 +347,52 @@ export const ARSessionScreen: React.FC = () => {
     }
   };
 
+  const isInteractiveTarget = (el: HTMLElement | null): boolean => {
+    while (el && el !== overlayRef.current) {
+      const tag = el.tagName?.toLowerCase();
+      if (tag === 'button' || tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'a') {
+        return true;
+      }
+      if (el.getAttribute('role') === 'button' || el.getAttribute('role') === 'dialog') {
+        return true;
+      }
+      if (el.classList?.contains('btn') || el.classList?.contains('badge')) {
+        return true;
+      }
+      el = el.parentElement;
+    }
+    return false;
+  };
+
   // 3D Fallback Mouse/Touch Controls
   const handlePointerDown = (e: React.PointerEvent) => {
     if (sessionState === 'UNAVAILABLE') {
+      if (isInteractiveTarget(e.target as HTMLElement)) {
+        return;
+      }
+      try {
+        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+      } catch {
+        // Ignored
+      }
       isDraggingRef.current = true;
+      hasExceededDeadzoneRef.current = false;
+      dragStartPos.current = { x: e.clientX, y: e.clientY };
       lastMousePos.current = { x: e.clientX, y: e.clientY };
     }
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (isDraggingRef.current && sessionState === 'UNAVAILABLE') {
+      const totalDx = e.clientX - dragStartPos.current.x;
+      const totalDy = e.clientY - dragStartPos.current.y;
+      if (!hasExceededDeadzoneRef.current) {
+        if (Math.hypot(totalDx, totalDy) < 2.5) {
+          return;
+        }
+        hasExceededDeadzoneRef.current = true;
+      }
+
       const dx = e.clientX - lastMousePos.current.x;
       const dy = e.clientY - lastMousePos.current.y;
       lastMousePos.current = { x: e.clientX, y: e.clientY };
@@ -363,8 +401,16 @@ export const ARSessionScreen: React.FC = () => {
     }
   };
 
-  const handlePointerUp = () => {
-    isDraggingRef.current = false;
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (isDraggingRef.current) {
+      try {
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch {
+        // Ignored
+      }
+      isDraggingRef.current = false;
+      hasExceededDeadzoneRef.current = false;
+    }
   };
 
   const handleWheel = (e: React.WheelEvent) => {
@@ -1112,11 +1158,14 @@ export const ARSessionScreen: React.FC = () => {
         justifyContent: 'space-between',
         overflow: 'hidden',
         userSelect: 'none',
-        zIndex: 100
+        zIndex: 100,
+        touchAction: 'none'
       }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      onLostPointerCapture={handlePointerUp}
       onWheel={handleWheel}
     >
       {/* Three.js Real 3D / WebXR Canvas */}

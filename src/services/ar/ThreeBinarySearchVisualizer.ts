@@ -260,9 +260,8 @@ export class ThreeBinarySearchVisualizer implements IARAlgorithmVisualizer<Binar
 
   public dispose(): void {
     this.clear();
-    while (this.rootGroup.children.length > 0) {
-      const child = this.rootGroup.children[0];
-      this.rootGroup.remove(child);
+    if (this.visualGroup.parent) {
+      this.visualGroup.parent.remove(this.visualGroup);
     }
   }
 }

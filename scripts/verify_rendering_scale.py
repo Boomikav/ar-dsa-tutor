@@ -22,8 +22,9 @@ def run_verification():
     ]
 
     viewports = [
-        ('desktop', {'width': 1280, 'height': 800}),
-        ('mobile', {'width': 390, 'height': 844})
+        ('desktop_1280x800', {'width': 1280, 'height': 800}),
+        ('mobile_390x844', {'width': 390, 'height': 844}),
+        ('mobile_360x800', {'width': 360, 'height': 800})
     ]
 
     results = []

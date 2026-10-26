@@ -67,8 +67,8 @@ export class WebXRARService implements IARService {
   private viewerOrientation: THREE.Quaternion = new THREE.Quaternion();
 
   // 3D Fallback Mode Orbit Controls & Framing
-  private fallbackAngleX = 0.28;
-  private fallbackAngleY = 0;
+  private fallbackAngleX = 0.32;
+  private fallbackAngleY = 0.22;
   private fallbackDistance = 0.85;
   private baseFitDistance = 0.85;
   private targetCenter: THREE.Vector3 = new THREE.Vector3(0, 0.15, 0);
@@ -359,10 +359,18 @@ export class WebXRARService implements IARService {
     if (typeof window !== 'undefined' && this.onWindowResize) {
       window.removeEventListener('resize', this.onWindowResize);
     }
+    let lastResizeWidth = initialWidth;
+    let lastResizeHeight = initialHeight;
     this.onWindowResize = () => {
       if (!this.canvas || !this.renderer || !this.camera) return;
       const width = this.canvas.clientWidth || window.innerWidth;
       const height = this.canvas.clientHeight || window.innerHeight;
+      // Prevent micro-resizes on mobile caused by address bar scroll (jitter threshold 12px)
+      if (Math.abs(width - lastResizeWidth) < 12 && Math.abs(height - lastResizeHeight) < 12) {
+        return;
+      }
+      lastResizeWidth = width;
+      lastResizeHeight = height;
       this.renderer.setSize(width, height, false);
       if (!this.renderer.xr.isPresenting) {
         this.camera.aspect = width / Math.max(1, height);
@@ -760,8 +768,8 @@ export class WebXRARService implements IARService {
   }
 
   public refitScene(): boolean {
-    this.fallbackAngleX = 0.28;
-    this.fallbackAngleY = 0;
+    this.fallbackAngleX = 0.32;
+    this.fallbackAngleY = 0.22;
     return this.fitCameraToActiveVisualization();
   }
 
@@ -770,6 +778,7 @@ export class WebXRARService implements IARService {
   }
 
   public setActiveAlgorithm(algorithmId: string): void {
+    const isNew = this.activeAlgorithmId !== algorithmId;
     this.activeAlgorithmId = algorithmId;
     this.ensureVisualizersAttached();
 
@@ -779,11 +788,11 @@ export class WebXRARService implements IARService {
     this.bfsVisualizer.visualGroup.visible = algorithmId === 'algo-breadth-first-search' || algorithmId === 'algo-bfs';
     this.stackVisualizer.visualGroup.visible = algorithmId === 'ds-stack';
 
-    // In 3D fallback mode, reset view angles and fit camera to the newly activated algorithm
-    if (this._state === 'UNAVAILABLE') {
+    // In 3D fallback mode, reset view angles and fit camera ONLY when algorithm changes
+    if (this._state === 'UNAVAILABLE' && isNew) {
       this.visualizer.rootGroup.visible = true;
-      this.fallbackAngleX = 0.28;
-      this.fallbackAngleY = 0;
+      this.fallbackAngleX = 0.32;
+      this.fallbackAngleY = 0.22;
       this.fitCameraToActiveVisualization();
     }
   }
@@ -791,41 +800,26 @@ export class WebXRARService implements IARService {
   public renderBST(root: BSTNode | null, options: BST3DRenderOptions = {}): void {
     this.setActiveAlgorithm('ds-binary-search-tree');
     this.visualizer.render(root, options);
-    if (this._state === 'UNAVAILABLE') {
-      this.fitCameraToActiveVisualization();
-    }
   }
 
   public renderBubbleSort(state: any, options: any = {}): void {
     this.setActiveAlgorithm('algo-bubble-sort');
     this.bubbleSortVisualizer.render(state, options);
-    if (this._state === 'UNAVAILABLE') {
-      this.fitCameraToActiveVisualization();
-    }
   }
 
   public renderBinarySearch(state: any, options: any = {}): void {
     this.setActiveAlgorithm('algo-binary-search');
     this.binarySearchVisualizer.render(state, options);
-    if (this._state === 'UNAVAILABLE') {
-      this.fitCameraToActiveVisualization();
-    }
   }
 
   public renderBFS(state: any, options: any = {}): void {
     this.setActiveAlgorithm('algo-breadth-first-search');
     this.bfsVisualizer.render(state, options);
-    if (this._state === 'UNAVAILABLE') {
-      this.fitCameraToActiveVisualization();
-    }
   }
 
   public renderStack(state: any, options: any = {}): void {
     this.setActiveAlgorithm('ds-stack');
     this.stackVisualizer.render(state, options);
-    if (this._state === 'UNAVAILABLE') {
-      this.fitCameraToActiveVisualization();
-    }
   }
 
   public selectElementAt(screenX: number, screenY: number): any {
