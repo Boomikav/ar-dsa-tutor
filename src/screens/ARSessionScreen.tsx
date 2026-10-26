@@ -613,6 +613,10 @@ export const ARSessionScreen: React.FC = () => {
   };
 
   const handleTryAnother = () => {
+    if (egeaAdapterRef.current) {
+      egeaAdapterRef.current.reset(`session-${Date.now()}`, 'ds-binary-search-tree');
+      setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
+    }
     const nextTask = BSTPracticeEngine.generateNextTask(undefined, previousTargetsRef.current);
     previousTargetsRef.current.push(nextTask.targetValue);
 
@@ -762,6 +766,10 @@ export const ARSessionScreen: React.FC = () => {
 
   const handleBubbleSortReset = () => {
     setIsAutoPlaying(false);
+    if (egeaAdapterRef.current) {
+      egeaAdapterRef.current.reset(`session-${Date.now()}`, 'algo-bubble-sort');
+      setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
+    }
     const fresh = bubbleSortEngine.getInitialState([5, 2, 4, 1, 3]);
     setBubbleSortState(fresh);
     setFeedbackToast({
@@ -772,6 +780,10 @@ export const ARSessionScreen: React.FC = () => {
 
   const handleBubbleSortNewArray = () => {
     setIsAutoPlaying(false);
+    if (egeaAdapterRef.current) {
+      egeaAdapterRef.current.reset(`session-${Date.now()}`, 'algo-bubble-sort');
+      setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
+    }
     const permutations = [
       [4, 1, 5, 2, 3],
       [3, 5, 1, 4, 2],
@@ -834,6 +846,10 @@ export const ARSessionScreen: React.FC = () => {
 
   const handleBinarySearchReset = (targetOverride?: number) => {
     setIsAutoPlaying(false);
+    if (egeaAdapterRef.current) {
+      egeaAdapterRef.current.reset(`session-${Date.now()}`, 'algo-binary-search');
+      setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
+    }
     const target = targetOverride !== undefined ? targetOverride : binarySearchState.target;
     const fresh = binarySearchEngine.getInitialState({
       array: [10, 20, 30, 40, 50, 60],
@@ -848,6 +864,10 @@ export const ARSessionScreen: React.FC = () => {
 
   const handleBinarySearchNewTarget = () => {
     setIsAutoPlaying(false);
+    if (egeaAdapterRef.current) {
+      egeaAdapterRef.current.reset(`session-${Date.now()}`, 'algo-binary-search');
+      setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
+    }
     const targets = [20, 30, 40, 60, 25];
     const candidates = targets.filter(t => t !== binarySearchState.target);
     const nextTarget = candidates[Math.floor(Math.random() * candidates.length)] || 20;
@@ -903,13 +923,17 @@ export const ARSessionScreen: React.FC = () => {
 
   const handleBFSReset = () => {
     setIsAutoPlaying(false);
+    if (egeaAdapterRef.current) {
+      egeaAdapterRef.current.reset(`session-${Date.now()}`, 'algo-breadth-first-search');
+      setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
+    }
     handleBFSSelectStart('A');
   };
 
   // --- Stack Handlers ---
   const handleStackPush = () => {
     const val = nextStackPushValue;
-    const isOverflow = stackState.items.length >= 5;
+    const isOverflow = stackState.items.length >= stackState.capacity;
 
     if (egeaAdapterRef.current) {
       egeaAdapterRef.current.recordInteraction({
@@ -985,6 +1009,11 @@ export const ARSessionScreen: React.FC = () => {
   };
 
   const handleStackReset = () => {
+    setIsAutoPlaying(false);
+    if (egeaAdapterRef.current) {
+      egeaAdapterRef.current.reset(`session-${Date.now()}`, 'ds-stack');
+      setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
+    }
     const fresh = stackEngine.getInitialState();
     setNextStackPushValue(60);
     setStackState(fresh);

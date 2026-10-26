@@ -15,12 +15,12 @@ This release delivers the complete, verified, and stabilized **AR-DSA Tutor** ap
 | Verification Criterion | Target Specification | Verified Release Status |
 | :--- | :--- | :--- |
 | **Active Algorithms** | Exactly 5 interactive 3D WebXR visualizers | **5 / 5 Fully Operational** (BST, Bubble Sort, Binary Search, BFS, Stack) |
-| **Adaptive Scaffolding Engine** | Sub-millisecond Execution-Grounded Explainable Adaptation (EGEA) | **Operational** (Steady-state latency: 7 μs median, 10 μs mean, 20 μs P95) |
-| **Live Telemetry Wiring** | Real-time action capture, canonicalization, EWMA pacing, HUD feedback | **Verified** across all 5 visualizers |
+| **Adaptive Scaffolding Engine** | Sub-millisecond Execution-Grounded Explainable Adaptation (EGEA) | **Operational** (Pure policy: 7 μs median; Complete pipeline: 14 μs median) |
+| **Live Telemetry Wiring** | Real-time action capture, canonicalization, EWMA pacing, HUD feedback | **Verified** across all 5 visualizers with zero history leakage across resets |
 | **Automated Test Coverage** | 18 test suites without regression | **18 / 18 SUITES PASSED (1,437 / 1,437 assertions, 0 failures)** |
 | **Type & Lint Integrity** | Zero TypeScript compiler or Oxlint errors | **PASS** (`tsc -b` 0 errors; Oxlint 0 errors across 153 files) |
-| **Production Build** | Clean Vite production bundle | **PASS** (1,235 kB uncompressed, 319 kB gzipped; 491ms build) |
-| **IEEE Paper Artifacts** | IEEE A4 two-column format with figures & data tables | **Generated**: DOCX (507 kB) & PDF (510 kB, 5 pages) in `submission/review_release/` |
+| **Production Build** | Clean Vite production bundle | **PASS** (1,236 kB uncompressed, 319 kB gzipped; built in 16.7s) |
+| **IEEE Paper Artifacts** | IEEE A4 two-column format with figures & data tables | **Generated**: DOCX (477 kB) & PDF (534 kB, exactly 5 pages) in `submission/review_release/` |
 | **Physical Hardware Boundary** | Android ARCore device testing | **Explicit Boundary: UNVERIFIED / SIMULATION ONLY** |
 
 ---
@@ -152,23 +152,31 @@ FAILED TESTS: 0
 
 ## 5. IEEE Research Paper Artifacts
 
-The research paper has been authored, formatted to the IEEE conference template, and compiled into both editable Word `.docx` and camera-ready `.pdf`:
+The research paper has been authored, formatted to the official IEEE conference template, and compiled into both editable Word `.docx` and camera-ready `.pdf`:
 
 - **Paper Title:** *AR-DSA Tutor: A Web-Based Spatial Algorithm Visualization System with Execution-Grounded Explainable Adaptation*
 - **Primary Deliverables:**
   - **Editable Word Document:**  
-    [`submission/review_release/AR_DSA_Tutor_IEEE_Research_Paper.docx`](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/AR_DSA_Tutor_IEEE_Research_Paper.docx) (507 kB)
+    [`submission/review_release/AR_DSA_Tutor_IEEE_Research_Paper.docx`](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/AR_DSA_Tutor_IEEE_Research_Paper.docx) (477 kB)
   - **Compiled PDF:**  
-    [`submission/review_release/AR_DSA_Tutor_IEEE_Research_Paper.pdf`](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/AR_DSA_Tutor_IEEE_Research_Paper.pdf) (510 kB, 5 pages)
-- **Publication Figures (300 DPI):**
+    [`submission/review_release/AR_DSA_Tutor_IEEE_Research_Paper.pdf`](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/AR_DSA_Tutor_IEEE_Research_Paper.pdf) (534 kB, exactly 5 pages)
+  - **Rendered High-Resolution Page Images (DPI 150):**
+    - [Page 1](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/rendered_pages/page_1.png)
+    - [Page 2](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/rendered_pages/page_2.png)
+    - [Page 3](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/rendered_pages/page_3.png)
+    - [Page 4](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/rendered_pages/page_4.png)
+    - [Page 5](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/rendered_pages/page_5.png)
+- **Publication Figures (300 DPI, Single-Column Optimized):**
   - `Fig. 1`: Decoupled System Architecture (`submission/review_release/figures/fig1_system_architecture.png`)
   - `Fig. 2`: Comparative Intervention Accuracy vs. Baselines (`submission/review_release/figures/fig3_accuracy_comparison.png`)
   - `Fig. 3`: Empirical Decision Latency Microsecond Distribution (`submission/review_release/figures/fig2_latency_benchmark.png`)
 - **Key Empirical Findings Reported in Paper:**
-  - EGEA Pure Policy Latency: Min 4 μs, Median 7 μs, Mean 10 μs, P95 20 μs (< 0.12% of 60 FPS frame budget).
-  - End-to-End Telemetry Pipeline Latency: Min 11 μs, Median 14 μs, Mean 17 μs, P95 24 μs (< 0.15% frame budget).
-  - Decision Consistency: 100.0% (18/18 on Challenge Suite, 12/12 on Held-Out Boundary Suite).
-  - Baseline Comparisons: Fixed Hint (33.3% challenge / 58.3% held-out), Simple Error Rule (50.0% / 75.0%), Matched History (83.3% / 75.0%).
+  - **EGEA Pure Policy Latency:** Min 4 μs, Median 7 μs, Mean 10 μs, P95 20 μs (< 0.12% of 60 FPS frame budget).
+  - **End-to-End Telemetry Pipeline Latency:** Min 11 μs, Median 14 μs, Mean 17 μs, P95 24 μs (< 0.15% frame budget).
+  - **Decision Consistency:** 100.0% (18/18 on Authored Challenge Suite, 12/12 on Authored Boundary Stress Suite).
+  - **Baseline Comparisons:** Fixed Hint (33.3% challenge / 58.3% boundary stress), Simple Error Rule (50.0% / 75.0%), Matched History (83.3% / 75.0%).
+  - **Zero Duplicate Labels:** Fig. 1, Fig. 2, Fig. 3, TABLE I, TABLE II, TABLE III, and references [1]–[20] all have single, clean IEEE captions.
+  - **Strictly Sequential Citations:** All 20 citations appear in exact 1-to-20 order in text (`[1]` to `[20]`), matching all 20 verified DOIs.
 
 ---
 
@@ -177,4 +185,5 @@ The research paper has been authored, formatted to the IEEE conference template,
 To maintain rigorous academic honesty:
 1. **Physical Android AR Hardware Boundary:** All rendering pipelines, scene managers, and session state lifecycles were validated in headless Chrome, Three.js headless mocks, and WebGL 2.0 fallback canvas mode. **Testing on physical Android ARCore hardware (camera passthrough, environmental surface SLAM, thermal throttling) has NOT yet been conducted and is explicitly declared as unverified simulation.**
 2. **Pedagogical Evaluation Scope:** The 18-case and 12-case benchmark suites are authored synthetic engineering scenarios. **No claims of empirical human student learning gains (e.g. pre/post test effect sizes or exam grade improvements) are made in this release or paper.**
-3. **Curriculum Scope:** Exactly 5 algorithms have full 3D interactive AR visualizers. Other curriculum topics remain 2D informational catalog entries.
+3. **Evaluation Terminology:** The 12-case suite is accurately designated as an **authored boundary stress suite** (not a held-out human population).
+4. **Curriculum Scope:** Exactly 5 algorithms have full 3D interactive AR visualizers. Other curriculum topics remain 2D informational catalog entries.

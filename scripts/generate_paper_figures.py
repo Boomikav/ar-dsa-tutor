@@ -9,134 +9,161 @@ import matplotlib.patches as patches
 
 os.makedirs('submission/review_release/figures', exist_ok=True)
 
-# Set global publication styling
-plt.rcParams['font.family'] = 'serif'
-plt.rcParams['font.size'] = 9
-plt.rcParams['axes.labelsize'] = 9
-plt.rcParams['axes.titlesize'] = 10
-plt.rcParams['xtick.labelsize'] = 8
-plt.rcParams['ytick.labelsize'] = 8
-plt.rcParams['legend.fontsize'] = 8
-plt.rcParams['figure.titlesize'] = 11
+# Set global publication styling matching IEEE transactions / conference standards
+plt.rcParams['font.family'] = 'sans-serif'
+plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial', 'Helvetica']
+plt.rcParams['font.size'] = 8.0
+plt.rcParams['axes.labelsize'] = 8.0
+plt.rcParams['axes.titlesize'] = 8.8
+plt.rcParams['xtick.labelsize'] = 7.2
+plt.rcParams['ytick.labelsize'] = 7.2
+plt.rcParams['legend.fontsize'] = 7.0
+plt.rcParams['figure.titlesize'] = 9.5
 
 def generate_figure_1_architecture():
-    fig, ax = plt.subplots(figsize=(7.16, 3.4), dpi=300)
+    # Single-column IEEE figure: 3.4 inches wide by 4.85 inches high
+    fig, ax = plt.subplots(figsize=(3.45, 4.85), dpi=300)
     ax.set_xlim(0, 100)
-    ax.set_ylim(0, 50)
+    ax.set_ylim(0, 100)
     ax.axis('off')
 
-    # Background subtle styling
-    def draw_box(x, y, w, h, title, subtitle, color_border, color_bg):
-        rect = patches.FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.5",
-                                      facecolor=color_bg, edgecolor=color_border, linewidth=1.2)
+    def draw_box(x, y, w, h, title, subtitle, border_color, bg_color, title_color='#0f172a'):
+        rect = patches.FancyBboxPatch(
+            (x, y), w, h, boxstyle="round,pad=0.5",
+            facecolor=bg_color, edgecolor=border_color, linewidth=1.1
+        )
         ax.add_patch(rect)
-        ax.text(x + w/2, y + h*0.62, title, ha='center', va='center', fontsize=8, fontweight='bold', color='#0f172a')
-        ax.text(x + w/2, y + h*0.28, subtitle, ha='center', va='center', fontsize=6.8, color='#334155', style='italic')
+        ax.text(x + w/2, y + h*0.70, title, ha='center', va='center', fontsize=7.8, fontweight='bold', color=title_color)
+        ax.text(x + w/2, y + h*0.30, subtitle, ha='center', va='center', fontsize=6.3, color='#334155', linespacing=1.2)
 
-    # Column 1: Client Application & Engines
-    draw_box(2, 33, 28, 14, "Module 1: 5 Deterministic DSA Engines", "BST, Bubble Sort, Binary Search, BFS, Stack\n[Invariant Reducers & Mistake Detection]", "#0284c7", "#f0f9ff")
-    draw_box(2, 17, 28, 13, "Module 2: Procedural Spatial Visualizers", "Three.js 0.186 • Procedural Meshes\n[Upright +Y Orientation, -1.2m Offset]", "#0284c7", "#f0f9ff")
-    draw_box(2, 2, 28, 12, "Module 3: Persistent WebXR Session", "Continuous XRSession Lifecycle\n[Zero-Tear Algorithm Hot-Swapping]", "#0284c7", "#f0f9ff")
-
-    # Column 2: Telemetry Ingestion & Pacing
-    draw_box(36, 33, 28, 14, "Module 4: Event Telemetry & Debounce", "Monotonic Sequence Counter\n[250ms Touch Debounce & Canonicalization]", "#4f46e5", "#eef2ff")
-    draw_box(36, 17, 28, 13, "Module 5: EWMA Temporal Pacing", "Alpha=0.5 Exponential Window\n[Impulsive Guessing vs Deliberate Reflection]", "#4f46e5", "#eef2ff")
-    draw_box(36, 2, 28, 12, "Module 6: Cross-Platform Fallback", "CANVAS_3D_FALLBACK Engine\n[Touch OrbitControls on Non-WebXR]", "#4f46e5", "#eef2ff")
-
-    # Column 3: Adaptation & HUD Presentation
-    draw_box(70, 33, 28, 14, "Module 7: Deterministic EGEA Policy", "6-Tier Pedagogical Scaffolding\n[Sub-10 microsecond Machine Rationales]", "#059669", "#ecfdf5")
-    draw_box(70, 17, 28, 13, "Module 8: Explainable Spatial HUD", "ARTutorHUD Real-Time Overlays\n[Grounded Badge, Rationale, Confidence]", "#059669", "#ecfdf5")
-    draw_box(70, 2, 28, 12, "Module 9: Asynchronous LLM Advisor", "Decoupled Conversational Guidance\n[Non-Blocking Socratic Follow-Up]", "#059669", "#ecfdf5")
-
-    # Connecting Arrows
-    def draw_arrow(x1, y1, x2, y2, label=""):
-        ax.annotate('', xy=(x2, y2), xytext=(x1, y1),
-                    arrowprops=dict(arrowstyle="->", color="#475569", lw=1.2, shrinkA=2, shrinkB=2))
+    def draw_down_arrow(x, y_start, y_end, label=""):
+        ax.annotate(
+            '', xy=(x, y_end), xytext=(x, y_start),
+            arrowprops=dict(arrowstyle="-|>", color="#334155", lw=1.1, mutation_scale=8)
+        )
         if label:
-            ax.text((x1+x2)/2, (y1+y2)/2 + 1.2, label, ha='center', va='center', fontsize=6.5, color='#0f172a', fontweight='semibold')
+            ax.text(x + 1.5, (y_start + y_end)/2, label, ha='left', va='center', fontsize=5.8, color='#0f172a', fontweight='semibold',
+                    bbox=dict(boxstyle='square,pad=0.1', facecolor='#ffffff', edgecolor='none', alpha=0.9))
 
-    # Flow 1: Engine -> Telemetry -> Policy -> HUD
-    draw_arrow(30, 40, 36, 40, "Raw Step")
-    draw_arrow(64, 40, 70, 40, "Normalized Event")
-    draw_arrow(84, 33, 84, 30, "Intervention")
+    # Layer 1: Deterministic Algorithm Engines (y: 84 to 98)
+    draw_box(4, 84, 92, 14, "1. Deterministic DSA Engines",
+             "BST • Bubble Sort • Binary Search • BFS Graph • Stack\n[Invariant Reducers, State Machines & Mistake Classification]",
+             '#0284c7', '#f0f9ff', '#0369a1')
 
-    # Flow 2: Spatial Visualizer -> Persistent Session
-    draw_arrow(16, 17, 16, 14, "Scene Group")
-    draw_arrow(30, 8, 36, 8, "XR Fallback")
+    draw_down_arrow(50, 84, 80, "Algorithmic State & Invariants")
 
-    # Flow 3: Pacing -> Policy
-    draw_arrow(50, 33, 50, 30)
-    draw_arrow(50, 30, 50, 24)
-    draw_arrow(64, 23.5, 78, 33, "Pacing Metrics")
+    # Layer 2: Spatial Presentation & WebXR Session (y: 65 to 80)
+    draw_box(4, 65, 92, 15, "2. Spatial WebXR Layer (Three.js 0.186)",
+             "Procedural 3D Visualizers • Gravity-Aligned Tabletop Anchors\nWebXRARService: Continuous XRSession • Algorithm Hot-Swapping\n[Automatic CANVAS_3D_FALLBACK for non-WebXR Desktop Devices]",
+             '#0284c7', '#f0f9ff', '#0369a1')
 
-    # Flow 4: HUD -> LLM async
-    draw_arrow(84, 17, 84, 14, "Async Query")
+    draw_down_arrow(50, 65, 61, "Learner Actions & Latency Δt_k")
+
+    # Layer 3: Telemetry & EWMA Pacing Model (y: 46 to 61)
+    draw_box(4, 46, 92, 15, "3. EGEA Telemetry Ingestion & EWMA Pacing",
+             "Event Adapter: Monotonic Counter k • 250ms Touch Debounce\nEWMA Pacing Model: T_k = 0.5·Δt_k + 0.5·T_{k-1}\n[Disentangles Impulsive Guessing (T_k < 1.5s) from Reflection]",
+             '#4f46e5', '#eef2ff', '#4338ca')
+
+    draw_down_arrow(50, 46, 42, "Validated Event Stream & Pacing Metrics")
+
+    # Layer 4: Deterministic Policy Engine (y: 27 to 42)
+    draw_box(4, 27, 92, 15, "4. Deterministic EGEA Policy Engine",
+             "6-Tier Pedagogical Scaffolding Rules\nStepwise Slowdown • Worked Example • Prereq Review\nHighlight Element • Contextual Hint • Reduce Guidance\n[Steady-State Latency: 7 μs (Mean: 10 μs, P95: 20 μs)]",
+             '#059669', '#ecfdf5', '#047857')
+
+    draw_down_arrow(50, 27, 23, "Pedagogical Decision & Rationale Code")
+
+    # Layer 5: Explainable Spatial HUD (y: 8 to 23)
+    draw_box(4, 8, 92, 15, "5. Explainable Spatial HUD (ARTutorHUD)",
+             "Real-Time Grounded Badge • Rationale Code • Confidence %\nRemediation Highlighting • Scaffolding Fading on Mastery\n[Decoupled Asynchronous LLM Socratic Advisor (<10μs Decoupled)]",
+             '#059669', '#ecfdf5', '#047857')
+
+    # Feedback loop arrow from HUD up to Spatial WebXR Layer
+    ax.annotate(
+        '', xy=(2, 72.5), xytext=(2, 15.5),
+        arrowprops=dict(arrowstyle="-|>", color="#dc2626", lw=1.1, linestyle='--', mutation_scale=8)
+    )
+    ax.text(2.8, 44, "Closed-Loop Feedback: Remediation Highlights & Pacing Pauses",
+            ha='left', va='center', rotation=90, fontsize=5.8, color='#dc2626', fontweight='bold',
+            bbox=dict(boxstyle='square,pad=0.15', facecolor='#ffffff', edgecolor='none', alpha=0.9))
 
     plt.tight_layout()
     plt.savefig('submission/review_release/figures/fig1_system_architecture.png', dpi=300, bbox_inches='tight')
     plt.close()
-    print("Generated fig1_system_architecture.png")
+    print("Generated redesigned fig1_system_architecture.png")
 
 def generate_figure_2_latency():
+    # Single-column IEEE figure: 3.45 inches wide by 2.5 inches high
     fig, ax = plt.subplots(figsize=(3.45, 2.5), dpi=300)
 
-    stages = ['Pure Policy\n(Steady State)', 'Pure Policy\n(P95 Latency)', 'End-to-End\n(Ingest + Decision)', 'End-to-End\n(P95 Latency)']
-    latencies = [0.007, 0.020, 0.014, 0.024] # in milliseconds
-    colors = ['#0284c7', '#0369a1', '#059669', '#047857']
+    stages = [
+        'Pure Policy\nMedian',
+        'Pure Policy\nMean',
+        'Pure Policy\nP95',
+        'Pipeline\nMedian',
+        'Pipeline\nMean',
+        'Pipeline\nP95'
+    ]
+    latencies_us = [7, 10, 20, 14, 17, 24] # in microseconds
+    colors = ['#0284c7', '#0369a1', '#075985', '#059669', '#047857', '#065f46']
 
-    bars = ax.bar(stages, latencies, color=colors, width=0.55, edgecolor='#1e293b', linewidth=0.8)
-    ax.set_ylabel('Execution Latency (ms)', fontweight='bold')
-    ax.set_title('Empirical EGEA Decision Latency (N = 1000)', fontweight='bold', pad=8)
-    ax.set_ylim(0, 0.035)
+    ax.set_xticks(range(len(stages)))
+    bars = ax.bar(range(len(stages)), latencies_us, color=colors, width=0.6, edgecolor='#0f172a', linewidth=0.8)
+    ax.set_ylabel('Execution Latency (μs)', fontweight='bold', fontsize=8.2)
+    ax.set_title('Empirical Decision Latency (N = 1,000 Iterations)', fontweight='bold', fontsize=8.8, pad=6)
+    ax.set_ylim(0, 32)
 
-    # Add 60 FPS frame budget annotation line (16.67ms is way above, so show relative scale)
-    ax.axhline(y=0.030, color='#dc2626', linestyle='--', linewidth=0.8, alpha=0.7)
-    ax.text(1.5, 0.0315, '0.18% of 16.6ms Render Frame Budget', ha='center', va='bottom', fontsize=7, color='#dc2626', fontweight='bold')
+    # Frame budget callout
+    ax.axhline(y=28, color='#dc2626', linestyle=':', linewidth=1.0)
+    ax.text(2.5, 29.2, '60 FPS Frame Budget: 16,667 μs (16.67 ms)', ha='center', va='bottom', fontsize=6.5, color='#dc2626', fontweight='bold')
+    ax.text(2.5, 26.3, 'Max Pipeline (24 μs) < 0.15% of Render Frame Budget', ha='center', va='top', fontsize=6.1, color='#475569', style='italic')
 
     for bar in bars:
         h = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width()/2., h + 0.001, f'{h*1000:.0f} μs', ha='center', va='bottom', fontsize=7.5, fontweight='bold', color='#0f172a')
+        ax.text(bar.get_x() + bar.get_width()/2., h + 0.6, f'{h} μs\n({h/1000:.3f}ms)',
+                ha='center', va='bottom', fontsize=6.0, fontweight='bold', color='#0f172a')
 
+    ax.set_xticklabels(stages, fontsize=6.4)
     ax.grid(axis='y', linestyle=':', alpha=0.5)
     plt.tight_layout()
     plt.savefig('submission/review_release/figures/fig2_latency_benchmark.png', dpi=300, bbox_inches='tight')
     plt.close()
-    print("Generated fig2_latency_benchmark.png")
+    print("Generated redesigned fig2_latency_benchmark.png")
 
 def generate_figure_3_accuracy_comparison():
+    # Single-column IEEE figure: 3.45 inches wide by 2.5 inches high
     fig, ax = plt.subplots(figsize=(3.45, 2.5), dpi=300)
 
-    categories = ['Fixed Hint\nBaseline', 'Simple Error\nRule Baseline', 'Matched-Hist.\nBaseline', 'EGEA Adaptive\nPolicy (Ours)']
-    # Data from Table: Challenge Set (18) and Held-Out (12)
+    categories = ['Fixed Hint\nBaseline', 'Simple Error\nRule Baseline', 'Matched-Hist.\nBaseline', 'EGEA Policy\n(Ours)']
     challenge_acc = [33.3, 50.0, 83.3, 100.0]
-    held_out_acc = [58.3, 75.0, 75.0, 100.0]
+    boundary_acc = [58.3, 75.0, 75.0, 100.0]
 
     x = range(len(categories))
-    width = 0.35
+    width = 0.36
 
-    rects1 = ax.bar([i - width/2 for i in x], challenge_acc, width, label='Challenge Suite (N=18)', color='#38bdf8', edgecolor='#0369a1', lw=0.8)
-    rects2 = ax.bar([i + width/2 for i in x], held_out_acc, width, label='Held-Out Suite (N=12)', color='#10b981', edgecolor='#047857', lw=0.8)
+    rects1 = ax.bar([i - width/2 for i in x], challenge_acc, width, label='Authored Challenge Suite (N=18)', color='#38bdf8', edgecolor='#0369a1', lw=0.8)
+    rects2 = ax.bar([i + width/2 for i in x], boundary_acc, width, label='Authored Boundary Stress Suite (N=12)', color='#10b981', edgecolor='#047857', lw=0.8)
 
-    ax.set_ylabel('Prediction Accuracy (%)', fontweight='bold')
-    ax.set_title('Pedagogical Intervention Accuracy', fontweight='bold', pad=8)
+    ax.set_ylabel('Intervention Accuracy (%)', fontweight='bold', fontsize=8.2)
+    ax.set_title('Intervention Accuracy Across Benchmark Suites', fontweight='bold', fontsize=8.8, pad=6)
     ax.set_xticks(list(x))
-    ax.set_xticklabels(categories, fontsize=7.5)
-    ax.set_ylim(0, 115)
-    ax.legend(loc='upper left', framealpha=0.9)
+    ax.set_xticklabels(categories, fontsize=7.0)
+    ax.set_ylim(0, 120)
+    ax.legend(loc='upper left', framealpha=0.92, fontsize=6.8)
 
     for r in rects1:
         h = r.get_height()
-        ax.text(r.get_x() + r.get_width()/2., h + 1.5, f'{h:.1f}%', ha='center', va='bottom', fontsize=6.8, color='#0369a1', fontweight='bold')
+        ax.text(r.get_x() + r.get_width()/2., h + 1.2, f'{h:.1f}%', ha='center', va='bottom', fontsize=6.2, color='#0369a1', fontweight='bold')
 
     for r in rects2:
         h = r.get_height()
-        ax.text(r.get_x() + r.get_width()/2., h + 1.5, f'{h:.1f}%', ha='center', va='bottom', fontsize=6.8, color='#047857', fontweight='bold')
+        ax.text(r.get_x() + r.get_width()/2., h + 1.2, f'{h:.1f}%', ha='center', va='bottom', fontsize=6.2, color='#047857', fontweight='bold')
 
     ax.grid(axis='y', linestyle=':', alpha=0.5)
     plt.tight_layout()
     plt.savefig('submission/review_release/figures/fig3_accuracy_comparison.png', dpi=300, bbox_inches='tight')
     plt.close()
-    print("Generated fig3_accuracy_comparison.png")
+    print("Generated redesigned fig3_accuracy_comparison.png")
 
 if __name__ == '__main__':
     generate_figure_1_architecture()
