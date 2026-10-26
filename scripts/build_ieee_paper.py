@@ -339,7 +339,7 @@ def create_paper():
         p_cap1.style = doc.styles['figure caption']
         p_cap1.alignment = WD_ALIGN_PARAGRAPH.CENTER
         p_cap1.paragraph_format.space_after = Pt(4)
-        r_c1 = p_cap1.add_run("System architecture showing dataflow between the five deterministic DSA engines, procedural Three.js visualizers, persistent WebXR session manager, EWMA pacing model, and the EGEA policy engine.")
+        r_c1 = p_cap1.add_run("Architecture of AR-DSA Tutor showing the five deterministic algorithm engines, interactive Three.js visualizers, WebXR session layer, EGEA telemetry and adaptation pipeline, and closed-loop HUD feedback.")
         r_c1.font.size = Pt(7.8)
         r_c1.italic = True
 

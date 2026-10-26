@@ -166,8 +166,11 @@ The research paper has been authored, formatted to the official IEEE conference 
     - [Page 3](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/rendered_pages/page_3.png)
     - [Page 4](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/rendered_pages/page_4.png)
     - [Page 5](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/rendered_pages/page_5.png)
-- **Publication Figures (300 DPI, Single-Column Optimized):**
-  - `Fig. 1`: Decoupled System Architecture (`submission/review_release/figures/fig1_system_architecture.png`)
+- **Publication Figures (300 DPI & Vector Formats):**
+  - `Fig. 1`: Decoupled System Architecture:
+    - High-Res 300+ DPI PNG: [`submission/review_release/figures/fig1_system_architecture.png`](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/figures/fig1_system_architecture.png)
+    - Vector SVG: [`submission/review_release/figures/fig1_system_architecture.svg`](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/figures/fig1_system_architecture.svg)
+    - Editable Mermaid Source: [`submission/review_release/figures/fig1_system_architecture.mmd`](file:///c:/Users/ajaya/Desktop/AR/submission/review_release/figures/fig1_system_architecture.mmd)
   - `Fig. 2`: Comparative Intervention Accuracy vs. Baselines (`submission/review_release/figures/fig3_accuracy_comparison.png`)
   - `Fig. 3`: Empirical Decision Latency Microsecond Distribution (`submission/review_release/figures/fig2_latency_benchmark.png`)
 - **Key Empirical Findings Reported in Paper:**

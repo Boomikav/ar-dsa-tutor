@@ -1,0 +1,145 @@
+flowchart TD
+    %% ------------------------------------------------------------------------
+    %% GROUP A: LEARNER INTERACTION
+    %% ------------------------------------------------------------------------
+    subgraph GA ["<b>GROUP A: LEARNER INTERACTION &amp; CONTROLS</b>"]
+        direction TB
+        subgraph GA_ROW [" "]
+            direction LR
+            L_UI["<b>Learner / Browser Viewport</b><br/>• Mobile WebXR / Canvas Viewport<br/>• Touch Screen / Raycast Selection<br/>• Spatial HUD Overlay View"]
+            L_SEL["<b>Algorithm Selector &amp; Controls</b><br/>• 1-Click Topic Hot-Swapping<br/>• Interactive Step / Traversal Input<br/>• Session Reset &amp; Target Refresh"]
+        end
+        L_EVT["<b>Interaction Event Generator</b><br/>Captures: attemptedAction, expectedAction, stepIdentifier, isCorrect, latencyMs, stateContext"]
+        
+        GA_ROW --> L_EVT
+    end
+
+    %% ------------------------------------------------------------------------
+    %% GROUP B: DETERMINISTIC ALGORITHM EXECUTION ENGINES
+    %% ------------------------------------------------------------------------
+    subgraph GB ["<b>GROUP B: DETERMINISTIC ALGORITHM EXECUTION ENGINES</b><br/><i>(Authoritative State Machines &amp; Mathematical Invariant Validators)</i>"]
+        direction TB
+        subgraph GB_ENGINES [" "]
+            direction TB
+            subgraph GB_TOP [" "]
+                direction LR
+                E_BST["<b>BSTEngine</b><br/>Binary Search Tree<br/>• Invariant Reducer<br/>• Left &lt; Node &lt; Right<br/>• Insert &amp; Search State"]
+                E_BUB["<b>BubbleSortEngine</b><br/>Bubble Sort<br/>• Adjacent Inversions<br/>• Stepwise Bar Swaps<br/>• Pass-by-Pass State"]
+                E_BIN["<b>BinarySearchEngine</b><br/>Binary Search<br/>• [Low, Mid, High]<br/>• Space Contraction<br/>• Comparison Bounds"]
+            end
+            subgraph GB_BOT [" "]
+                direction LR
+                E_BFS["<b>BFSEngine</b><br/>Breadth-First Search<br/>• Circular Graph Topology<br/>• Frontier FIFO Queue<br/>• Level-Order Traversal"]
+                E_STK["<b>StackEngine</b><br/>Stack (LIFO)<br/>• Push, Pop, &amp; Peek<br/>• Capacity Boundary (6)<br/>• Overflow/Underflow"]
+            end
+        end
+    end
+
+    %% ------------------------------------------------------------------------
+    %% GROUP C: WEBXR & 3D SPATIAL RENDERING LAYER
+    %% ------------------------------------------------------------------------
+    subgraph GC ["<b>GROUP C: WEBXR &amp; 3D SPATIAL RENDERING LAYER</b>"]
+        direction TB
+        subgraph GC_SPLIT [" "]
+            direction LR
+            subgraph GC_VIS ["<b>Three.js Procedural Visualizers</b>"]
+                direction TB
+                V_BST["<b>ThreeBSTVisualizer:</b> 3D Spheres &amp; Directed Links"]
+                V_BUB["<b>ThreeBubbleSortVisualizer:</b> Scaled Cylinder Bars"]
+                V_BIN["<b>ThreeBinarySearchVisualizer:</b> Numbered Array Blocks"]
+                V_BFS["<b>ThreeBFSVisualizer:</b> Graph Nodes &amp; FIFO Queue Dock"]
+                V_STK["<b>ThreeStackVisualizer:</b> 3D Chamber &amp; Stacked Slabs"]
+            end
+
+            subgraph GC_MGR ["<b>Session &amp; Viewport Manager (WebXRARService)</b>"]
+                direction TB
+                XR_CORE["<b>Persistent WebXR Session Core</b><br/>• Continuous XRSession Lifecycle<br/>• Preserves WebGLRenderer &amp; Context<br/>• Instant Algorithm Hot-Swapping<br/><i>(Physical ARCore: Simulation Boundary)</i>"]
+                XR_FALL["<b>CANVAS_3D_FALLBACK Engine</b><br/>• OrbitControls (Touch / Mouse)<br/>• Upright (+Y) Spatial Orientation<br/>• Non-WebXR Desktop / Tablet Fallback"]
+                XR_CORE -.->|Auto-Fallback| XR_FALL
+            end
+        end
+        GC_VIS ==>|Scene Graph Meshes| XR_CORE
+    end
+
+    %% ------------------------------------------------------------------------
+    %% GROUP D: EGEA ADAPTATION PIPELINE
+    %% ------------------------------------------------------------------------
+    subgraph GD ["<b>GROUP D: EGEA ADAPTATION PIPELINE</b><br/><i>(Sub-Millisecond Deterministic Scaffolding: Pure Policy 7 μs, Pipeline 14 μs)</i>"]
+        direction TB
+        subgraph GD_PIPE ["Adaptation Data Pipeline"]
+            direction LR
+            D_ADP["<b>EGEA Event Adapter</b><br/><i>(EGEAEventAdapter)</i><br/>• Monotonic Counter (k)<br/>• 250ms Touch Debounce<br/>• Telemetry Validation"]
+            D_CAN["<b>Step Canonicalizer</b><br/><i>(canonicalizeStep)</i><br/>• Canonical String Keys<br/>• Cross-Retry Mapping<br/>• Disambiguates Aliases"]
+            D_PAC["<b>EWMA Pacing Model</b><br/><i>(EGEAPacingModel)</i><br/>• S_k = α·L_k + (1-α)·S_{k-1}<br/>• Rapid Guessing (&lt;1500ms)<br/>• Reflection (≥3000ms)"]
+            
+            D_ADP -->|Raw Event| D_CAN
+            D_CAN -->|Canonical Trace| D_PAC
+        end
+
+        subgraph GD_TAX ["<b>EGEA Policy Engine (EGEAPolicyEngine) — 6-Tier Scaffolding Taxonomy</b>"]
+            direction TB
+            subgraph GD_TAX_1 [" "]
+                direction LR
+                T_HINT["<b>CONTEXTUAL_HINT</b><br/>Directional spatial cue on isolated conceptual error"]
+                T_SLOW["<b>STEPWISE_SLOWDOWN</b><br/>Enforced reflection pause upon rapid guessing burst"]
+                T_HIGH["<b>HIGHLIGHT_ELEMENT</b><br/>Target salience pulse on spatial attention lapse"]
+            end
+            subgraph GD_TAX_2 [" "]
+                direction LR
+                T_WORK["<b>WORKED_EXAMPLE</b><br/>Full step demonstration after 3+ persistent failures"]
+                T_PRER["<b>PREREQUISITE_REVIEW</b><br/>Foundational topic recall on systemic error pattern"]
+                T_REDU["<b>REDUCE_GUIDANCE</b><br/>Scaffold fading after 3+ unassisted mastery streak"]
+            end
+        end
+
+        D_PAC ==>|Smoothed Pacing &amp; Invariants| GD_TAX
+    end
+
+    %% ------------------------------------------------------------------------
+    %% GROUP E: SPATIAL HUD FEEDBACK & AUTOMATED VERIFICATION
+    %% ------------------------------------------------------------------------
+    subgraph GE ["<b>GROUP E: FEEDBACK &amp; INDEPENDENT VERIFICATION</b>"]
+        direction TB
+        subgraph GE_SPLIT [" "]
+            direction LR
+            subgraph GE_HUD ["<b>Spatial AR Tutor HUD (ARTutorHUD) — Live Runtime Feedback</b>"]
+                direction TB
+                HUD_BOX["<b>Real-Time Adaptive HUD Overlay</b><br/>• Dynamic Intervention Badges (Hint, Warning, Encouragement)<br/>• Machine-Readable Grounded Rationale Code<br/>• Confidence Metric (0.80–0.95) &amp; Pedagogical Explanation"]
+            end
+
+            subgraph GE_VERIF ["<b>Automated Verification &amp; Benchmarks (Non-Runtime Boundary)</b>"]
+                direction TB
+                V_CHAL["<b>18-Case Challenge Suite:</b> Canonical Trajectories (100% Acc)"]
+                V_STRS["<b>12-Case Boundary Stress Suite:</b> Jitter &amp; Pacing Stress (100% Acc)"]
+                V_UNIT["<b>18 Test Suites (1,437 Assertions):</b> tsc -b &amp; Oxlint Clean"]
+            end
+        end
+    end
+
+    %% ------------------------------------------------------------------------
+    %% LABELED DIRECTIONAL DATAFLOW CONNECTIONS
+    %% ------------------------------------------------------------------------
+    L_EVT ==>|1. User Attempted Action| GB_ENGINES
+    GB_ENGINES ==>|2. Invariant State &amp; Validation Result| GC_VIS
+    GB_ENGINES -.->|3. Invariant Telemetry Stream| D_ADP
+    GD_TAX ==>|4. Intervention Decision &amp; Rationale| HUD_BOX
+    HUD_BOX -.->|5. Closed-Loop Spatial Guidance Feedback| L_UI
+    L_SEL -.->|6. Zero-Tear Algorithm Hot-Swapping| XR_CORE
+    GE_VERIF -.-|Offline Rigorous Validation| GD_TAX
+
+    %% ------------------------------------------------------------------------
+    %% VISUAL STYLING
+    %% ------------------------------------------------------------------------
+    classDef clientGroup fill:#f8fafc,stroke:#475569,stroke-width:1.5px;
+    classDef engineGroup fill:#f0f9ff,stroke:#0284c7,stroke-width:1.5px;
+    classDef renderGroup fill:#f5f3ff,stroke:#7c3aed,stroke-width:1.5px;
+    classDef egeaGroup fill:#ecfdf5,stroke:#059669,stroke-width:1.5px;
+    classDef hudGroup fill:#fffbeb,stroke:#d97706,stroke-width:1.5px;
+    classDef verifGroup fill:#fef2f2,stroke:#dc2626,stroke-width:1.2px,stroke-dasharray: 4 4;
+
+    class GA clientGroup;
+    class GB engineGroup;
+    class GC renderGroup;
+    class GD egeaGroup;
+    class GE_HUD hudGroup;
+    class GE_VERIF verifGroup;
