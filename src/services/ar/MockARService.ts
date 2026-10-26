@@ -184,4 +184,40 @@ export class MockARService implements IARService {
       this._trackingListeners = this._trackingListeners.filter(cb => cb !== callback);
     };
   }
+
+  getPerformanceTelemetry() {
+    return {
+      sessionStartupMs: 120,
+      surfaceDetectionLatencyMs: 350,
+      placementLatencyMs: 400,
+      approximateFPS: 60,
+      sessionDurationSeconds: 15
+    };
+  }
+
+  getFramingDiagnostics() {
+    return {
+      activeAlgorithm: 'ds-binary-search-tree',
+      renderingMode: 'CANVAS_3D_FALLBACK' as const,
+      viewportWidth: 1280,
+      viewportHeight: 800,
+      aspectRatio: 1.6,
+      fovDegrees: 60,
+      cameraDistance: 0.85,
+      cameraPosition: [0, 0.40, 0.81] as [number, number, number],
+      targetPosition: [0, 0.15, 0] as [number, number, number],
+      modelBounds: {
+        min: [-0.25, 0.0, -0.05] as [number, number, number],
+        max: [0.25, 0.30, 0.05] as [number, number, number],
+        size: [0.50, 0.30, 0.10] as [number, number, number],
+        center: [0, 0.15, 0] as [number, number, number]
+      },
+      fitSuccess: true,
+      timestamp: Date.now()
+    };
+  }
+
+  refitScene(): boolean {
+    return true;
+  }
 }

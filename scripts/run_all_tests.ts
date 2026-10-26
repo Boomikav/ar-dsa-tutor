@@ -19,7 +19,8 @@ const testSuites = [
   'researchEvaluationVerification.ts',
   'egeaEvaluationVerification.ts',
   'egeaHardeningPhase2Verification.ts',
-  'egeaRuntimeWiringIntegration.ts'
+  'egeaRuntimeWiringIntegration.ts',
+  'arSceneFramingVerification.ts'
 ];
 
 let totalPassed = 0;

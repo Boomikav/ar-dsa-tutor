@@ -621,9 +621,8 @@ export class ThreeBSTVisualizer {
    */
   public dispose(): void {
     this.clear();
-    while (this.rootGroup.children.length > 0) {
-      const child = this.rootGroup.children[0];
-      this.rootGroup.remove(child);
+    if (this.rootGroup.children.includes(this.bstVisualGroup)) {
+      this.rootGroup.remove(this.bstVisualGroup);
     }
   }
 }

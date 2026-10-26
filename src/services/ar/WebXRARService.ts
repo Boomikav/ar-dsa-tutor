@@ -16,6 +16,7 @@ import { ThreeBubbleSortVisualizer } from './ThreeBubbleSortVisualizer';
 import { ThreeBinarySearchVisualizer } from './ThreeBinarySearchVisualizer';
 import { ThreeBFSVisualizer } from './ThreeBFSVisualizer';
 import { ThreeStackVisualizer } from './ThreeStackVisualizer';
+import { ARSceneFraming, ARFramingDiagnostic } from './ARSceneFraming';
 
 /**
  * WebXRARService
@@ -65,10 +66,15 @@ export class WebXRARService implements IARService {
   private viewerPosition: THREE.Vector3 = new THREE.Vector3(0, 0, 1.0);
   private viewerOrientation: THREE.Quaternion = new THREE.Quaternion();
 
-  // 3D Fallback Mode Orbit Controls
-  private fallbackAngleX = 0.3;
+  // 3D Fallback Mode Orbit Controls & Framing
+  private fallbackAngleX = 0.28;
   private fallbackAngleY = 0;
   private fallbackDistance = 0.85;
+  private baseFitDistance = 0.85;
+  private targetCenter: THREE.Vector3 = new THREE.Vector3(0, 0.15, 0);
+  private lastFramingDiagnostic: ARFramingDiagnostic | null = null;
+  private sessionGeneration = 0;
+  private initPromise: Promise<boolean> | null = null;
   private onWindowResize: (() => void) | null = null;
 
   // Performance & Latency Telemetry (outside XR render loop)
@@ -230,10 +236,44 @@ export class WebXRARService implements IARService {
    */
   public async initializeSession(
     canvasElement: HTMLCanvasElement | null,
+    domOverlayElement?: HTMLElement | null,
+    config?: ARSessionConfig
+  ): Promise<boolean> {
+    if (!canvasElement) return false;
+
+    // If an initialization is already underway for this canvas, share the promise
+    if (this.initPromise) {
+      return this.initPromise;
+    }
+
+    // Check if session is already initialized on this canvas
+    if (this.renderer && this.scene && this.camera && this.renderer.domElement === canvasElement) {
+      if (this._state === 'UNAVAILABLE') {
+        this.visualizer.rootGroup.visible = true;
+        this.isObjectPlaced = true;
+      }
+      this.ensureVisualizersAttached();
+      this.fitCameraToActiveVisualization();
+      return true;
+    }
+
+    this.initPromise = (async () => {
+      try {
+        return await this._doInitializeSession(canvasElement, domOverlayElement, config);
+      } finally {
+        this.initPromise = null;
+      }
+    })();
+
+    return this.initPromise;
+  }
+
+  private async _doInitializeSession(
+    canvasElement: HTMLCanvasElement,
     _domOverlayElement?: HTMLElement | null,
     _config?: ARSessionConfig
   ): Promise<boolean> {
-    if (!canvasElement) return false;
+    const currentGen = ++this.sessionGeneration;
     this.canvas = canvasElement;
 
     // 1. Create WebGL Renderer with WebXR support
@@ -243,6 +283,12 @@ export class WebXRARService implements IARService {
       return false;
     }
 
+    if (this.renderer) {
+      this.renderer.setAnimationLoop(null);
+      this.renderer.dispose();
+      this.renderer = null;
+    }
+
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvasElement,
       context: gl as WebGLRenderingContext,
@@ -250,14 +296,16 @@ export class WebXRARService implements IARService {
       antialias: true,
       powerPreference: 'high-performance'
     });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setSize(canvasElement.clientWidth, canvasElement.clientHeight, false);
+    this.renderer.setPixelRatio(Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2));
+    const initialWidth = canvasElement.clientWidth || (typeof window !== 'undefined' ? window.innerWidth : 1280);
+    const initialHeight = canvasElement.clientHeight || (typeof window !== 'undefined' ? window.innerHeight : 800);
+    this.renderer.setSize(initialWidth, initialHeight, false);
     this.renderer.xr.enabled = true;
 
     // 2. Create Scene & Lighting
     this.scene = new THREE.Scene();
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     this.scene.add(ambientLight);
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
@@ -277,39 +325,49 @@ export class WebXRARService implements IARService {
     this.reticle.visible = false;
     this.scene.add(this.reticle);
 
-    // 4. Attach 3D BST Visualizer root group (hidden until placed)
+    // 4. Attach Visualizer Groups to Scene
+    this.ensureVisualizersAttached();
     this.visualizer.rootGroup.visible = false;
     this.scene.add(this.visualizer.rootGroup);
 
-    // 5. Create Camera
+    // 5. Create Camera with ergonomic 60 deg FOV
     this.camera = new THREE.PerspectiveCamera(
-      70,
-      canvasElement.clientWidth / canvasElement.clientHeight,
+      60,
+      initialWidth / Math.max(1, initialHeight),
       0.01,
       20
     );
-    this.updateFallbackCameraPosition();
 
     // 6. Dynamic check of WebXR support
     const isSupported = await this.isARSupported();
+    if (this.sessionGeneration !== currentGen) return false;
+
     if (isSupported) {
       this.setState('READY');
+      this.visualizer.rootGroup.visible = false;
     } else {
       // Graceful fallback to 3D Learning Mode
       this.setState('UNAVAILABLE');
       this.visualizer.rootGroup.position.set(0, 0, 0);
+      this.visualizer.rootGroup.visible = true;
       this.isObjectPlaced = true;
+      this.ensureVisualizersAttached();
+      this.fitCameraToActiveVisualization();
     }
 
     // 7. Responsive viewport resize handler
+    if (typeof window !== 'undefined' && this.onWindowResize) {
+      window.removeEventListener('resize', this.onWindowResize);
+    }
     this.onWindowResize = () => {
       if (!this.canvas || !this.renderer || !this.camera) return;
-      const width = typeof window !== 'undefined' ? window.innerWidth : this.canvas.clientWidth;
-      const height = typeof window !== 'undefined' ? window.innerHeight : this.canvas.clientHeight;
+      const width = this.canvas.clientWidth || window.innerWidth;
+      const height = this.canvas.clientHeight || window.innerHeight;
       this.renderer.setSize(width, height, false);
       if (!this.renderer.xr.isPresenting) {
         this.camera.aspect = width / Math.max(1, height);
         this.camera.updateProjectionMatrix();
+        this.fitCameraToActiveVisualization();
       }
     };
     if (typeof window !== 'undefined') {
@@ -612,38 +670,162 @@ export class WebXRARService implements IARService {
     };
   }
 
+  public ensureVisualizersAttached(): void {
+    if (!this.visualizer.rootGroup.children.includes(this.visualizer.bstVisualGroup)) {
+      this.visualizer.rootGroup.add(this.visualizer.bstVisualGroup);
+    }
+    if (!this.visualizer.rootGroup.children.includes(this.bubbleSortVisualizer.visualGroup)) {
+      this.visualizer.rootGroup.add(this.bubbleSortVisualizer.visualGroup);
+    }
+    if (!this.visualizer.rootGroup.children.includes(this.binarySearchVisualizer.visualGroup)) {
+      this.visualizer.rootGroup.add(this.binarySearchVisualizer.visualGroup);
+    }
+    if (!this.visualizer.rootGroup.children.includes(this.bfsVisualizer.visualGroup)) {
+      this.visualizer.rootGroup.add(this.bfsVisualizer.visualGroup);
+    }
+    if (!this.visualizer.rootGroup.children.includes(this.stackVisualizer.visualGroup)) {
+      this.visualizer.rootGroup.add(this.stackVisualizer.visualGroup);
+    }
+  }
+
+  public getActiveVisualGroup(): THREE.Group {
+    switch (this.activeAlgorithmId) {
+      case 'algo-bubble-sort':
+        return this.bubbleSortVisualizer.visualGroup;
+      case 'algo-binary-search':
+        return this.binarySearchVisualizer.visualGroup;
+      case 'algo-breadth-first-search':
+      case 'algo-bfs':
+        return this.bfsVisualizer.visualGroup;
+      case 'ds-stack':
+        return this.stackVisualizer.visualGroup;
+      case 'ds-binary-search-tree':
+      default:
+        return this.visualizer.bstVisualGroup;
+    }
+  }
+
+  public fitCameraToActiveVisualization(): boolean {
+    if (!this.camera || !this.canvas || (this.renderer && this.renderer.xr.isPresenting)) {
+      return false;
+    }
+
+    this.ensureVisualizersAttached();
+    const activeGroup = this.getActiveVisualGroup();
+
+    // Compute bounding box
+    const bounds = ARSceneFraming.computeBoundingBox(activeGroup);
+
+    const width = this.canvas.clientWidth || (typeof window !== 'undefined' ? window.innerWidth : 1280);
+    const height = this.canvas.clientHeight || (typeof window !== 'undefined' ? window.innerHeight : 800);
+    const aspect = width / Math.max(1, height);
+
+    this.camera.aspect = aspect;
+    this.camera.updateProjectionMatrix();
+
+    const framing = ARSceneFraming.computeCameraFit(bounds, {
+      fovDegrees: this.camera.fov || 60,
+      aspectRatio: aspect,
+      elevationAngleRad: this.fallbackAngleX,
+      azimuthAngleRad: this.fallbackAngleY
+    });
+
+    if (framing.isValid) {
+      this.targetCenter.copy(framing.targetPosition);
+      this.baseFitDistance = framing.distance;
+      this.fallbackDistance = framing.distance;
+
+      this.camera.position.copy(framing.cameraPosition);
+      this.camera.lookAt(this.targetCenter);
+      this.camera.updateMatrixWorld();
+
+      this.lastFramingDiagnostic = {
+        activeAlgorithm: this.activeAlgorithmId,
+        renderingMode: 'CANVAS_3D_FALLBACK',
+        viewportWidth: width,
+        viewportHeight: height,
+        aspectRatio: aspect,
+        fovDegrees: this.camera.fov,
+        cameraDistance: framing.distance,
+        cameraPosition: [this.camera.position.x, this.camera.position.y, this.camera.position.z],
+        targetPosition: [this.targetCenter.x, this.targetCenter.y, this.targetCenter.z],
+        modelBounds: framing.box,
+        fitSuccess: true,
+        timestamp: Date.now()
+      };
+      return true;
+    }
+
+    return false;
+  }
+
+  public refitScene(): boolean {
+    this.fallbackAngleX = 0.28;
+    this.fallbackAngleY = 0;
+    return this.fitCameraToActiveVisualization();
+  }
+
+  public getFramingDiagnostics(): ARFramingDiagnostic | null {
+    return this.lastFramingDiagnostic;
+  }
+
   public setActiveAlgorithm(algorithmId: string): void {
     this.activeAlgorithmId = algorithmId;
+    this.ensureVisualizersAttached();
+
     this.visualizer.bstVisualGroup.visible = algorithmId === 'ds-binary-search-tree';
     this.bubbleSortVisualizer.visualGroup.visible = algorithmId === 'algo-bubble-sort';
     this.binarySearchVisualizer.visualGroup.visible = algorithmId === 'algo-binary-search';
     this.bfsVisualizer.visualGroup.visible = algorithmId === 'algo-breadth-first-search' || algorithmId === 'algo-bfs';
     this.stackVisualizer.visualGroup.visible = algorithmId === 'ds-stack';
+
+    // In 3D fallback mode, reset view angles and fit camera to the newly activated algorithm
+    if (this._state === 'UNAVAILABLE') {
+      this.visualizer.rootGroup.visible = true;
+      this.fallbackAngleX = 0.28;
+      this.fallbackAngleY = 0;
+      this.fitCameraToActiveVisualization();
+    }
   }
 
   public renderBST(root: BSTNode | null, options: BST3DRenderOptions = {}): void {
     this.setActiveAlgorithm('ds-binary-search-tree');
     this.visualizer.render(root, options);
+    if (this._state === 'UNAVAILABLE') {
+      this.fitCameraToActiveVisualization();
+    }
   }
 
   public renderBubbleSort(state: any, options: any = {}): void {
     this.setActiveAlgorithm('algo-bubble-sort');
     this.bubbleSortVisualizer.render(state, options);
+    if (this._state === 'UNAVAILABLE') {
+      this.fitCameraToActiveVisualization();
+    }
   }
 
   public renderBinarySearch(state: any, options: any = {}): void {
     this.setActiveAlgorithm('algo-binary-search');
     this.binarySearchVisualizer.render(state, options);
+    if (this._state === 'UNAVAILABLE') {
+      this.fitCameraToActiveVisualization();
+    }
   }
 
   public renderBFS(state: any, options: any = {}): void {
     this.setActiveAlgorithm('algo-breadth-first-search');
     this.bfsVisualizer.render(state, options);
+    if (this._state === 'UNAVAILABLE') {
+      this.fitCameraToActiveVisualization();
+    }
   }
 
   public renderStack(state: any, options: any = {}): void {
     this.setActiveAlgorithm('ds-stack');
     this.stackVisualizer.render(state, options);
+    if (this._state === 'UNAVAILABLE') {
+      this.fitCameraToActiveVisualization();
+    }
   }
 
   public selectElementAt(screenX: number, screenY: number): any {
@@ -705,18 +887,20 @@ export class WebXRARService implements IARService {
   }
 
   public zoomFallbackCamera(deltaZoom: number): void {
-    this.fallbackDistance = Math.max(0.4, Math.min(2.0, this.fallbackDistance - deltaZoom * 0.001));
+    const minZoom = Math.max(0.25, this.baseFitDistance * 0.45);
+    const maxZoom = Math.min(3.5, this.baseFitDistance * 2.5);
+    this.fallbackDistance = Math.max(minZoom, Math.min(maxZoom, this.fallbackDistance - deltaZoom * 0.001));
     this.updateFallbackCameraPosition();
   }
 
   private updateFallbackCameraPosition(): void {
-    if (!this.camera || this.xrSession) return;
-    const x = this.fallbackDistance * Math.sin(this.fallbackAngleY) * Math.cos(this.fallbackAngleX);
-    const y = this.fallbackDistance * Math.sin(this.fallbackAngleX) + 0.15;
-    const z = this.fallbackDistance * Math.cos(this.fallbackAngleY) * Math.cos(this.fallbackAngleX);
+    if (!this.camera || (this.renderer && this.renderer.xr.isPresenting)) return;
+    const x = this.targetCenter.x + this.fallbackDistance * Math.sin(this.fallbackAngleY) * Math.cos(this.fallbackAngleX);
+    const y = this.targetCenter.y + this.fallbackDistance * Math.sin(this.fallbackAngleX);
+    const z = this.targetCenter.z + this.fallbackDistance * Math.cos(this.fallbackAngleY) * Math.cos(this.fallbackAngleX);
 
     this.camera.position.set(x, y, z);
-    this.camera.lookAt(0, 0.05, 0);
+    this.camera.lookAt(this.targetCenter);
   }
 
   public stepVisualization(_forward: boolean): number {
@@ -731,6 +915,8 @@ export class WebXRARService implements IARService {
    * Complete teardown of WebXR session, WebGL renderer, Three.js scene, and resources.
    */
   public async disposeSession(): Promise<void> {
+    this.sessionGeneration++;
+    this.initPromise = null;
     await this.endARSession();
 
     if (this.xrHitTestSource && typeof this.xrHitTestSource.cancel === 'function') {

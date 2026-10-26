@@ -1,0 +1,612 @@
+[
+  {
+    "algorithm": "Binary Search Tree",
+    "key": "bst",
+    "viewport": "desktop",
+    "width": 1280,
+    "height": 800,
+    "diag": {
+      "state": "UNAVAILABLE",
+      "isObjectPlaced": true,
+      "framing": {
+        "activeAlgorithm": "ds-binary-search-tree",
+        "renderingMode": "CANVAS_3D_FALLBACK",
+        "viewportWidth": 1280,
+        "viewportHeight": 800,
+        "aspectRatio": 1.6,
+        "fovDegrees": 60,
+        "cameraDistance": 0.5193498700192687,
+        "cameraPosition": [
+          0,
+          0.3095528484542033,
+          0.505624017415045
+        ],
+        "targetPosition": [
+          0,
+          0.16602757829334006,
+          0.0065000004470348385
+        ],
+        "modelBounds": {
+          "min": [
+            -0.27899999999999997,
+            0.038,
+            -0.03999999910593033
+          ],
+          "max": [
+            0.27899999999999997,
+            0.402,
+            0.053000000000000005
+          ],
+          "size": [
+            0.5579999999999999,
+            0.36400000000000005,
+            0.09299999910593033
+          ],
+          "center": [
+            0,
+            0.22,
+            0.0065000004470348385
+          ]
+        },
+        "fitSuccess": true,
+        "timestamp": 1793002639206
+      },
+      "canvas": {
+        "w": 1280,
+        "h": 800,
+        "cw": 1280,
+        "ch": 800
+      }
+    },
+    "screenshot": "submission/review_release/diag_after/bst_desktop.png"
+  },
+  {
+    "algorithm": "Bubble Sort",
+    "key": "bubble_sort",
+    "viewport": "desktop",
+    "width": 1280,
+    "height": 800,
+    "diag": {
+      "state": "UNAVAILABLE",
+      "isObjectPlaced": true,
+      "framing": {
+        "activeAlgorithm": "algo-bubble-sort",
+        "renderingMode": "CANVAS_3D_FALLBACK",
+        "viewportWidth": 1280,
+        "viewportHeight": 800,
+        "aspectRatio": 1.6,
+        "fovDegrees": 60,
+        "cameraDistance": 0.43994459840332734,
+        "cameraPosition": [
+          0,
+          0.1796107910070272,
+          0.4228111488509658
+        ],
+        "targetPosition": [
+          0,
+          0.0580296161829971,
+          0
+        ],
+        "modelBounds": {
+          "min": [
+            -0.195,
+            -0.055,
+            -0.027499999850988388
+          ],
+          "max": [
+            0.195,
+            0.2625,
+            0.027499999850988388
+          ],
+          "size": [
+            0.39,
+            0.3175,
+            0.054999999701976776
+          ],
+          "center": [
+            0,
+            0.10375000000000001,
+            0
+          ]
+        },
+        "fitSuccess": true,
+        "timestamp": 1793002640653
+      },
+      "canvas": {
+        "w": 1280,
+        "h": 800,
+        "cw": 1280,
+        "ch": 800
+      }
+    },
+    "screenshot": "submission/review_release/diag_after/bubble_sort_desktop.png"
+  },
+  {
+    "algorithm": "Binary Search",
+    "key": "binary_search",
+    "viewport": "desktop",
+    "width": 1280,
+    "height": 800,
+    "diag": {
+      "state": "UNAVAILABLE",
+      "isObjectPlaced": true,
+      "framing": {
+        "activeAlgorithm": "algo-binary-search",
+        "renderingMode": "CANVAS_3D_FALLBACK",
+        "viewportWidth": 1280,
+        "viewportHeight": 800,
+        "aspectRatio": 1.6,
+        "fovDegrees": 60,
+        "cameraDistance": 0.35,
+        "cameraPosition": [
+          -2.7755575615628914e-17,
+          0.1447264100384934,
+          0.3438694034832756
+        ],
+        "targetPosition": [
+          -2.7755575615628914e-17,
+          0.04800193304105359,
+          0.0075000000745058075
+        ],
+        "modelBounds": {
+          "min": [
+            -0.23125000000000004,
+            -0.0075,
+            -0.027499999850988388
+          ],
+          "max": [
+            0.23124999999999998,
+            0.17625000000000002,
+            0.0425
+          ],
+          "size": [
+            0.4625,
+            0.18375000000000002,
+            0.0699999998509884
+          ],
+          "center": [
+            -2.7755575615628914e-17,
+            0.084375,
+            0.0075000000745058075
+          ]
+        },
+        "fitSuccess": true,
+        "timestamp": 1793002641993
+      },
+      "canvas": {
+        "w": 1280,
+        "h": 800,
+        "cw": 1280,
+        "ch": 800
+      }
+    },
+    "screenshot": "submission/review_release/diag_after/binary_search_desktop.png"
+  },
+  {
+    "algorithm": "Breadth-First Search",
+    "key": "bfs",
+    "viewport": "desktop",
+    "width": 1280,
+    "height": 800,
+    "diag": {
+      "state": "UNAVAILABLE",
+      "isObjectPlaced": true,
+      "framing": {
+        "activeAlgorithm": "algo-breadth-first-search",
+        "renderingMode": "CANVAS_3D_FALLBACK",
+        "viewportWidth": 1280,
+        "viewportHeight": 800,
+        "aspectRatio": 1.6,
+        "fovDegrees": 60,
+        "cameraDistance": 0.4965909799979835,
+        "cameraPosition": [
+          -0.01999999999999999,
+          0.2412534744831636,
+          0.48475146255408497
+        ],
+        "targetPosition": [
+          -0.01999999999999999,
+          0.104017752134732,
+          0.007500000610947608
+        ],
+        "modelBounds": {
+          "min": [
+            -0.25799999877810476,
+            -0.01799999877810478,
+            -0.03799999877810478
+          ],
+          "max": [
+            0.21799999877810478,
+            0.32925000000000004,
+            0.053
+          ],
+          "size": [
+            0.47599999755620953,
+            0.3472499987781048,
+            0.09099999877810477
+          ],
+          "center": [
+            -0.01999999999999999,
+            0.15562500061094764,
+            0.007500000610947608
+          ]
+        },
+        "fitSuccess": true,
+        "timestamp": 1793002643274
+      },
+      "canvas": {
+        "w": 1280,
+        "h": 800,
+        "cw": 1280,
+        "ch": 800
+      }
+    },
+    "screenshot": "submission/review_release/diag_after/bfs_desktop.png"
+  },
+  {
+    "algorithm": "Stack",
+    "key": "stack",
+    "viewport": "desktop",
+    "width": 1280,
+    "height": 800,
+    "diag": {
+      "state": "UNAVAILABLE",
+      "isObjectPlaced": true,
+      "framing": {
+        "activeAlgorithm": "ds-stack",
+        "renderingMode": "CANVAS_3D_FALLBACK",
+        "viewportWidth": 1280,
+        "viewportHeight": 800,
+        "aspectRatio": 1.6,
+        "fovDegrees": 60,
+        "cameraDistance": 0.4819912296057715,
+        "cameraPosition": [
+          0.027499998211860666,
+          0.2676110009250531,
+          0.46322029243072216
+        ],
+        "targetPosition": [
+          0.027499998211860666,
+          0.13441000206513543,
+          0
+        ],
+        "modelBounds": {
+          "min": [
+            -0.09000000357627869,
+            0.023999999947845935,
+            -0.06499999761581421
+          ],
+          "max": [
+            0.14500000000000002,
+            0.345,
+            0.06499999761581421
+          ],
+          "size": [
+            0.2350000035762787,
+            0.321000000052154,
+            0.12999999523162842
+          ],
+          "center": [
+            0.027499998211860666,
+            0.18449999997392297,
+            0
+          ]
+        },
+        "fitSuccess": true,
+        "timestamp": 1793002644507
+      },
+      "canvas": {
+        "w": 1280,
+        "h": 800,
+        "cw": 1280,
+        "ch": 800
+      }
+    },
+    "screenshot": "submission/review_release/diag_after/stack_desktop.png"
+  },
+  {
+    "algorithm": "Binary Search Tree",
+    "key": "bst",
+    "viewport": "mobile",
+    "width": 390,
+    "height": 844,
+    "diag": {
+      "state": "UNAVAILABLE",
+      "isObjectPlaced": true,
+      "framing": {
+        "activeAlgorithm": "ds-binary-search-tree",
+        "renderingMode": "CANVAS_3D_FALLBACK",
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "aspectRatio": 0.46208530805687204,
+        "fovDegrees": 60,
+        "cameraDistance": 1.4583106009636577,
+        "cameraPosition": [
+          0,
+          0.4377820479709746,
+          1.4080173342494067
+        ],
+        "targetPosition": [
+          0,
+          0.034769676033740426,
+          0.0065000004470348385
+        ],
+        "modelBounds": {
+          "min": [
+            -0.27899999999999997,
+            0.038,
+            -0.03999999910593033
+          ],
+          "max": [
+            0.27899999999999997,
+            0.402,
+            0.053000000000000005
+          ],
+          "size": [
+            0.5579999999999999,
+            0.36400000000000005,
+            0.09299999910593033
+          ],
+          "center": [
+            0,
+            0.22,
+            0.0065000004470348385
+          ]
+        },
+        "fitSuccess": true,
+        "timestamp": 1793002646428
+      },
+      "canvas": {
+        "w": 390,
+        "h": 844,
+        "cw": 390,
+        "ch": 844
+      }
+    },
+    "screenshot": "submission/review_release/diag_after/bst_mobile.png"
+  },
+  {
+    "algorithm": "Bubble Sort",
+    "key": "bubble_sort",
+    "viewport": "mobile",
+    "width": 390,
+    "height": 844,
+    "diag": {
+      "state": "UNAVAILABLE",
+      "isObjectPlaced": true,
+      "framing": {
+        "activeAlgorithm": "algo-bubble-sort",
+        "renderingMode": "CANVAS_3D_FALLBACK",
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "aspectRatio": 0.46208530805687204,
+        "fovDegrees": 60,
+        "cameraDistance": 1.0142493449229781,
+        "cameraPosition": [
+          0,
+          0.2552165664122469,
+          0.974749848741365
+        ],
+        "targetPosition": [
+          0,
+          -0.02507696910967025,
+          0
+        ],
+        "modelBounds": {
+          "min": [
+            -0.195,
+            -0.055,
+            -0.027499999850988388
+          ],
+          "max": [
+            0.195,
+            0.2625,
+            0.027499999850988388
+          ],
+          "size": [
+            0.39,
+            0.3175,
+            0.054999999701976776
+          ],
+          "center": [
+            0,
+            0.10375000000000001,
+            0
+          ]
+        },
+        "fitSuccess": true,
+        "timestamp": 1793002647817
+      },
+      "canvas": {
+        "w": 390,
+        "h": 844,
+        "cw": 390,
+        "ch": 844
+      }
+    },
+    "screenshot": "submission/review_release/diag_after/bubble_sort_mobile.png"
+  },
+  {
+    "algorithm": "Binary Search",
+    "key": "binary_search",
+    "viewport": "mobile",
+    "width": 390,
+    "height": 844,
+    "diag": {
+      "state": "UNAVAILABLE",
+      "isObjectPlaced": true,
+      "framing": {
+        "activeAlgorithm": "algo-binary-search",
+        "renderingMode": "CANVAS_3D_FALLBACK",
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "aspectRatio": 0.46208530805687204,
+        "fovDegrees": 60,
+        "cameraDistance": 1.205183518119841,
+        "cameraPosition": [
+          -2.7755575615628914e-17,
+          0.2643554064947231,
+          1.1657481743260865
+        ],
+        "targetPosition": [
+          -2.7755575615628914e-17,
+          -0.06870386629406586,
+          0.0075000000745058075
+        ],
+        "modelBounds": {
+          "min": [
+            -0.23125000000000004,
+            -0.0075,
+            -0.027499999850988388
+          ],
+          "max": [
+            0.23124999999999998,
+            0.17625000000000002,
+            0.0425
+          ],
+          "size": [
+            0.4625,
+            0.18375000000000002,
+            0.0699999998509884
+          ],
+          "center": [
+            -2.7755575615628914e-17,
+            0.084375,
+            0.0075000000745058075
+          ]
+        },
+        "fitSuccess": true,
+        "timestamp": 1793002649117
+      },
+      "canvas": {
+        "w": 390,
+        "h": 844,
+        "cw": 390,
+        "ch": 844
+      }
+    },
+    "screenshot": "submission/review_release/diag_after/binary_search_mobile.png"
+  },
+  {
+    "algorithm": "Breadth-First Search",
+    "key": "bfs",
+    "viewport": "mobile",
+    "width": 390,
+    "height": 844,
+    "diag": {
+      "state": "UNAVAILABLE",
+      "isObjectPlaced": true,
+      "framing": {
+        "activeAlgorithm": "algo-breadth-first-search",
+        "renderingMode": "CANVAS_3D_FALLBACK",
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "aspectRatio": 0.46208530805687204,
+        "fovDegrees": 60,
+        "cameraDistance": 1.2498402194989455,
+        "cameraPosition": [
+          -0.01999999999999999,
+          0.34227437589431087,
+          1.2086657405799368
+        ],
+        "targetPosition": [
+          -0.01999999999999999,
+          -0.0031260285668345267,
+          0.007500000610947608
+        ],
+        "modelBounds": {
+          "min": [
+            -0.25799999877810476,
+            -0.01799999877810478,
+            -0.03799999877810478
+          ],
+          "max": [
+            0.21799999877810478,
+            0.32925000000000004,
+            0.053
+          ],
+          "size": [
+            0.47599999755620953,
+            0.3472499987781048,
+            0.09099999877810477
+          ],
+          "center": [
+            -0.01999999999999999,
+            0.15562500061094764,
+            0.007500000610947608
+          ]
+        },
+        "fitSuccess": true,
+        "timestamp": 1793002650611
+      },
+      "canvas": {
+        "w": 390,
+        "h": 844,
+        "cw": 390,
+        "ch": 844
+      }
+    },
+    "screenshot": "submission/review_release/diag_after/bfs_mobile.png"
+  },
+  {
+    "algorithm": "Stack",
+    "key": "stack",
+    "viewport": "mobile",
+    "width": 390,
+    "height": 844,
+    "diag": {
+      "state": "UNAVAILABLE",
+      "isObjectPlaced": true,
+      "framing": {
+        "activeAlgorithm": "ds-stack",
+        "renderingMode": "CANVAS_3D_FALLBACK",
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "aspectRatio": 0.46208530805687204,
+        "fovDegrees": 60,
+        "cameraDistance": 0.6595797402332712,
+        "cameraPosition": [
+          0.027499998211860666,
+          0.28300070793918375,
+          0.6338926963507908
+        ],
+        "targetPosition": [
+          0.027499998211860666,
+          0.10072212104726841,
+          0
+        ],
+        "modelBounds": {
+          "min": [
+            -0.09000000357627869,
+            0.023999999947845935,
+            -0.06499999761581421
+          ],
+          "max": [
+            0.14500000000000002,
+            0.345,
+            0.06499999761581421
+          ],
+          "size": [
+            0.2350000035762787,
+            0.321000000052154,
+            0.12999999523162842
+          ],
+          "center": [
+            0.027499998211860666,
+            0.18449999997392297,
+            0
+          ]
+        },
+        "fitSuccess": true,
+        "timestamp": 1793002652092
+      },
+      "canvas": {
+        "w": 390,
+        "h": 844,
+        "cw": 390,
+        "ch": 844
+      }
+    },
+    "screenshot": "submission/review_release/diag_after/stack_mobile.png"
+  }
+]

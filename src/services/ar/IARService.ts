@@ -193,4 +193,10 @@ export interface IARService {
 
   /** Returns performance timing and frame rate telemetry */
   getPerformanceTelemetry?(): ARPerformanceTelemetry;
+
+  /** Returns camera framing and scene dimension diagnostics */
+  getFramingDiagnostics?(): any;
+
+  /** Recalculates bounding box and refits camera framing to active visualization */
+  refitScene?(): boolean;
 }

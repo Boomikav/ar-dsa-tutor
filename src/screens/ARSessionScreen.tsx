@@ -150,7 +150,7 @@ export const ARSessionScreen: React.FC = () => {
 
   // Update 3D visualization whenever BST practice session changes
   const update3DVisualization = useCallback((session: PracticeSessionState) => {
-    if (activeAlgorithmId === 'ds-binary-search-tree' || selectedTopic.id === 'ds-binary-search-tree') {
+    if (activeAlgorithmId === 'ds-binary-search-tree') {
       services.arService.renderBST(session.currentTree, {
         activeNodeValue: session.currentNode?.value ?? null,
         targetValue: session.targetValue,
@@ -161,7 +161,7 @@ export const ARSessionScreen: React.FC = () => {
         } : null
       });
     }
-  }, [activeAlgorithmId, selectedTopic.id, services.arService]);
+  }, [activeAlgorithmId, services.arService]);
 
   // Dedicated effects for algorithm 3D scene synchronizations
   useEffect(() => {
@@ -252,19 +252,28 @@ export const ARSessionScreen: React.FC = () => {
   }, [isAutoPlaying, activeAlgorithmId, bubbleSortEngine, binarySearchEngine, bfsEngine]);
 
   // Initialize AR / 3D Canvas Context (Mount Only)
+  // Session Mount Tracking Ref across StrictMode renders
+  const isComponentMountedRef = useRef(true);
+
+  // Initialize AR / 3D Canvas Context (Mount Only)
   useEffect(() => {
-    let isMounted = true;
+    isComponentMountedRef.current = true;
 
     async function init() {
       if (!canvasRef.current) return;
 
       // Subscribe to state machine before initialization
       const unsubscribe = services.arService.onStateChange(state => {
-        if (isMounted) setSessionState(state);
+        if (isComponentMountedRef.current) setSessionState(state);
       });
 
       await services.arService.initializeSession(canvasRef.current, overlayRef.current);
-      if (!isMounted) return;
+      if (!isComponentMountedRef.current) return;
+
+      // Expose for diagnostic inspection
+      if (typeof window !== 'undefined') {
+        (window as any).__AR_SERVICE__ = services.arService;
+      }
 
       // Ensure immediate sync of current session state
       setSessionState(services.arService.sessionState);
@@ -290,8 +299,12 @@ export const ARSessionScreen: React.FC = () => {
     init();
 
     return () => {
-      isMounted = false;
-      services.arService.disposeSession();
+      isComponentMountedRef.current = false;
+      setTimeout(() => {
+        if (!isComponentMountedRef.current) {
+          services.arService.disposeSession();
+        }
+      }, 200);
     };
   }, [services.arService]);
 
