@@ -37,8 +37,8 @@ def generate_figure_1_architecture():
     print("Generated Mermaid architecture figure (SVG, PNG, MMD)")
 
 def generate_figure_2_latency():
-    # Single-column IEEE figure: 3.45 inches wide by 2.5 inches high
-    fig, ax = plt.subplots(figsize=(3.45, 2.5), dpi=300)
+    # Single-column IEEE figure: 3.45 inches wide by 2.25 inches high
+    fig, ax = plt.subplots(figsize=(3.45, 2.25), dpi=300)
 
     stages = [
         'Pure Policy\nMedian',
@@ -53,21 +53,21 @@ def generate_figure_2_latency():
 
     ax.set_xticks(range(len(stages)))
     bars = ax.bar(range(len(stages)), latencies_us, color=colors, width=0.6, edgecolor='#0f172a', linewidth=0.8)
-    ax.set_ylabel('Execution Latency (μs)', fontweight='bold', fontsize=8.2)
-    ax.set_title('Empirical Decision Latency (N = 1,000 Iterations)', fontweight='bold', fontsize=8.8, pad=6)
+    ax.set_ylabel('Execution Latency (μs)', fontweight='bold', fontsize=8.0)
+    ax.set_title('Empirical Decision Latency (N = 1,000 Iterations)', fontweight='bold', fontsize=8.5, pad=5)
     ax.set_ylim(0, 32)
 
     # Frame budget callout
     ax.axhline(y=28, color='#dc2626', linestyle=':', linewidth=1.0)
-    ax.text(2.5, 29.2, '60 FPS Frame Budget: 16,667 μs (16.67 ms)', ha='center', va='bottom', fontsize=6.5, color='#dc2626', fontweight='bold')
-    ax.text(2.5, 26.3, 'Max Pipeline (24 μs) < 0.15% of Render Frame Budget', ha='center', va='top', fontsize=6.1, color='#475569', style='italic')
+    ax.text(2.5, 29.2, '60 FPS Frame Budget: 16,667 μs (16.67 ms)', ha='center', va='bottom', fontsize=6.3, color='#dc2626', fontweight='bold')
+    ax.text(2.5, 26.3, 'Max Pipeline (24 μs) < 0.15% of Render Frame Budget', ha='center', va='top', fontsize=5.9, color='#475569', style='italic')
 
     for bar in bars:
         h = bar.get_height()
         ax.text(bar.get_x() + bar.get_width()/2., h + 0.6, f'{h} μs\n({h/1000:.3f}ms)',
-                ha='center', va='bottom', fontsize=6.0, fontweight='bold', color='#0f172a')
+                ha='center', va='bottom', fontsize=5.8, fontweight='bold', color='#0f172a')
 
-    ax.set_xticklabels(stages, fontsize=6.4)
+    ax.set_xticklabels(stages, fontsize=6.3)
     ax.grid(axis='y', linestyle=':', alpha=0.5)
     plt.tight_layout()
     plt.savefig('submission/review_release/figures/fig2_latency_benchmark.png', dpi=300, bbox_inches='tight')
@@ -75,8 +75,8 @@ def generate_figure_2_latency():
     print("Generated redesigned fig2_latency_benchmark.png")
 
 def generate_figure_3_accuracy_comparison():
-    # Single-column IEEE figure: 3.45 inches wide by 2.5 inches high
-    fig, ax = plt.subplots(figsize=(3.45, 2.5), dpi=300)
+    # Single-column IEEE figure: 3.45 inches wide by 2.25 inches high
+    fig, ax = plt.subplots(figsize=(3.45, 2.25), dpi=300)
 
     categories = ['Fixed Hint\nBaseline', 'Simple Error\nRule Baseline', 'Matched-Hist.\nBaseline', 'EGEA Policy\n(Ours)']
     challenge_acc = [33.3, 50.0, 83.3, 100.0]
@@ -88,20 +88,20 @@ def generate_figure_3_accuracy_comparison():
     rects1 = ax.bar([i - width/2 for i in x], challenge_acc, width, label='Authored Challenge Suite (N=18)', color='#38bdf8', edgecolor='#0369a1', lw=0.8)
     rects2 = ax.bar([i + width/2 for i in x], boundary_acc, width, label='Authored Boundary Stress Suite (N=12)', color='#10b981', edgecolor='#047857', lw=0.8)
 
-    ax.set_ylabel('Intervention Accuracy (%)', fontweight='bold', fontsize=8.2)
-    ax.set_title('Intervention Accuracy Across Benchmark Suites', fontweight='bold', fontsize=8.8, pad=6)
+    ax.set_ylabel('Intervention Accuracy (%)', fontweight='bold', fontsize=8.0)
+    ax.set_title('Intervention Accuracy Across Benchmark Suites', fontweight='bold', fontsize=8.5, pad=5)
     ax.set_xticks(list(x))
-    ax.set_xticklabels(categories, fontsize=7.0)
+    ax.set_xticklabels(categories, fontsize=6.8)
     ax.set_ylim(0, 120)
-    ax.legend(loc='upper left', framealpha=0.92, fontsize=6.8)
+    ax.legend(loc='upper left', framealpha=0.92, fontsize=6.5)
 
     for r in rects1:
         h = r.get_height()
-        ax.text(r.get_x() + r.get_width()/2., h + 1.2, f'{h:.1f}%', ha='center', va='bottom', fontsize=6.2, color='#0369a1', fontweight='bold')
+        ax.text(r.get_x() + r.get_width()/2., h + 1.2, f'{h:.1f}%', ha='center', va='bottom', fontsize=6.0, color='#0369a1', fontweight='bold')
 
     for r in rects2:
         h = r.get_height()
-        ax.text(r.get_x() + r.get_width()/2., h + 1.2, f'{h:.1f}%', ha='center', va='bottom', fontsize=6.2, color='#047857', fontweight='bold')
+        ax.text(r.get_x() + r.get_width()/2., h + 1.2, f'{h:.1f}%', ha='center', va='bottom', fontsize=6.0, color='#047857', fontweight='bold')
 
     ax.grid(axis='y', linestyle=':', alpha=0.5)
     plt.tight_layout()

@@ -1,145 +1,76 @@
-flowchart TD
-    %% ------------------------------------------------------------------------
-    %% GROUP A: LEARNER INTERACTION
-    %% ------------------------------------------------------------------------
-    subgraph GA ["<b>GROUP A: LEARNER INTERACTION &amp; CONTROLS</b>"]
+flowchart LR
+    %% ========================================================================
+    %% PILLAR I: CLIENT & SESSION LAYER
+    %% ========================================================================
+    subgraph COL1 ["<b>PILLAR I: CLIENT &amp; SESSION LAYER</b>"]
         direction TB
-        subgraph GA_ROW [" "]
-            direction LR
-            L_UI["<b>Learner / Browser Viewport</b><br/>• Mobile WebXR / Canvas Viewport<br/>• Touch Screen / Raycast Selection<br/>• Spatial HUD Overlay View"]
-            L_SEL["<b>Algorithm Selector &amp; Controls</b><br/>• 1-Click Topic Hot-Swapping<br/>• Interactive Step / Traversal Input<br/>• Session Reset &amp; Target Refresh"]
-        end
-        L_EVT["<b>Interaction Event Generator</b><br/>Captures: attemptedAction, expectedAction, stepIdentifier, isCorrect, latencyMs, stateContext"]
+        M1["<b>Module 1: Learner Viewport &amp; UI</b><br/>• Viewport: Mobile WebXR canvas + spatial HUD<br/>• Interaction: Screen touch &amp; raycast hit-testing<br/>• Telemetry: Dispatches action, step key, latency"]
         
-        GA_ROW --> L_EVT
+        M2["<b>Module 2: WebXR Session Core</b><br/>• Lifecycle: Single persistent XRSession across topics<br/>• Hot-Swapping: Retains WebGL &amp; GPU resources<br/>• <i>Boundary: Android ARCore unverified (simulation)</i>"]
+        
+        M3["<b>Module 3: Non-XR Fallback Engine</b><br/>• CANVAS_3D_FALLBACK: OrbitControls navigation<br/>• Alignment: Strict upright (+Y) spatial axis<br/>• Parity: Executes identical algorithms &amp; EGEA rules"]
+
+        M1 -->|Session Config| M2
+        M2 -.->|Fallback on Unsupported| M3
     end
 
-    %% ------------------------------------------------------------------------
-    %% GROUP B: DETERMINISTIC ALGORITHM EXECUTION ENGINES
-    %% ------------------------------------------------------------------------
-    subgraph GB ["<b>GROUP B: DETERMINISTIC ALGORITHM EXECUTION ENGINES</b><br/><i>(Authoritative State Machines &amp; Mathematical Invariant Validators)</i>"]
+    %% ========================================================================
+    %% PILLAR II: ALGORITHM CORE & 3D ENGINE
+    %% ========================================================================
+    subgraph COL2 ["<b>PILLAR II: ALGORITHM CORE &amp; 3D ENGINE</b>"]
         direction TB
-        subgraph GB_ENGINES [" "]
-            direction TB
-            subgraph GB_TOP [" "]
-                direction LR
-                E_BST["<b>BSTEngine</b><br/>Binary Search Tree<br/>• Invariant Reducer<br/>• Left &lt; Node &lt; Right<br/>• Insert &amp; Search State"]
-                E_BUB["<b>BubbleSortEngine</b><br/>Bubble Sort<br/>• Adjacent Inversions<br/>• Stepwise Bar Swaps<br/>• Pass-by-Pass State"]
-                E_BIN["<b>BinarySearchEngine</b><br/>Binary Search<br/>• [Low, Mid, High]<br/>• Space Contraction<br/>• Comparison Bounds"]
-            end
-            subgraph GB_BOT [" "]
-                direction LR
-                E_BFS["<b>BFSEngine</b><br/>Breadth-First Search<br/>• Circular Graph Topology<br/>• Frontier FIFO Queue<br/>• Level-Order Traversal"]
-                E_STK["<b>StackEngine</b><br/>Stack (LIFO)<br/>• Push, Pop, &amp; Peek<br/>• Capacity Boundary (6)<br/>• Overflow/Underflow"]
-            end
-        end
+        M4["<b>Module 4: 5 Deterministic DSA Engines</b><br/>• BST: Left &lt; Node &lt; Right invariant reducer<br/>• Bubble Sort: Adjacent swaps • Binary: [low, mid, high]<br/>• BFS: FIFO queue • Stack: LIFO (depth limit 6)"]
+
+        M5["<b>Module 5: Procedural 3D Visualizers</b><br/>• BST: Spherical nodes &amp; directed link cylinders<br/>• Bubble Sort: Scaled cylinder bars &amp; swap cues<br/>• BFS: Graph dock • Stack: Chamber &amp; slab meshes"]
+
+        M6["<b>Module 6: Scene Assembler &amp; Sync</b><br/>• Scene Graph: Pure-render state mapping<br/>• Transitions: Smooth swap interpolation &amp; hits<br/>• Disposal: Clean GPU memory on algorithm swap"]
+
+        M4 ==>|Invariant State| M5
+        M5 -->|Mesh Scene Graph| M6
     end
 
-    %% ------------------------------------------------------------------------
-    %% GROUP C: WEBXR & 3D SPATIAL RENDERING LAYER
-    %% ------------------------------------------------------------------------
-    subgraph GC ["<b>GROUP C: WEBXR &amp; 3D SPATIAL RENDERING LAYER</b>"]
+    %% ========================================================================
+    %% PILLAR III: EGEA ADAPTATION & HUD FEEDBACK
+    %% ========================================================================
+    subgraph COL3 ["<b>PILLAR III: EGEA ADAPTATION &amp; HUD FEEDBACK</b>"]
         direction TB
-        subgraph GC_SPLIT [" "]
-            direction LR
-            subgraph GC_VIS ["<b>Three.js Procedural Visualizers</b>"]
-                direction TB
-                V_BST["<b>ThreeBSTVisualizer:</b> 3D Spheres &amp; Directed Links"]
-                V_BUB["<b>ThreeBubbleSortVisualizer:</b> Scaled Cylinder Bars"]
-                V_BIN["<b>ThreeBinarySearchVisualizer:</b> Numbered Array Blocks"]
-                V_BFS["<b>ThreeBFSVisualizer:</b> Graph Nodes &amp; FIFO Queue Dock"]
-                V_STK["<b>ThreeStackVisualizer:</b> 3D Chamber &amp; Stacked Slabs"]
-            end
+        M7["<b>Module 7: Event Adapter &amp; Pacing</b><br/>• Adapter: Monotonic k counter, 250ms debounce<br/>• canonicalizeStep: Normalizes retry step keys<br/>• EWMA Pacing: S_k = α·L_k + (1-α)S_{k-1} (α=0.3)"]
 
-            subgraph GC_MGR ["<b>Session &amp; Viewport Manager (WebXRARService)</b>"]
-                direction TB
-                XR_CORE["<b>Persistent WebXR Session Core</b><br/>• Continuous XRSession Lifecycle<br/>• Preserves WebGLRenderer &amp; Context<br/>• Instant Algorithm Hot-Swapping<br/><i>(Physical ARCore: Simulation Boundary)</i>"]
-                XR_FALL["<b>CANVAS_3D_FALLBACK Engine</b><br/>• OrbitControls (Touch / Mouse)<br/>• Upright (+Y) Spatial Orientation<br/>• Non-WebXR Desktop / Tablet Fallback"]
-                XR_CORE -.->|Auto-Fallback| XR_FALL
-            end
-        end
-        GC_VIS ==>|Scene Graph Meshes| XR_CORE
+        M8["<b>Module 8: 6-Tier Scaffolding Engine</b><br/>• [1] HINT • [2] SLOWDOWN • [3] HIGHLIGHT<br/>• [4] WORKED • [5] PREREQ • [6] REDUCE<br/>• Latency: Pure Policy 7 μs | Pipeline 14 μs"]
+
+        M9["<b>Module 9: Spatial AR Tutor HUD</b><br/>• ARTutorHUD: Real-time AR viewport overlay<br/>• Explainability: Grounded code &amp; conf (0.95)<br/>• <i>Offline: 18 Challenge / 12 Stress Suites (100%)</i>"]
+
+        M7 ==>|Canonical Trace &amp; Pacing| M8
+        M8 ==>|Policy Decision &amp; Rationale| M9
     end
 
-    %% ------------------------------------------------------------------------
-    %% GROUP D: EGEA ADAPTATION PIPELINE
-    %% ------------------------------------------------------------------------
-    subgraph GD ["<b>GROUP D: EGEA ADAPTATION PIPELINE</b><br/><i>(Sub-Millisecond Deterministic Scaffolding: Pure Policy 7 μs, Pipeline 14 μs)</i>"]
-        direction TB
-        subgraph GD_PIPE ["Adaptation Data Pipeline"]
-            direction LR
-            D_ADP["<b>EGEA Event Adapter</b><br/><i>(EGEAEventAdapter)</i><br/>• Monotonic Counter (k)<br/>• 250ms Touch Debounce<br/>• Telemetry Validation"]
-            D_CAN["<b>Step Canonicalizer</b><br/><i>(canonicalizeStep)</i><br/>• Canonical String Keys<br/>• Cross-Retry Mapping<br/>• Disambiguates Aliases"]
-            D_PAC["<b>EWMA Pacing Model</b><br/><i>(EGEAPacingModel)</i><br/>• S_k = α·L_k + (1-α)·S_{k-1}<br/>• Rapid Guessing (&lt;1500ms)<br/>• Reflection (≥3000ms)"]
-            
-            D_ADP -->|Raw Event| D_CAN
-            D_CAN -->|Canonical Trace| D_PAC
-        end
+    %% ========================================================================
+    %% NUMBERED DATAFLOW CONNECTIONS
+    %% ========================================================================
+    M1 ==>|1. User Attempted Action| M4
+    M4 ==>|2. State Reducer Output| M5
+    M5 ==>|3. Procedural Meshes| M6
+    M6 ==>|4. WebGL Render Presentation| M1
+    M4 -.->|5. Invariant Telemetry Stream| M7
+    M7 -.->|6. Canonical Trace &amp; Pacing| M8
+    M8 -.->|7. Scaffolding Decision| M9
+    M9 -.->|8. Closed-Loop HUD Guidance| M1
 
-        subgraph GD_TAX ["<b>EGEA Policy Engine (EGEAPolicyEngine) — 6-Tier Scaffolding Taxonomy</b>"]
-            direction TB
-            subgraph GD_TAX_1 [" "]
-                direction LR
-                T_HINT["<b>CONTEXTUAL_HINT</b><br/>Directional spatial cue on isolated conceptual error"]
-                T_SLOW["<b>STEPWISE_SLOWDOWN</b><br/>Enforced reflection pause upon rapid guessing burst"]
-                T_HIGH["<b>HIGHLIGHT_ELEMENT</b><br/>Target salience pulse on spatial attention lapse"]
-            end
-            subgraph GD_TAX_2 [" "]
-                direction LR
-                T_WORK["<b>WORKED_EXAMPLE</b><br/>Full step demonstration after 3+ persistent failures"]
-                T_PRER["<b>PREREQUISITE_REVIEW</b><br/>Foundational topic recall on systemic error pattern"]
-                T_REDU["<b>REDUCE_GUIDANCE</b><br/>Scaffold fading after 3+ unassisted mastery streak"]
-            end
-        end
+    %% Styling
+    classDef col1Style fill:#f8fafc,stroke:#94a3b8,stroke-width:1.5px;
+    classDef col2Style fill:#f0f9ff,stroke:#38bdf8,stroke-width:1.5px;
+    classDef col3Style fill:#ecfdf5,stroke:#34d399,stroke-width:1.5px;
+    
+    classDef mod1Style fill:#ffffff,stroke:#cbd5e1,stroke-width:1.2px;
+    classDef mod2Style fill:#ffffff,stroke:#bae6fd,stroke-width:1.2px;
+    classDef mod3Style fill:#ffffff,stroke:#a7f3d0,stroke-width:1.2px;
+    classDef hudStyle fill:#ffffff,stroke:#fcd34d,stroke-width:1.2px;
 
-        D_PAC ==>|Smoothed Pacing &amp; Invariants| GD_TAX
-    end
+    class COL1 col1Style;
+    class COL2 col2Style;
+    class COL3 col3Style;
 
-    %% ------------------------------------------------------------------------
-    %% GROUP E: SPATIAL HUD FEEDBACK & AUTOMATED VERIFICATION
-    %% ------------------------------------------------------------------------
-    subgraph GE ["<b>GROUP E: FEEDBACK &amp; INDEPENDENT VERIFICATION</b>"]
-        direction TB
-        subgraph GE_SPLIT [" "]
-            direction LR
-            subgraph GE_HUD ["<b>Spatial AR Tutor HUD (ARTutorHUD) — Live Runtime Feedback</b>"]
-                direction TB
-                HUD_BOX["<b>Real-Time Adaptive HUD Overlay</b><br/>• Dynamic Intervention Badges (Hint, Warning, Encouragement)<br/>• Machine-Readable Grounded Rationale Code<br/>• Confidence Metric (0.80–0.95) &amp; Pedagogical Explanation"]
-            end
-
-            subgraph GE_VERIF ["<b>Automated Verification &amp; Benchmarks (Non-Runtime Boundary)</b>"]
-                direction TB
-                V_CHAL["<b>18-Case Challenge Suite:</b> Canonical Trajectories (100% Acc)"]
-                V_STRS["<b>12-Case Boundary Stress Suite:</b> Jitter &amp; Pacing Stress (100% Acc)"]
-                V_UNIT["<b>18 Test Suites (1,437 Assertions):</b> tsc -b &amp; Oxlint Clean"]
-            end
-        end
-    end
-
-    %% ------------------------------------------------------------------------
-    %% LABELED DIRECTIONAL DATAFLOW CONNECTIONS
-    %% ------------------------------------------------------------------------
-    L_EVT ==>|1. User Attempted Action| GB_ENGINES
-    GB_ENGINES ==>|2. Invariant State &amp; Validation Result| GC_VIS
-    GB_ENGINES -.->|3. Invariant Telemetry Stream| D_ADP
-    GD_TAX ==>|4. Intervention Decision &amp; Rationale| HUD_BOX
-    HUD_BOX -.->|5. Closed-Loop Spatial Guidance Feedback| L_UI
-    L_SEL -.->|6. Zero-Tear Algorithm Hot-Swapping| XR_CORE
-    GE_VERIF -.-|Offline Rigorous Validation| GD_TAX
-
-    %% ------------------------------------------------------------------------
-    %% VISUAL STYLING
-    %% ------------------------------------------------------------------------
-    classDef clientGroup fill:#f8fafc,stroke:#475569,stroke-width:1.5px;
-    classDef engineGroup fill:#f0f9ff,stroke:#0284c7,stroke-width:1.5px;
-    classDef renderGroup fill:#f5f3ff,stroke:#7c3aed,stroke-width:1.5px;
-    classDef egeaGroup fill:#ecfdf5,stroke:#059669,stroke-width:1.5px;
-    classDef hudGroup fill:#fffbeb,stroke:#d97706,stroke-width:1.5px;
-    classDef verifGroup fill:#fef2f2,stroke:#dc2626,stroke-width:1.2px,stroke-dasharray: 4 4;
-
-    class GA clientGroup;
-    class GB engineGroup;
-    class GC renderGroup;
-    class GD egeaGroup;
-    class GE_HUD hudGroup;
-    class GE_VERIF verifGroup;
+    class M1,M2,M3 mod1Style;
+    class M4,M5,M6 mod2Style;
+    class M7,M8 mod3Style;
+    class M9 hudStyle;

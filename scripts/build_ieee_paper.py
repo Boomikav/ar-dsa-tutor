@@ -47,7 +47,7 @@ def create_paper():
         t._tbl.getparent().remove(t._tbl)
 
     # Helper function for adding paragraphs with style
-    def add_p(text, style='Body Text', space_after=2.5, align=WD_ALIGN_PARAGRAPH.JUSTIFY, bold=False, italic=False):
+    def add_p(text, style='Body Text', space_after=1.8, align=WD_ALIGN_PARAGRAPH.JUSTIFY, bold=False, italic=False):
         p = doc.add_paragraph()
         if style in doc.styles:
             p.style = doc.styles[style]
@@ -66,8 +66,8 @@ def create_paper():
         if 'Heading 1' in doc.styles:
             p.style = doc.styles['Heading 1']
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p.paragraph_format.space_before = Pt(6)
-        p.paragraph_format.space_after = Pt(2)
+        p.paragraph_format.space_before = Pt(4.5)
+        p.paragraph_format.space_after = Pt(1.5)
         clean_text = re.sub(r'^[IVXLCDM]+\.\s*', '', text.strip())
         run = p.add_run(clean_text.upper())
         run.bold = True
@@ -80,8 +80,8 @@ def create_paper():
         if 'Heading 2' in doc.styles:
             p.style = doc.styles['Heading 2']
         p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        p.paragraph_format.space_before = Pt(4)
-        p.paragraph_format.space_after = Pt(1.5)
+        p.paragraph_format.space_before = Pt(3.0)
+        p.paragraph_format.space_after = Pt(1.0)
         clean_text = re.sub(r'^[A-Z]\.\s*', '', text.strip())
         run = p.add_run(clean_text)
         run.bold = True
@@ -95,8 +95,8 @@ def create_paper():
         if 'Heading 5' in doc.styles:
             p.style = doc.styles['Heading 5']
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p.paragraph_format.space_before = Pt(6)
-        p.paragraph_format.space_after = Pt(2)
+        p.paragraph_format.space_before = Pt(4.5)
+        p.paragraph_format.space_after = Pt(1.5)
         clean_text = re.sub(r'^[IVXLCDM]+\.\s*', '', text.strip())
         run = p.add_run(clean_text)
         run.bold = False
@@ -109,8 +109,8 @@ def create_paper():
         if 'equation' in doc.styles:
             p.style = doc.styles['equation']
         p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        p.paragraph_format.space_before = Pt(2.5)
-        p.paragraph_format.space_after = Pt(2.5)
+        p.paragraph_format.space_before = Pt(1.8)
+        p.paragraph_format.space_after = Pt(1.8)
         r_eq = p.add_run(f"\t{math_text}\t({eq_num})")
         r_eq.font.name = 'Times New Roman'
         r_eq.italic = True
@@ -327,14 +327,23 @@ def create_paper():
         "algorithm state machines, procedural spatial WebXR visualizers, and the EGEA adaptation pipeline."
     )
 
-    # Embed Figure 1
+    # Transition to 1-column section for full-width Figure 1 (matching IEEE figure* standard)
+    sec_fig1 = doc.add_section(docx.enum.section.WD_SECTION.CONTINUOUS)
+    sec_fig1.top_margin = Pt(45)
+    sec_fig1.bottom_margin = Pt(50)
+    sec_fig1.left_margin = Pt(44)
+    sec_fig1.right_margin = Pt(44)
+    cols_fig1 = parse_xml(f'<w:cols {nsdecls("w")} w:num="1"/>')
+    sec_fig1._sectPr.append(cols_fig1)
+
+    # Embed Figure 1 across both columns (width = 6.95 in)
     fig1_path = os.path.abspath('submission/review_release/figures/fig1_system_architecture.png')
     if os.path.exists(fig1_path):
         p_fig1 = doc.add_paragraph()
         p_fig1.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p_fig1.paragraph_format.space_before = Pt(3)
+        p_fig1.paragraph_format.space_before = Pt(4)
         p_fig1.paragraph_format.space_after = Pt(2)
-        p_fig1.add_run().add_picture(fig1_path, width=Inches(3.35))
+        p_fig1.add_run().add_picture(fig1_path, width=Inches(6.95))
         p_cap1 = doc.add_paragraph()
         p_cap1.style = doc.styles['figure caption']
         p_cap1.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -342,6 +351,15 @@ def create_paper():
         r_c1 = p_cap1.add_run("Architecture of AR-DSA Tutor showing the five deterministic algorithm engines, interactive Three.js visualizers, WebXR session layer, EGEA telemetry and adaptation pipeline, and closed-loop HUD feedback.")
         r_c1.font.size = Pt(7.8)
         r_c1.italic = True
+
+    # Transition back to 2-column section for remaining content
+    sec_cont = doc.add_section(docx.enum.section.WD_SECTION.CONTINUOUS)
+    sec_cont.top_margin = Pt(45)
+    sec_cont.bottom_margin = Pt(50)
+    sec_cont.left_margin = Pt(44)
+    sec_cont.right_margin = Pt(44)
+    cols_cont = parse_xml(f'<w:cols {nsdecls("w")} w:num="2" w:space="360"/>')
+    sec_cont._sectPr.append(cols_cont)
 
     add_heading_2("Persistent WebXR Session Lifecycle")
     add_p(
@@ -459,12 +477,12 @@ def create_paper():
         "• Simple Error Rule Baseline: Statelessly inspects only the single most recent error, unable to track pacing or persistence.\n"
         "• Matched-History Baseline: Window-based history comparator tracking error frequency without step canonicalization or EWMA smoothing."
     )
-    add_heading_2("Physical Hardware Measurement Boundary")
+    add_heading_2("Physical Hardware Measurement and Simulation Boundary")
     add_p(
-        "We explicitly declare our experimental measurement boundary: physical camera passthrough, real-world surface SLAM tracking, "
+        "We explicitly declare our experimental measurement and simulation boundary: physical camera passthrough, real-world surface SLAM tracking, "
         "and multi-OEM Android hardware performance (e.g., Samsung Galaxy, Google Pixel) have NOT been verified on physical devices. "
-        "All WebXR lifecycle tests and Three.js rendering pipelines were verified in headless Chrome, Three.js headless mocks, and WebGL 2.0 canvas mode. "
-        "Physical hardware deployment is designated as unverified pending multi-device testing."
+        "All WebXR lifecycle tests and Three.js rendering pipelines were verified in headless Chrome, Three.js headless mocks, and WebGL 2.0 canvas fallback mode. "
+        "Physical hardware deployment is designated as an unverified simulation boundary pending multi-device testing."
     )
 
     # --- SECTION VII: RESULTS ---
@@ -669,7 +687,7 @@ def create_paper():
         if 'references' in doc.styles:
             p_ref.style = doc.styles['references']
         p_ref.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-        p_ref.paragraph_format.space_after = Pt(1.5)
+        p_ref.paragraph_format.space_after = Pt(1.0)
         p_ref.paragraph_format.line_spacing = 1.01
         r_ref = p_ref.add_run(clean_ref)
         r_ref.font.name = 'Times New Roman'
