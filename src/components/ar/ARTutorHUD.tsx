@@ -13,9 +13,11 @@ import {
 } from 'lucide-react';
 import { TutorResponse, TutorResponseType, PedagogicalStyle, TutorNextAction } from '../../models/ai';
 import { OrchestrationResult, GeneratedAssessmentQuestion } from '../../models/multiAgent';
+import { EGEAInterventionDecision } from '../../services/research/egea';
 
 export interface ARTutorHUDProps {
   response: TutorResponse | null;
+  egeaDecision?: EGEAInterventionDecision | null;
   orchestrationResult?: OrchestrationResult | null;
   currentDifficulty?: import('../../models/adaptiveLearner').AdaptiveDifficultyLevel;
   difficultyDecision?: import('../../models/adaptiveLearner').DifficultyDecision | null;
@@ -32,6 +34,7 @@ export interface ARTutorHUDProps {
 
 export const ARTutorHUD: React.FC<ARTutorHUDProps> = ({
   response,
+  egeaDecision,
   orchestrationResult,
   currentDifficulty,
   difficultyDecision,
@@ -243,6 +246,31 @@ export const ARTutorHUD: React.FC<ARTutorHUDProps> = ({
           </button>
         )}
       </div>
+
+      {/* Grounded Adaptive Intervention Indicator (EGEA) */}
+      {egeaDecision && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: 'rgba(56, 189, 248, 0.08)',
+            border: '1px solid rgba(56, 189, 248, 0.25)',
+            borderRadius: '8px',
+            padding: '4px 8px',
+            fontSize: '10px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <span style={{ fontWeight: 800, color: '#38bdf8' }}>EGEA:</span>
+            <span style={{ color: '#e2e8f0', fontWeight: 600 }}>{egeaDecision.interventionType.replace(/_/g, ' ')}</span>
+            <span style={{ color: '#94a3b8', fontSize: '9px' }}>({egeaDecision.rationaleCode})</span>
+          </div>
+          <span style={{ color: '#34d399', fontWeight: 700, fontSize: '9px' }}>
+            {Math.round(egeaDecision.confidence * 100)}% conf
+          </span>
+        </div>
+      )}
 
       {/* Body: Thinking State or Response */}
       {isThinking ? (
@@ -510,14 +538,14 @@ export const ARTutorHUD: React.FC<ARTutorHUDProps> = ({
         </>
       ) : (
         /* Standby state before any AI trigger */
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: '11px', color: '#94a3b8' }}>
-            Comparing target {activeTarget} with node {currentNodeValue ?? 'active'}. Need guidance?
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+          <span style={{ fontSize: '11px', color: '#e2e8f0', lineHeight: 1.4 }}>
+            {egeaDecision?.explanationText || `Comparing target ${activeTarget} with node ${currentNodeValue ?? 'active'}. Need guidance?`}
           </span>
           <button
             onClick={onRequestHint}
             className="btn btn-secondary"
-            style={{ fontSize: '10.5px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '4px' }}
+            style={{ fontSize: '10.5px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}
           >
             <Lightbulb size={12} />
             Ask Hint

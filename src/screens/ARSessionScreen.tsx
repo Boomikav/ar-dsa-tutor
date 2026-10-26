@@ -29,6 +29,12 @@ import { BubbleSortEngine, BubbleSortState, SortDecision } from '../services/dsa
 import { BinarySearchEngine, BinarySearchState, BinarySearchDecision } from '../services/dsa/searching/BinarySearchEngine';
 import { BFSEngine, BFSState } from '../services/dsa/graphAlgorithms/BFSEngine';
 import { StackEngine, StackState } from '../services/dsa/stack/StackEngine';
+import { 
+  EGEAEventAdapter, 
+  EGEAPolicyEngine, 
+  EGEAInterventionDecision, 
+  EGEAAlgorithmId 
+} from '../services/research/egea';
 
 export const ARSessionScreen: React.FC = () => {
   const { selectedTopic, navigateTo, services, learnerState, refreshLearnerState } = useApp();
@@ -74,6 +80,28 @@ export const ARSessionScreen: React.FC = () => {
   const [pedagogicalStyle, setPedagogicalStyle] = useState<PedagogicalStyle>(() => {
     return learnerState.profile.aiPreferences?.tutoringStyle || 'socratic';
   });
+
+  // Phase 7: Deterministic EGEA Policy Engine & Interaction Adapter
+  const [egeaDecision, setEgeaDecision] = useState<EGEAInterventionDecision | null>(() => {
+    return EGEAPolicyEngine.evaluateIntervention([]);
+  });
+  const egeaAdapterRef = useRef<EGEAEventAdapter | null>(null);
+
+  const resolveEgeaAlgorithmId = useCallback((id: string): EGEAAlgorithmId => {
+    if (id === 'algo-bfs') return 'algo-breadth-first-search';
+    return id as EGEAAlgorithmId;
+  }, []);
+
+  useEffect(() => {
+    const egeaAlgoId = resolveEgeaAlgorithmId(activeAlgorithmId);
+    if (!egeaAdapterRef.current || egeaAdapterRef.current.getAlgorithmId() !== egeaAlgoId) {
+      const adapter = new EGEAEventAdapter(`session-${Date.now()}`, egeaAlgoId, {
+        debounceIntervalMs: 250,
+        suppressDuplicateEvents: false
+      });
+      egeaAdapterRef.current = adapter;
+    }
+  }, [activeAlgorithmId, resolveEgeaAlgorithmId]);
 
   // 1. Deterministic BST Practice Session (Target = 40)
   const [practiceSession, setPracticeSession] = useState<PracticeSessionState>(() => {
@@ -356,6 +384,9 @@ export const ARSessionScreen: React.FC = () => {
 
     if (helpLevel === 'hint') {
       usedHintInCurrentStepRef.current = true;
+      if (egeaAdapterRef.current) {
+        egeaAdapterRef.current.recordHintUsage();
+      }
     } else if (helpLevel === 'explanation' || helpLevel === 'mistake_remediation') {
       requestedExplanationInCurrentStepRef.current = true;
     }
@@ -427,6 +458,26 @@ export const ARSessionScreen: React.FC = () => {
 
     setPracticeSession({ ...result.session });
     update3DVisualization(result.session);
+
+    if (egeaAdapterRef.current) {
+      const expected = practiceSession.targetValue < (practiceSession.currentNode?.value ?? 0)
+        ? 'LEFT'
+        : (practiceSession.currentNode?.right ? 'RIGHT' : (choice === 'INSERT_HERE' ? 'INSERT_HERE' : 'RIGHT'));
+      egeaAdapterRef.current.recordInteraction({
+        stepIdentifier: `bst-node-${practiceSession.currentNode?.value ?? 'root'}`,
+        attemptedAction: choice,
+        expectedAction: expected,
+        isCorrect: result.isCorrect,
+        errorCategory: result.isCorrect ? 'NONE' : 'VALUE_COMPARISON',
+        stateContext: {
+          target: practiceSession.targetValue,
+          currentNode: practiceSession.currentNode?.value
+        },
+        hintUsed: usedHintInCurrentStepRef.current
+      });
+      const nextEgea = EGEAPolicyEngine.evaluateIntervention(egeaAdapterRef.current.getEvents());
+      setEgeaDecision(nextEgea);
+    }
 
     if (result.isCorrect) {
       consecutiveMistakesRef.current = 0;
@@ -652,6 +703,26 @@ export const ARSessionScreen: React.FC = () => {
     if (bubbleSortState.isComplete) return;
 
     const validation = bubbleSortEngine.validateStep(bubbleSortState, decision);
+
+    if (egeaAdapterRef.current) {
+      const idx = bubbleSortState.j;
+      const currentPair = [bubbleSortState.array[idx], bubbleSortState.array[idx + 1]];
+      const expectedDecision: SortDecision = currentPair[0] > currentPair[1] ? 'SWAP' : 'NO_SWAP';
+      egeaAdapterRef.current.recordInteraction({
+        stepIdentifier: `bubble-pair-${idx}-${idx + 1}`,
+        attemptedAction: decision,
+        expectedAction: expectedDecision,
+        isCorrect: validation.isCorrect,
+        errorCategory: validation.isCorrect ? 'NONE' : 'VALUE_COMPARISON',
+        stateContext: {
+          currentIndex: idx,
+          array: [...bubbleSortState.array]
+        }
+      });
+      const nextEgea = EGEAPolicyEngine.evaluateIntervention(egeaAdapterRef.current.getEvents());
+      setEgeaDecision(nextEgea);
+    }
+
     if (!validation.isCorrect) {
       setFeedbackToast({
         message: validation.misconception?.pedagogicalExplanation || validation.feedbackMessage,
@@ -700,6 +771,30 @@ export const ARSessionScreen: React.FC = () => {
     if (binarySearchState.isComplete) return;
 
     const validation = binarySearchEngine.validateStep(binarySearchState, decision);
+
+    if (egeaAdapterRef.current && binarySearchState.mid !== null) {
+      const midIdx = binarySearchState.mid;
+      const midVal = binarySearchState.array[midIdx];
+      const expectedDecision: BinarySearchDecision = binarySearchState.target === midVal
+        ? 'MATCH'
+        : (binarySearchState.target < midVal ? 'GO_LEFT' : 'GO_RIGHT');
+      egeaAdapterRef.current.recordInteraction({
+        stepIdentifier: `binary-search-range-${binarySearchState.low}-${binarySearchState.high}`,
+        attemptedAction: decision,
+        expectedAction: expectedDecision,
+        isCorrect: validation.isCorrect,
+        errorCategory: validation.isCorrect ? 'NONE' : (binarySearchState.low > binarySearchState.high ? 'BOUNDARY_OVERFLOW' : 'VALUE_COMPARISON'),
+        stateContext: {
+          low: binarySearchState.low,
+          high: binarySearchState.high,
+          mid: midIdx,
+          target: binarySearchState.target
+        }
+      });
+      const nextEgea = EGEAPolicyEngine.evaluateIntervention(egeaAdapterRef.current.getEvents());
+      setEgeaDecision(nextEgea);
+    }
+
     if (!validation.isCorrect) {
       setFeedbackToast({
         message: validation.misconception?.pedagogicalExplanation || validation.feedbackMessage,
@@ -750,6 +845,23 @@ export const ARSessionScreen: React.FC = () => {
   const handleBFSStep = () => {
     if (bfsState.isComplete) return;
 
+    if (egeaAdapterRef.current) {
+      egeaAdapterRef.current.recordInteraction({
+        stepIdentifier: `bfs-vertex-${bfsState.currentVertex || 'root'}`,
+        attemptedAction: 'VISIT_NEIGHBOR',
+        expectedAction: 'VISIT_NEIGHBOR',
+        isCorrect: true,
+        errorCategory: 'NONE',
+        stateContext: {
+          currentVertex: bfsState.currentVertex,
+          queue: [...bfsState.queue],
+          visited: [...bfsState.visited]
+        }
+      });
+      const nextEgea = EGEAPolicyEngine.evaluateIntervention(egeaAdapterRef.current.getEvents());
+      setEgeaDecision(nextEgea);
+    }
+
     const opResult = bfsEngine.applyOperation(bfsState, { type: 'EXPAND' });
     setBfsState(opResult.newState);
     setFeedbackToast({
@@ -776,6 +888,24 @@ export const ARSessionScreen: React.FC = () => {
   // --- Stack Handlers ---
   const handleStackPush = () => {
     const val = nextStackPushValue;
+    const isOverflow = stackState.items.length >= 5;
+
+    if (egeaAdapterRef.current) {
+      egeaAdapterRef.current.recordInteraction({
+        stepIdentifier: `stack-size-${stackState.items.length}`,
+        attemptedAction: 'PUSH',
+        expectedAction: isOverflow ? 'POP' : 'PUSH',
+        isCorrect: !isOverflow,
+        errorCategory: isOverflow ? 'CAPACITY_LIMIT' : 'NONE',
+        stateContext: {
+          items: [...stackState.items],
+          pushValue: val
+        }
+      });
+      const nextEgea = EGEAPolicyEngine.evaluateIntervention(egeaAdapterRef.current.getEvents());
+      setEgeaDecision(nextEgea);
+    }
+
     const opResult = stackEngine.applyOperation(stackState, { type: 'PUSH', value: val });
     if (!opResult.success) {
       setFeedbackToast({
@@ -793,6 +923,23 @@ export const ARSessionScreen: React.FC = () => {
   };
 
   const handleStackPop = () => {
+    const isUnderflow = stackState.items.length === 0;
+
+    if (egeaAdapterRef.current) {
+      egeaAdapterRef.current.recordInteraction({
+        stepIdentifier: `stack-size-${stackState.items.length}`,
+        attemptedAction: 'POP',
+        expectedAction: isUnderflow ? 'PUSH' : 'POP',
+        isCorrect: !isUnderflow,
+        errorCategory: isUnderflow ? 'CAPACITY_LIMIT' : 'NONE',
+        stateContext: {
+          items: [...stackState.items]
+        }
+      });
+      const nextEgea = EGEAPolicyEngine.evaluateIntervention(egeaAdapterRef.current.getEvents());
+      setEgeaDecision(nextEgea);
+    }
+
     const opResult = stackEngine.applyOperation(stackState, { type: 'POP' });
     if (!opResult.success) {
       setFeedbackToast({
@@ -1075,6 +1222,7 @@ export const ARSessionScreen: React.FC = () => {
       {showTutorHUD && (
         <ARTutorHUD
           response={tutorResponse}
+          egeaDecision={egeaDecision}
           orchestrationResult={orchestrationResult}
           currentDifficulty={adaptiveDifficulty}
           difficultyDecision={difficultyDecision}
