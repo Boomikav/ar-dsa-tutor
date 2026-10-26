@@ -7,7 +7,8 @@ import {
   ARSpatialPlacement, 
   ARSessionConfig, 
   BST3DRenderOptions,
-  ARPerformanceTelemetry
+  ARPerformanceTelemetry,
+  ARSpatialDiagnostic
 } from './IARService';
 import { BSTNode } from '../../models/bst';
 import { DSATopic, VisualAssetSpec } from '../../models/topic';
@@ -73,6 +74,7 @@ export class WebXRARService implements IARService {
   private baseFitDistance = 0.85;
   private targetCenter: THREE.Vector3 = new THREE.Vector3(0, 0.15, 0);
   private lastFramingDiagnostic: ARFramingDiagnostic | null = null;
+  private lastSpatialDiagnostic: ARSpatialDiagnostic | null = null;
   private sessionGeneration = 0;
   private initPromise: Promise<boolean> | null = null;
   private onWindowResize: (() => void) | null = null;
@@ -621,13 +623,53 @@ export class WebXRARService implements IARService {
       // Yaw angle around Y axis
       const yaw = Math.atan2(zTree.x, zTree.z);
 
+      // Distance from camera to placement surface
+      const hitDist = this.viewerPosition.distanceTo(pos);
+
+      // Adaptive physical scale factor to preserve optimal apparent visual angle:
+      // Targets 1.05m reference distance (standard tabletop arm's length).
+      // Clamped within [0.90, 1.40] so standing users (floor placement at 1.6m-2.0m) get an ergonomically readable model.
+      const targetRefDist = 1.05;
+      const autoScale = Math.max(0.90, Math.min(1.40, hitDist / targetRefDist));
+
       // World-space placement in XR reference space (elevate slightly above surface to prevent z-fighting)
       this.visualizer.rootGroup.position.set(pos.x, pos.y + 0.02, pos.z);
       this.visualizer.rootGroup.rotation.set(0, yaw, 0);
+      this.visualizer.rootGroup.scale.set(autoScale, autoScale, autoScale);
       this.visualizer.rootGroup.visible = true;
 
       this.isObjectPlaced = true;
       this.reticle.visible = false;
+
+      // Compute authoritative world-space bounds for the active algorithm
+      const activeGroup = this.getActiveVisualGroup();
+      const bounds = ARSceneFraming.computeBoundingBox(activeGroup);
+
+      this.lastSpatialDiagnostic = {
+        activeAlgorithm: this.activeAlgorithmId,
+        renderingMode: this.renderer && this.renderer.xr.isPresenting ? 'WEBXR_AR' : 'CANVAS_3D_FALLBACK',
+        referenceSpaceType: this.xrRefSpaceType,
+        placementDistance: hitDist,
+        objectScale: [autoScale, autoScale, autoScale],
+        placementPosition: [this.visualizer.rootGroup.position.x, this.visualizer.rootGroup.position.y, this.visualizer.rootGroup.position.z],
+        cameraPosition: [this.viewerPosition.x, this.viewerPosition.y, this.viewerPosition.z],
+        cameraToModelDistance: this.viewerPosition.distanceTo(this.visualizer.rootGroup.position),
+        modelBounds: {
+          min: [bounds.box.min.x, bounds.box.min.y, bounds.box.min.z],
+          max: [bounds.box.max.x, bounds.box.max.y, bounds.box.max.z],
+          size: { x: bounds.size.x, y: bounds.size.y, z: bounds.size.z },
+          center: { x: bounds.center.x, y: bounds.center.y, z: bounds.center.z },
+          isValid: bounds.isValid
+        },
+        viewportWidth: this.canvas ? this.canvas.clientWidth : (typeof window !== 'undefined' ? window.innerWidth : 1280),
+        viewportHeight: this.canvas ? this.canvas.clientHeight : (typeof window !== 'undefined' ? window.innerHeight : 800),
+        timestamp: Date.now()
+      };
+
+      if (typeof window !== 'undefined') {
+        (window as any).__AR_SPATIAL_DIAGNOSTICS__ = this.lastSpatialDiagnostic;
+      }
+      console.info('[WebXRARService:Placement]', this.lastSpatialDiagnostic);
 
       // Meaningful state transition: PLACED -> TRACKING
       this.setState('PLACED');
@@ -655,6 +697,7 @@ export class WebXRARService implements IARService {
   public resetPlacement(): void {
     this.isObjectPlaced = false;
     this.visualizer.rootGroup.visible = false;
+    this.visualizer.rootGroup.scale.set(1.0, 1.0, 1.0);
     if (this.reticle) this.reticle.visible = false;
     if (this._state !== 'UNAVAILABLE') {
       this.setState('SCANNING');
@@ -777,6 +820,10 @@ export class WebXRARService implements IARService {
     return this.lastFramingDiagnostic;
   }
 
+  public getSpatialDiagnostics(): ARSpatialDiagnostic | null {
+    return this.lastSpatialDiagnostic;
+  }
+
   public setActiveAlgorithm(algorithmId: string): void {
     const isNew = this.activeAlgorithmId !== algorithmId;
     this.activeAlgorithmId = algorithmId;
@@ -794,6 +841,23 @@ export class WebXRARService implements IARService {
       this.fallbackAngleX = 0.32;
       this.fallbackAngleY = 0.22;
       this.fitCameraToActiveVisualization();
+    }
+
+    // In WebXR mode, update spatial diagnostics for the newly active algorithm
+    if (this.renderer && this.renderer.xr.isPresenting && this.isObjectPlaced) {
+      const bounds = ARSceneFraming.computeBoundingBox(this.getActiveVisualGroup());
+      if (this.lastSpatialDiagnostic) {
+        this.lastSpatialDiagnostic.activeAlgorithm = algorithmId;
+        this.lastSpatialDiagnostic.modelBounds = {
+          min: [bounds.box.min.x, bounds.box.min.y, bounds.box.min.z],
+          max: [bounds.box.max.x, bounds.box.max.y, bounds.box.max.z],
+          size: { x: bounds.size.x, y: bounds.size.y, z: bounds.size.z },
+          center: { x: bounds.center.x, y: bounds.center.y, z: bounds.center.z },
+          isValid: bounds.isValid
+        };
+        this.lastSpatialDiagnostic.cameraToModelDistance = this.viewerPosition.distanceTo(this.visualizer.rootGroup.position);
+        this.lastSpatialDiagnostic.timestamp = Date.now();
+      }
     }
   }
 

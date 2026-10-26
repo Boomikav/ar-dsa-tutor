@@ -33,16 +33,16 @@ export class ThreeBubbleSortVisualizer implements IARAlgorithmVisualizer<BubbleS
     if (arr.length === 0) return;
 
     const n = arr.length;
-    const blockWidth = 0.055; // 5.5cm width per bar
-    const blockDepth = 0.055; // 5.5cm depth
+    const blockWidth = 0.075; // 7.5cm width per bar (bold, prominent tabletop bar)
+    const blockDepth = 0.075; // 7.5cm depth
     const spacing = 0.025; // 2.5cm gap between bars
     const totalWidth = n * blockWidth + (n - 1) * spacing;
     const startX = -totalWidth / 2 + blockWidth / 2;
-    const baseElevation = 0.04; // 4cm above surface
+    const baseElevation = 0.12; // 12cm above surface to clear bottom HUD horizon
 
     const maxVal = Math.max(...arr, 1);
-    const minHeight = 0.04;
-    const maxHeight = 0.16;
+    const minHeight = 0.08; // 8cm minimum bar height
+    const maxHeight = 0.24; // 24cm maximum bar height
 
     const j = state.j;
     const jCompare = j + 1;
@@ -133,7 +133,7 @@ export class ThreeBubbleSortVisualizer implements IARAlgorithmVisualizer<BubbleS
   }
 
   private createTextBillboard(text: string, isHighlighted: boolean, isSuccess: boolean): THREE.Sprite {
-    const spriteSize = 0.055;
+    const spriteSize = 0.065;
 
     if (typeof document === 'undefined') {
       const mat = new THREE.SpriteMaterial({

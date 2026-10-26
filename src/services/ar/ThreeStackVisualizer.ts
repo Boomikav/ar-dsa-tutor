@@ -30,11 +30,11 @@ export class ThreeStackVisualizer implements IARAlgorithmVisualizer<StackState, 
 
     const items = state.items || [];
     const capacity = state.capacity || 6;
-    const blockWidth = 0.16; // 16cm width
-    const blockHeight = 0.05; // 5cm height per block (volumetric, solid thickness)
-    const blockDepth = 0.11; // 11cm depth
-    const spacing = 0.008; // 8mm gap between elements
-    const baseElevation = 0.02; // 2cm above surface
+    const blockWidth = 0.20; // 20cm width (bold, readable tabletop block)
+    const blockHeight = 0.065; // 6.5cm height per block (volumetric, solid thickness)
+    const blockDepth = 0.13; // 13cm depth
+    const spacing = 0.010; // 10mm gap between elements
+    const baseElevation = 0.10; // 10cm above surface to elevate bottom block above HUD horizon
 
     // 1. Render Foundation Pedestal Base
     const baseWidth = blockWidth + 0.06;
@@ -54,7 +54,7 @@ export class ThreeStackVisualizer implements IARAlgorithmVisualizer<StackState, 
 
     // 2. Render 4 Corner Vertical Guide Rods (marking the physical 3D chamber)
     const totalChuteHeight = capacity * (blockHeight + spacing) + 0.02;
-    const rodRadius = 0.003; // 6mm diameter solid metal rods
+    const rodRadius = 0.005; // 10mm diameter solid metal rods
     const rodGeo = new THREE.CylinderGeometry(rodRadius, rodRadius, totalChuteHeight, 12);
     this.disposables.push(rodGeo);
     const rodMat = new THREE.MeshStandardMaterial({
@@ -167,7 +167,7 @@ export class ThreeStackVisualizer implements IARAlgorithmVisualizer<StackState, 
   }
 
   private createTextBillboard(text: string, isTop: boolean): THREE.Sprite {
-    const spriteSize = 0.042;
+    const spriteSize = 0.055;
 
     if (typeof document === 'undefined') {
       const mat = new THREE.SpriteMaterial({ color: isTop ? 0xf59e0b : 0x38bdf8, transparent: true, depthTest: false });

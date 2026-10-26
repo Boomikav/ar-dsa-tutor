@@ -26,12 +26,12 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
    * providing optimal visual occupancy on both portrait mobile and landscape desktop.
    */
   public static readonly VERTEX_COORDINATES: Record<string, { x: number; y: number; z: number }> = {
-    A: { x: 0.00, y: 0.26, z: -0.03 },
-    B: { x: -0.13, y: 0.15, z: 0.02 },
-    C: { x: 0.13, y: 0.15, z: 0.02 },
-    D: { x: -0.16, y: 0.03, z: -0.03 },
-    E: { x: -0.03, y: 0.02, z: 0.04 },
-    F: { x: 0.15, y: 0.03, z: 0.01 }
+    A: { x: 0.00, y: 0.44, z: -0.03 },
+    B: { x: -0.19, y: 0.28, z: 0.03 },
+    C: { x: 0.19, y: 0.28, z: 0.03 },
+    D: { x: -0.23, y: 0.14, z: -0.02 },
+    E: { x: -0.04, y: 0.13, z: 0.04 },
+    F: { x: 0.22, y: 0.14, z: -0.01 }
   };
 
   constructor() {
@@ -52,7 +52,7 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
     const queue = state.queue || [];
     const visited = state.visited || [];
     const traversalOrder = state.traversalOrder || [];
-    const nodeRadius = 0.034; // 3.4cm radius (6.8cm diameter, robust medium scale)
+    const nodeRadius = 0.045; // 4.5cm radius (9.0cm diameter, matching BST sphere presence)
 
     // 1. Render Edges first so spheres sit in front
     const renderedEdges = new Set<string>();
@@ -152,8 +152,8 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
     const direction = new THREE.Vector3().subVectors(vB, vA).normalize();
     const midPoint = new THREE.Vector3().addVectors(vA, vB).multiplyScalar(0.5);
 
-    // Prominent 3D cylinders (8mm - 12mm diameter) for solid visibility
-    const radius = isTraversed ? 0.006 : 0.004;
+    // Prominent 3D cylinders (12mm - 16mm diameter) for solid visibility
+    const radius = isTraversed ? 0.008 : 0.006;
     const geometry = new THREE.CylinderGeometry(radius, radius, distance, 14);
     this.disposables.push(geometry);
 
@@ -177,7 +177,7 @@ export class ThreeBFSVisualizer implements IARAlgorithmVisualizer<BFSState, BFSV
   }
 
   private createTextBillboard(text: string, isCurrent: boolean, isProcessed: boolean, isInQueue: boolean): THREE.Sprite {
-    const spriteSize = 0.046;
+    const spriteSize = 0.058;
 
     if (typeof document === 'undefined') {
       const mat = new THREE.SpriteMaterial({

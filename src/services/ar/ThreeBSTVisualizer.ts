@@ -103,7 +103,7 @@ export class ThreeBSTVisualizer {
     }
 
     const positionedNodes: FlatPositionedNode[] = [];
-    const baseElevation = 0.08; // 8cm above placement surface
+    const baseElevation = 0.14; // 14cm above placement surface to elevate leaf nodes above HUD horizon
     const baseSpread = this.config.baseHorizontalSpread;
     const spreadDecay = 0.58;
 

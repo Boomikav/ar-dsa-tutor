@@ -67,7 +67,7 @@ export const ARNotification: React.FC<ARNotificationProps> = ({
       aria-live="polite"
       style={{
         position: 'absolute',
-        top: 'calc(env(safe-area-inset-top, 0px) + 94px)',
+        top: 'calc(env(safe-area-inset-top, 0px) + 54px)',
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 40,

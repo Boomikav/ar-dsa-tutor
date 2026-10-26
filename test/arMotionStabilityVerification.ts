@@ -79,8 +79,8 @@ async function runMotionStabilityVerification() {
 
   const bfsBounds = ARSceneFraming.computeBoundingBox(bfsVisualizer.visualGroup);
   assert(bfsBounds.isValid === true, 'Case 2a: BFS visual group computes valid 3D bounds');
-  assert(bfsBounds.size.x >= 0.30 && bfsBounds.size.x <= 0.45, `Case 2b: BFS width in balanced medium scale (got ${bfsBounds.size.x.toFixed(3)}m, target: 0.30-0.45m)`);
-  assert(bfsBounds.size.y >= 0.25 && bfsBounds.size.y <= 0.45, `Case 2c: BFS height in balanced medium scale (got ${bfsBounds.size.y.toFixed(3)}m, target: 0.25-0.45m)`);
+  assert(bfsBounds.size.x >= 0.45 && bfsBounds.size.x <= 0.65, `Case 2b: BFS width in balanced medium scale (got ${bfsBounds.size.x.toFixed(3)}m, target: 0.45-0.65m)`);
+  assert(bfsBounds.size.y >= 0.35 && bfsBounds.size.y <= 0.55, `Case 2c: BFS height in balanced medium scale (got ${bfsBounds.size.y.toFixed(3)}m, target: 0.35-0.55m)`);
   assert(bfsBounds.size.z >= 0.05, `Case 2d: BFS graph has true 3D volumetric depth (depth: ${bfsBounds.size.z.toFixed(3)}m)`);
 
   // Check aspect ratio (width to height ratio)
@@ -90,12 +90,12 @@ async function runMotionStabilityVerification() {
   // Check vertex clearance: all vertices in adjacency list
   const vertexKeys = ['A', 'B', 'C', 'D', 'E', 'F'];
   const vertexPositions: Record<string, THREE.Vector3> = {
-    A: new THREE.Vector3(0.00, 0.26, -0.03),
-    B: new THREE.Vector3(-0.13, 0.15, 0.02),
-    C: new THREE.Vector3(0.13, 0.15, 0.02),
-    D: new THREE.Vector3(-0.16, 0.03, -0.02),
-    E: new THREE.Vector3(0.00, 0.03, 0.03),
-    F: new THREE.Vector3(0.16, 0.03, -0.02)
+    A: new THREE.Vector3(0.00, 0.44, -0.03),
+    B: new THREE.Vector3(-0.19, 0.28, 0.03),
+    C: new THREE.Vector3(0.19, 0.28, 0.03),
+    D: new THREE.Vector3(-0.23, 0.14, -0.02),
+    E: new THREE.Vector3(-0.04, 0.13, 0.04),
+    F: new THREE.Vector3(0.22, 0.14, -0.01)
   };
 
   let minDistanceBetweenVertices = Infinity;
@@ -131,8 +131,8 @@ async function runMotionStabilityVerification() {
 
   const stackBounds = ARSceneFraming.computeBoundingBox(stackVisualizer.visualGroup);
   assert(stackBounds.isValid === true, 'Case 3a: Stack visual group computes valid 3D bounds');
-  assert(stackBounds.size.x >= 0.18 && stackBounds.size.x <= 0.28, `Case 3b: Stack chute width in medium scale (got ${stackBounds.size.x.toFixed(3)}m)`);
-  assert(stackBounds.size.y >= 0.30 && stackBounds.size.y <= 0.45, `Case 3c: Stack chute height accommodates vertical column (got ${stackBounds.size.y.toFixed(3)}m)`);
+  assert(stackBounds.size.x >= 0.25 && stackBounds.size.x <= 0.38, `Case 3b: Stack chute width in medium scale (got ${stackBounds.size.x.toFixed(3)}m)`);
+  assert(stackBounds.size.y >= 0.40 && stackBounds.size.y <= 0.58, `Case 3c: Stack chute height accommodates vertical column (got ${stackBounds.size.y.toFixed(3)}m)`);
   assert(stackBounds.size.z >= 0.12, `Case 3d: Stack has substantial volumetric 3D depth (got ${stackBounds.size.z.toFixed(3)}m)`);
 
   // Check guide rail cylinders and volumetric element blocks
@@ -168,8 +168,8 @@ async function runMotionStabilityVerification() {
   });
   assert(portraitFramingBFS.isValid === true, 'Case 4a: BFS camera fit computed for mobile portrait');
   // Camera distance should be ~0.80 - 1.05m (neither tiny at 2m+ nor oversized <0.5m)
-  assert(portraitFramingBFS.distance >= 0.70 && portraitFramingBFS.distance <= 1.15,
-    `Case 4b: BFS mobile portrait distance ergonomic (got ${portraitFramingBFS.distance.toFixed(3)}m, target: 0.70-1.15m)`);
+  assert(portraitFramingBFS.distance >= 0.85 && portraitFramingBFS.distance <= 1.45,
+    `Case 4b: BFS mobile portrait distance ergonomic (got ${portraitFramingBFS.distance.toFixed(3)}m, target: 0.85-1.45m)`);
 
   const portraitFramingStack = ARSceneFraming.computeCameraFit(stackBounds, {
     aspectRatio: 390 / 844,
@@ -178,8 +178,8 @@ async function runMotionStabilityVerification() {
     azimuthAngleRad: 0.22
   });
   assert(portraitFramingStack.isValid === true, 'Case 4c: Stack camera fit computed for mobile portrait');
-  assert(portraitFramingStack.distance >= 0.50 && portraitFramingStack.distance <= 0.90,
-    `Case 4d: Stack mobile portrait distance ergonomic (got ${portraitFramingStack.distance.toFixed(3)}m, target: 0.50-0.90m)`);
+  assert(portraitFramingStack.distance >= 0.55 && portraitFramingStack.distance <= 1.05,
+    `Case 4d: Stack mobile portrait distance ergonomic (got ${portraitFramingStack.distance.toFixed(3)}m, target: 0.55-1.05m)`);
 
   // Desktop Landscape: 1280x800 (aspect ratio 1.6)
   const desktopFramingBFS = ARSceneFraming.computeCameraFit(bfsBounds, {

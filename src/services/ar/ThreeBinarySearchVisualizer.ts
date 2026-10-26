@@ -32,11 +32,11 @@ export class ThreeBinarySearchVisualizer implements IARAlgorithmVisualizer<Binar
     if (arr.length === 0) return;
 
     const n = arr.length;
-    const blockSize = 0.055; // 5.5cm cube block
-    const spacing = 0.02; // 2cm spacing
+    const blockSize = 0.082; // 8.2cm cube block (large, readable tabletop block)
+    const spacing = 0.024; // 2.4cm spacing
     const totalWidth = n * blockSize + (n - 1) * spacing;
     const startX = -totalWidth / 2 + blockSize / 2;
-    const baseElevation = 0.06;
+    const baseElevation = 0.14; // 14cm above surface to clear bottom HUD horizon
 
     const low = state.low;
     const high = state.high;
@@ -131,7 +131,7 @@ export class ThreeBinarySearchVisualizer implements IARAlgorithmVisualizer<Binar
   }
 
   private createTextBillboard(text: string, isMid: boolean, isMatch: boolean, isDimmed: boolean): THREE.Sprite {
-    const spriteSize = 0.045;
+    const spriteSize = 0.065;
 
     if (typeof document === 'undefined') {
       const mat = new THREE.SpriteMaterial({
@@ -170,7 +170,7 @@ export class ThreeBinarySearchVisualizer implements IARAlgorithmVisualizer<Binar
   }
 
   private createCaliperMarker(label: string, color: string): THREE.Sprite {
-    const spriteSize = 0.035;
+    const spriteSize = 0.048;
 
     if (typeof document === 'undefined') {
       const mat = new THREE.SpriteMaterial({ color: 0x38bdf8, transparent: true, depthTest: false });
@@ -209,7 +209,7 @@ export class ThreeBinarySearchVisualizer implements IARAlgorithmVisualizer<Binar
   }
 
   private createSubscriptBillboard(text: string, isWithinRange: boolean): THREE.Sprite {
-    const spriteSize = 0.025;
+    const spriteSize = 0.035;
 
     if (typeof document === 'undefined') {
       const mat = new THREE.SpriteMaterial({ color: isWithinRange ? 0x94a3b8 : 0x475569, transparent: true, depthTest: false });

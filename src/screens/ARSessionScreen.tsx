@@ -10,7 +10,8 @@ import {
   Pause,
   Layers,
   Sparkles,
-  ChevronDown
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { ARSessionState } from '../services/ar/IARService';
 import { BSTPracticeEngine, PracticeSessionState } from '../services/dsa/bst/BSTPracticeEngine';
@@ -61,6 +62,16 @@ export const ARSessionScreen: React.FC = () => {
   const [sessionState, setSessionState] = useState<ARSessionState>('INITIALIZING');
   const [selectedNode, setSelectedNode] = useState<BSTNode | null>(null);
   const [feedbackToast, setFeedbackToast] = useState<{ message: string; isCorrect: boolean } | null>(null);
+  const [isHudCollapsed, setIsHudCollapsed] = useState(false);
+
+  // Auto-dismiss placement and interaction feedback toasts so they do not block the 3D scene
+  useEffect(() => {
+    if (!feedbackToast) return;
+    const timer = setTimeout(() => {
+      setFeedbackToast(null);
+    }, 2800);
+    return () => clearTimeout(timer);
+  }, [feedbackToast]);
 
   // Deterministic candidate targets tracking for BST Try Another variation
   const previousTargetsRef = useRef<number[]>([40]);
@@ -1374,20 +1385,47 @@ export const ARSessionScreen: React.FC = () => {
             position: 'relative',
             zIndex: 20,
             maxWidth: '640px',
-            width: 'min(calc(100vw - 24px), 640px)',
-            margin: '0 auto 12px auto',
-            padding: '12px 16px calc(env(safe-area-inset-bottom, 0px) + 8px)',
-            background: 'rgba(15, 23, 42, 0.90)',
+            width: 'min(calc(100vw - 20px), 640px)',
+            margin: '0 auto 8px auto',
+            padding: isHudCollapsed ? '8px 12px calc(env(safe-area-inset-bottom, 0px) + 4px)' : '10px 14px calc(env(safe-area-inset-bottom, 0px) + 6px)',
+            background: 'rgba(15, 23, 42, 0.92)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            borderRadius: '16px',
-            boxShadow: '0 12px 40px rgba(0, 0, 0, 0.6)',
+            border: '1px solid rgba(255, 255, 255, 0.14)',
+            borderRadius: '14px',
+            boxShadow: '0 10px 36px rgba(0, 0, 0, 0.65)',
             display: 'flex',
             flexDirection: 'column',
-            gap: '10px'
+            gap: isHudCollapsed ? '6px' : '8px'
           }}
         >
+          {/* Top header row with Collapse / Expand pill */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+            <span style={{ fontSize: '11px', fontWeight: 800, color: '#38bdf8', letterSpacing: '0.4px' }}>
+              {getAlgorithmTitle(activeAlgorithmId).toUpperCase()}
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsHudCollapsed(prev => !prev)}
+              style={{
+                background: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.16)',
+                borderRadius: '6px',
+                padding: '2px 8px',
+                color: '#cbd5e1',
+                fontSize: '10.5px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+              title={isHudCollapsed ? "Expand HUD details" : "Collapse HUD for open AR view"}
+            >
+              {isHudCollapsed ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+              <span>{isHudCollapsed ? 'Expand Details' : 'Compact View'}</span>
+            </button>
+          </div>
           {/* ========================================================= */}
           {/* 1. BST HUD */}
           {/* ========================================================= */}
@@ -2095,86 +2133,88 @@ export const ARSessionScreen: React.FC = () => {
             </>
           )}
 
-          {/* Divider */}
-          <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.08)' }} />
+          {/* Bottom tips & AI Tutor trigger (collapsible) */}
+          {!isHudCollapsed && (
+            <>
+              <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.08)' }} />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', flexWrap: 'wrap', gap: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ color: '#64748b' }}>
+                    {selectedNode
+                      ? `Node ${selectedNode.value} (Depth: ${selectedNode.depth})`
+                      : 'Tip: Tap "Switch Algorithm" to change topic.'}
+                  </span>
+                  {egeaDecision && (
+                    <button
+                      type="button"
+                      onClick={() => setShowTutorHUD(true)}
+                      style={{
+                        background: 'rgba(56, 189, 248, 0.12)',
+                        border: '1px solid rgba(56, 189, 248, 0.3)',
+                        color: '#38bdf8',
+                        borderRadius: '5px',
+                        padding: '2px 6px',
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                      title={`EGEA Decision: ${egeaDecision.interventionType}\nRationale: ${egeaDecision.rationaleCode}\nConfidence: ${Math.round(egeaDecision.confidence * 100)}%`}
+                    >
+                      <span>EGEA:</span>
+                      <span style={{ color: '#f8fafc', fontWeight: 600 }}>{egeaDecision.interventionType.replace(/_/g, ' ')}</span>
+                    </button>
+                  )}
+                </div>
 
-          {/* Row: Quick tips & AI Tutor trigger */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', flexWrap: 'wrap', gap: '6px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ color: '#64748b' }}>
-                {selectedNode
-                  ? `Node ${selectedNode.value} (Depth: ${selectedNode.depth})`
-                  : 'Tip: Tap "Switch Algorithm" to change topic.'}
-              </span>
-              {egeaDecision && (
-                <button
-                  type="button"
-                  onClick={() => setShowTutorHUD(true)}
-                  style={{
-                    background: 'rgba(56, 189, 248, 0.12)',
-                    border: '1px solid rgba(56, 189, 248, 0.3)',
-                    color: '#38bdf8',
-                    borderRadius: '5px',
-                    padding: '2px 6px',
-                    fontSize: '10px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                  title={`EGEA Decision: ${egeaDecision.interventionType}\nRationale: ${egeaDecision.rationaleCode}\nConfidence: ${Math.round(egeaDecision.confidence * 100)}%`}
-                >
-                  <span>EGEA:</span>
-                  <span style={{ color: '#f8fafc', fontWeight: 600 }}>{egeaDecision.interventionType.replace(/_/g, ' ')}</span>
-                </button>
-              )}
-            </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <button
+                    onClick={() => {
+                      setShowTutorHUD(prev => {
+                        const next = !prev;
+                        if (next && !tutorResponse) {
+                          consultAITutor('hint');
+                        }
+                        return next;
+                      });
+                    }}
+                    style={{
+                      background: showTutorHUD ? 'rgba(56, 189, 248, 0.18)' : 'none',
+                      border: 'none',
+                      color: 'var(--accent-cyan)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      padding: '2px 6px',
+                      borderRadius: '5px'
+                    }}
+                  >
+                    <Sparkles size={12} />
+                    {showTutorHUD ? 'Hide AI' : 'Ask AI Tutor'}
+                  </button>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <button
-                onClick={() => {
-                  setShowTutorHUD(prev => {
-                    const next = !prev;
-                    if (next && !tutorResponse) {
-                      consultAITutor('hint');
-                    }
-                    return next;
-                  });
-                }}
-                style={{
-                  background: showTutorHUD ? 'rgba(56, 189, 248, 0.18)' : 'none',
-                  border: 'none',
-                  color: 'var(--accent-cyan)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  padding: '2px 6px',
-                  borderRadius: '5px'
-                }}
-              >
-                <Sparkles size={12} />
-                {showTutorHUD ? 'Hide AI' : 'Ask AI Tutor'}
-              </button>
-
-              <button
-                onClick={() => navigateTo('ai-tutor', selectedTopic)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#94a3b8',
-                  cursor: 'pointer',
-                  fontSize: '11px'
-                }}
-                title="Open full-screen AI Tutor conversation"
-              >
-                Full Chat
-              </button>
-            </div>
-          </div>
+                  <button
+                    onClick={() => navigateTo('ai-tutor', selectedTopic)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#94a3b8',
+                      cursor: 'pointer',
+                      fontSize: '11px'
+                    }}
+                    title="Open full-screen AI Tutor conversation"
+                  >
+                    Full Chat
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
         </footer>
       )}
 

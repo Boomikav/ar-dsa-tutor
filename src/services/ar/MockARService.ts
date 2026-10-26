@@ -217,6 +217,27 @@ export class MockARService implements IARService {
     };
   }
 
+  getSpatialDiagnostics(): any {
+    return {
+      activeAlgorithm: 'ds-binary-search-tree',
+      renderingMode: 'CANVAS_3D_FALLBACK' as const,
+      referenceSpaceType: 'local-floor' as const,
+      placementDistance: 0.95,
+      objectScale: [1.0, 1.0, 1.0],
+      placementPosition: [0, 0, 0],
+      cameraPosition: [0, 0.40, 0.81],
+      cameraToModelDistance: 0.90,
+      modelBounds: {
+        size: { x: 0.50, y: 0.30, z: 0.10 },
+        center: { x: 0, y: 0.15, z: 0 },
+        isValid: true
+      },
+      viewportWidth: 1280,
+      viewportHeight: 800,
+      timestamp: Date.now()
+    };
+  }
+
   refitScene(): boolean {
     return true;
   }

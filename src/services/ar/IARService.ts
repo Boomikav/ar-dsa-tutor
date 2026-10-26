@@ -47,6 +47,27 @@ export interface ARPerformanceTelemetry {
   sessionDurationSeconds?: number;
 }
 
+export interface ARSpatialDiagnostic {
+  activeAlgorithm: string;
+  renderingMode: 'WEBXR_AR' | 'CANVAS_3D_FALLBACK';
+  referenceSpaceType: 'local-floor' | 'local' | 'none';
+  placementDistance: number;
+  objectScale: [number, number, number];
+  placementPosition: [number, number, number];
+  cameraPosition: [number, number, number];
+  cameraToModelDistance: number;
+  modelBounds: {
+    min?: any;
+    max?: any;
+    size: any;
+    center: any;
+    isValid: boolean;
+  };
+  viewportWidth: number;
+  viewportHeight: number;
+  timestamp: number;
+}
+
 /**
  * World-space spatial placement in the XR reference space.
  * Note: Represents a local transform in reference space; does NOT claim native WebXR XRAnchor API.
@@ -196,6 +217,9 @@ export interface IARService {
 
   /** Returns camera framing and scene dimension diagnostics */
   getFramingDiagnostics?(): any;
+
+  /** Returns authoritative WebXR spatial placement and physical transform diagnostics */
+  getSpatialDiagnostics?(): ARSpatialDiagnostic | null;
 
   /** Recalculates bounding box and refits camera framing to active visualization */
   refitScene?(): boolean;
