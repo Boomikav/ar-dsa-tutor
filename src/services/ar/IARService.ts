@@ -183,6 +183,15 @@ export interface IARService {
   /** Renders Stack state into the active 3D spatial scene */
   renderStack?(state: any, options?: any): void;
 
+  /** Renders Merge Sort state into the active 3D spatial scene */
+  renderMergeSort?(state: any, options?: any): void;
+
+  /** Renders AVL Tree state into the active 3D spatial scene */
+  renderAVLTree?(state: any, options?: any): void;
+
+  /** Renders Dijkstra's Algorithm state into the active 3D spatial scene */
+  renderDijkstra?(state: any, options?: any): void;
+
   /**
    * Raycasts into the 3D scene from screen coordinates to select an algorithm element.
    */

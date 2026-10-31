@@ -1,0 +1,45 @@
+{
+  "documentId": "DOC-MRG-01",
+  "algorithmId": "algo-merge-sort",
+  "topic": "Merge Sort",
+  "category": "Sorting Algorithm",
+  "version": "1.0.0",
+  "sourceFile": "src/services/dsa/sorting/MergeSortEngine.ts",
+  "sections": [
+    {
+      "sectionId": "description",
+      "title": "Merge Sort Concept and Definition",
+      "content": "Merge Sort is an optimal, comparison-based, divide-and-conquer sorting algorithm. It breaks a problem down into smaller subproblems of the same type, solves them recursively, and combines their solutions. Specifically, Merge Sort continually divides an unsorted array into two equal (or near-equal) halves until base-case sub-arrays of size 1 are reached (which are inherently sorted). It then systematically merges adjacent sorted sub-arrays using a two-pointer technique into a sorted whole."
+    },
+    {
+      "sectionId": "pseudocode",
+      "title": "Merge Sort Pseudocode",
+      "content": "procedure mergeSort(arr, left, right):\n  if left >= right:\n    return // Base case: sub-array of length 1 or 0\n  mid = left + floor((right - left) / 2)\n  mergeSort(arr, left, mid)\n  mergeSort(arr, mid + 1, right)\n  merge(arr, left, mid, right)\n\nprocedure merge(arr, left, mid, right):\n  create auxiliary buffer aux of size (right - left + 1)\n  i = left, j = mid + 1, k = 0\n  while i <= mid and j <= right:\n    if arr[i] <= arr[j]: // <= preserves stability\n      aux[k++] = arr[i++]\n    else:\n      aux[k++] = arr[j++]\n  while i <= mid:\n    aux[k++] = arr[i++]\n  while j <= right:\n    aux[k++] = arr[j++]\n  copy aux back into arr[left .. right]"
+    },
+    {
+      "sectionId": "invariants",
+      "title": "Merge Sort Formal Invariants",
+      "content": "1. Base Case Invariant: Any sub-array of length 0 or 1 is trivially sorted.\n2. Divide-and-Conquer Recurrence: T(n) = 2*T(n/2) + O(n). By the Master Theorem (Case 2: log_b(a) = log_2(2) = 1), T(n) is asymptotically Theta(n log n).\n3. Merge Correctness Invariant: At each step of the two-pointer merge, aux[0 .. k - 1] contains the k smallest elements from arr[left .. mid] and arr[mid + 1 .. right] in sorted order.\n4. Algorithmic Stability: When arr[i] == arr[j], the element from the left sub-array (arr[i]) is picked first, preserving the relative order of duplicate items."
+    },
+    {
+      "sectionId": "complexity",
+      "title": "Merge Sort Asymptotic Complexity",
+      "content": "Time Complexity:\n- Best Case: O(n log n) comparisons. Even if the array is already sorted, the recursive tree splits log n levels deep and performs n comparisons at each level.\n- Average Case: O(n log n) comparisons.\n- Worst Case: O(n log n) comparisons.\nSpace Complexity:\n- Auxiliary Space: O(n) auxiliary memory. Standard array Merge Sort requires an auxiliary array of size n to hold merged values before copying them back.\n- Stack Memory: O(log n) call stack frames due to balanced binary recursive decomposition.\n- Total Space: O(n) total memory."
+    },
+    {
+      "sectionId": "execution_trace",
+      "title": "Step-by-Step Merge Sort Trace",
+      "content": "Given array [38, 27, 43, 3, 9, 82, 10]:\n1. Divide into [38, 27, 43, 3] and [9, 82, 10].\n2. Divide left half into [38, 27] and [43, 3]; divide right half into [9, 82] and [10].\n3. Base sub-arrays of size 1: [38], [27], [43], [3], [9], [82], [10].\n4. Merge pairs: [27, 38], [3, 43], [9, 82], [10].\n5. Merge level 2: [3, 27, 38, 43] and [9, 10, 82].\n6. Final Merge: Compare pointers across [3, 27, 38, 43] and [9, 10, 82] -> Result: [3, 9, 10, 27, 38, 43, 82]."
+    },
+    {
+      "sectionId": "common_errors",
+      "title": "Common Implementation Errors and Misconceptions",
+      "content": "1. Array Copyback Omission: Merging into an auxiliary array but failing to copy the merged values back into the original working array slice, leaving the original array unsorted.\n2. Midpoint Calculation Overflow: Computing mid = (left + right) / 2 instead of left + floor((right - left) / 2).\n3. Non-Stability via Strict Inequality: Writing if arr[i] < arr[j] instead of arr[i] <= arr[j]. If two elements are equal, picking the right-hand element destroys stability."
+    },
+    {
+      "sectionId": "viva_questions",
+      "title": "Frequently Asked Examination / Viva Questions",
+      "content": "Q1: Why is Merge Sort preferred over QuickSort for sorting linked lists?\nA1: Because in linked lists, nodes can be spliced and merged by adjusting pointers in O(1) auxiliary space without requiring contiguous array allocation. QuickSort requires random element access (which is O(n) in linked lists), whereas Merge Sort accesses nodes sequentially.\nQ2: What is the main drawback of Merge Sort on arrays compared to QuickSort or HeapSort?\nA2: Merge Sort requires O(n) additional auxiliary memory buffer to merge sub-arrays, whereas QuickSort and HeapSort sort in-place with O(1) auxiliary space."
+    }
+  ]
+}

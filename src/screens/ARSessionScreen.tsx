@@ -30,6 +30,9 @@ import { BubbleSortEngine, BubbleSortState, SortDecision } from '../services/dsa
 import { BinarySearchEngine, BinarySearchState, BinarySearchDecision } from '../services/dsa/searching/BinarySearchEngine';
 import { BFSEngine, BFSState } from '../services/dsa/graphAlgorithms/BFSEngine';
 import { StackEngine, StackState } from '../services/dsa/stack/StackEngine';
+import { MergeSortEngine, MergeSortState } from '../services/dsa/sorting/MergeSortEngine';
+import { AVLTreeEngine, AVLTreeState } from '../services/dsa/tree/AVLTreeEngine';
+import { DijkstraEngine, DijkstraState } from '../services/dsa/graphAlgorithms/DijkstraEngine';
 import { 
   EGEAEventAdapter, 
   EGEAPolicyEngine, 
@@ -50,7 +53,10 @@ export const ARSessionScreen: React.FC = () => {
       'algo-binary-search',
       'algo-breadth-first-search',
       'algo-bfs',
-      'ds-stack'
+      'ds-stack',
+      'algo-merge-sort',
+      'ds-avl-tree',
+      'algo-dijkstras-algorithm'
     ];
     return valid.includes(selectedTopic.id)
       ? (selectedTopic.id === 'algo-bfs' ? 'algo-breadth-first-search' : selectedTopic.id)
@@ -144,6 +150,25 @@ export const ARSessionScreen: React.FC = () => {
   });
   const [nextStackPushValue, setNextStackPushValue] = useState<number>(60);
 
+  // 6. Deterministic Merge Sort Engine & State
+  const mergeSortEngine = useMemo(() => new MergeSortEngine(), []);
+  const [mergeSortState, setMergeSortState] = useState<MergeSortState>(() => {
+    return mergeSortEngine.initialize([38, 27, 43, 3, 9, 82, 10]);
+  });
+
+  // 7. Deterministic AVL Tree Engine & State
+  const avlTreeEngine = useMemo(() => new AVLTreeEngine(), []);
+  const [avlTreeState, setAvlTreeState] = useState<AVLTreeState>(() => {
+    return avlTreeEngine.initialize([10, 20, 30, 40, 50, 25]);
+  });
+  const [nextAvlInsertValue, setNextAvlInsertValue] = useState<number>(35);
+
+  // 8. Deterministic Dijkstra Shortest Path Engine & State
+  const dijkstraEngine = useMemo(() => new DijkstraEngine(), []);
+  const [dijkstraState, setDijkstraState] = useState<DijkstraState>(() => {
+    return dijkstraEngine.initialize();
+  });
+
   // BST Practice Mode: Insertion (default) vs Search
   const [bstMode, setBstMode] = useState<'INSERT' | 'SEARCH'>('INSERT');
   const [bstSearchTarget, setBstSearchTarget] = useState<number>(30);
@@ -201,6 +226,24 @@ export const ARSessionScreen: React.FC = () => {
     }
   }, [activeAlgorithmId, stackState, services.arService]);
 
+  useEffect(() => {
+    if (activeAlgorithmId === 'algo-merge-sort') {
+      services.arService.renderMergeSort?.(mergeSortState);
+    }
+  }, [activeAlgorithmId, mergeSortState, services.arService]);
+
+  useEffect(() => {
+    if (activeAlgorithmId === 'ds-avl-tree') {
+      services.arService.renderAVLTree?.(avlTreeState);
+    }
+  }, [activeAlgorithmId, avlTreeState, services.arService]);
+
+  useEffect(() => {
+    if (activeAlgorithmId === 'algo-dijkstras-algorithm') {
+      services.arService.renderDijkstra?.(dijkstraState);
+    }
+  }, [activeAlgorithmId, dijkstraState, services.arService]);
+
   // Dedicated effect for BST Search visualization update
   useEffect(() => {
     if (activeAlgorithmId === 'ds-binary-search-tree' && bstMode === 'SEARCH') {
@@ -256,13 +299,31 @@ export const ARSessionScreen: React.FC = () => {
           }
           return op.newState;
         });
+      } else if (activeAlgorithmId === 'algo-merge-sort') {
+        const res = mergeSortEngine.step();
+        if (res.state.isComplete) {
+          setIsAutoPlaying(false);
+        }
+        setMergeSortState(res.state);
+      } else if (activeAlgorithmId === 'ds-avl-tree') {
+        const res = avlTreeEngine.step();
+        if (res.state.isComplete) {
+          setIsAutoPlaying(false);
+        }
+        setAvlTreeState(res.state);
+      } else if (activeAlgorithmId === 'algo-dijkstras-algorithm') {
+        const res = dijkstraEngine.step();
+        if (res.state.isComplete) {
+          setIsAutoPlaying(false);
+        }
+        setDijkstraState(res.state);
       } else {
         setIsAutoPlaying(false);
       }
     }, 1200);
 
     return () => clearInterval(timer);
-  }, [isAutoPlaying, activeAlgorithmId, bubbleSortEngine, binarySearchEngine, bfsEngine]);
+  }, [isAutoPlaying, activeAlgorithmId, bubbleSortEngine, binarySearchEngine, bfsEngine, mergeSortEngine, avlTreeEngine, dijkstraEngine]);
 
   // Initialize AR / 3D Canvas Context (Mount Only)
   // Session Mount Tracking Ref across StrictMode renders
@@ -302,6 +363,12 @@ export const ARSessionScreen: React.FC = () => {
         services.arService.renderBFS?.(bfsState);
       } else if (activeAlgorithmId === 'ds-stack') {
         services.arService.renderStack?.(stackState);
+      } else if (activeAlgorithmId === 'algo-merge-sort') {
+        services.arService.renderMergeSort?.(mergeSortState);
+      } else if (activeAlgorithmId === 'ds-avl-tree') {
+        services.arService.renderAVLTree?.(avlTreeState);
+      } else if (activeAlgorithmId === 'algo-dijkstras-algorithm') {
+        services.arService.renderDijkstra?.(dijkstraState);
       }
 
       return () => {
@@ -456,6 +523,12 @@ export const ARSessionScreen: React.FC = () => {
       services.arService.renderBFS?.(bfsState);
     } else if (canonicalId === 'ds-stack') {
       services.arService.renderStack?.(stackState);
+    } else if (canonicalId === 'algo-merge-sort') {
+      services.arService.renderMergeSort?.(mergeSortState);
+    } else if (canonicalId === 'ds-avl-tree') {
+      services.arService.renderAVLTree?.(avlTreeState);
+    } else if (canonicalId === 'algo-dijkstras-algorithm') {
+      services.arService.renderDijkstra?.(dijkstraState);
     }
 
     setFeedbackToast({
@@ -1093,6 +1166,62 @@ export const ARSessionScreen: React.FC = () => {
     });
   };
 
+  // 6. Merge Sort Actions
+  const handleMergeSortStep = () => {
+    setIsAutoPlaying(false);
+    const res = mergeSortEngine.step();
+    setMergeSortState(res.state);
+    setFeedbackToast({ message: res.event.description, isCorrect: true });
+  };
+
+  const handleMergeSortReset = () => {
+    setIsAutoPlaying(false);
+    const fresh = mergeSortEngine.initialize([38, 27, 43, 3, 9, 82, 10]);
+    setMergeSortState(fresh);
+    setFeedbackToast({ message: 'Merge Sort reset to initial array.', isCorrect: true });
+  };
+
+  // 7. AVL Tree Actions
+  const handleAVLTreeStep = () => {
+    setIsAutoPlaying(false);
+    const res = avlTreeEngine.step();
+    setAvlTreeState(res.state);
+    setFeedbackToast({ message: res.event.description, isCorrect: true });
+  };
+
+  const handleAVLTreeInsert = () => {
+    setIsAutoPlaying(false);
+    const val = nextAvlInsertValue;
+    const candidates = [15, 35, 60, 5, 28, 70];
+    const nextCandidate = candidates[(candidates.indexOf(val) + 1) % candidates.length];
+    setNextAvlInsertValue(nextCandidate);
+    const res = avlTreeEngine.insert(val);
+    setAvlTreeState(res.state);
+    setFeedbackToast({ message: `Inserted node ${val} into AVL Tree.`, isCorrect: true });
+  };
+
+  const handleAVLTreeReset = () => {
+    setIsAutoPlaying(false);
+    const fresh = avlTreeEngine.initialize([10, 20, 30, 40, 50, 25]);
+    setAvlTreeState(fresh);
+    setFeedbackToast({ message: 'AVL Tree reset to balanced state.', isCorrect: true });
+  };
+
+  // 8. Dijkstra Actions
+  const handleDijkstraStep = () => {
+    setIsAutoPlaying(false);
+    const res = dijkstraEngine.step();
+    setDijkstraState(res.state);
+    setFeedbackToast({ message: res.event.description, isCorrect: true });
+  };
+
+  const handleDijkstraReset = () => {
+    setIsAutoPlaying(false);
+    const fresh = dijkstraEngine.initialize();
+    setDijkstraState(fresh);
+    setFeedbackToast({ message: "Dijkstra's graph reset to start vertex A.", isCorrect: true });
+  };
+
   // Reset Session (Resets Placement Anchor & Active Algorithm)
   const handleResetSession = () => {
     services.arService.resetAnchor();
@@ -1121,6 +1250,12 @@ export const ARSessionScreen: React.FC = () => {
       handleBFSReset();
     } else if (activeAlgorithmId === 'ds-stack') {
       handleStackReset();
+    } else if (activeAlgorithmId === 'algo-merge-sort') {
+      handleMergeSortReset();
+    } else if (activeAlgorithmId === 'ds-avl-tree') {
+      handleAVLTreeReset();
+    } else if (activeAlgorithmId === 'algo-dijkstras-algorithm') {
+      handleDijkstraReset();
     }
   };
 
@@ -1150,6 +1285,9 @@ export const ARSessionScreen: React.FC = () => {
       case 'algo-breadth-first-search':
       case 'algo-bfs': return 'Breadth-First Search';
       case 'ds-stack': return 'Stack';
+      case 'algo-merge-sort': return 'Merge Sort';
+      case 'ds-avl-tree': return 'AVL Tree';
+      case 'algo-dijkstras-algorithm': return "Dijkstra's Algorithm";
       default: return 'AR Algorithm';
     }
   };
@@ -2123,6 +2261,177 @@ export const ARSessionScreen: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleStackReset}
+                    className="btn btn-secondary"
+                    style={{ padding: '8px 10px', fontSize: '11.5px', fontWeight: 700 }}
+                  >
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* ========================================================= */}
+          {/* 6. MERGE SORT HUD */}
+          {/* ========================================================= */}
+          {activeAlgorithmId === 'algo-merge-sort' && (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700 }}>PHASE:</span>
+                  <span className={`badge ${mergeSortState.isComplete ? 'badge-emerald' : 'badge-purple'}`} style={{ fontSize: '11px', padding: '2px 8px' }}>
+                    {mergeSortState.isComplete ? 'SORTED ✓' : 'DIVIDE & CONQUER'}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' }}>
+                  <span style={{ color: '#94a3b8' }}>Depth: <strong style={{ color: '#38bdf8' }}>{mergeSortState.recursionDepth}</strong></span>
+                  <span style={{ color: '#94a3b8' }}>Comps: <strong style={{ color: '#f59e0b' }}>{mergeSortState.comparisonsCount}</strong></span>
+                  <span style={{ color: '#94a3b8' }}>Writes: <strong style={{ color: '#10b981' }}>{mergeSortState.writesCount}</strong></span>
+                </div>
+              </div>
+
+              <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.08)' }} />
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ fontSize: '11.5px', color: '#cbd5e1' }}>
+                  {mergeSortState.lastAction}
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={handleMergeSortStep}
+                    disabled={mergeSortState.isComplete}
+                    className="btn btn-primary"
+                    style={{ flex: 1, padding: '8px 10px', fontSize: '11.5px', fontWeight: 700, justifyContent: 'center' }}
+                  >
+                    Next Merge Step
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+                    disabled={mergeSortState.isComplete}
+                    className="btn btn-secondary"
+                    style={{ padding: '8px 12px', fontSize: '11.5px', fontWeight: 700 }}
+                  >
+                    {isAutoPlaying ? <Pause size={14} /> : <Play size={14} />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleMergeSortReset}
+                    className="btn btn-secondary"
+                    style={{ padding: '8px 10px', fontSize: '11.5px', fontWeight: 700 }}
+                  >
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* ========================================================= */}
+          {/* 7. AVL TREE HUD */}
+          {/* ========================================================= */}
+          {activeAlgorithmId === 'ds-avl-tree' && (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700 }}>NODES:</span>
+                  <span className="badge badge-cyan" style={{ fontSize: '11px', padding: '2px 8px' }}>
+                    {avlTreeState.nodeCount} Nodes
+                  </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' }}>
+                  <span style={{ color: '#94a3b8' }}>Rotations: <strong style={{ color: '#38bdf8' }}>{avlTreeState.rotationCount}</strong></span>
+                  <span style={{ color: '#94a3b8' }}>Imbalanced: <strong style={{ color: avlTreeState.imbalancedNodeValue ? '#ef4444' : '#10b981' }}>{avlTreeState.imbalancedNodeValue ?? 'None'}</strong></span>
+                </div>
+              </div>
+
+              <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.08)' }} />
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ fontSize: '11.5px', color: '#cbd5e1' }}>
+                  {avlTreeState.rotationExplanation || avlTreeState.lastOperation}
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={handleAVLTreeStep}
+                    disabled={avlTreeState.isComplete}
+                    className="btn btn-primary"
+                    style={{ flex: 1, padding: '8px 10px', fontSize: '11.5px', fontWeight: 700, justifyContent: 'center' }}
+                  >
+                    Next Balance Step
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleAVLTreeInsert}
+                    className="btn btn-secondary"
+                    style={{ padding: '8px 10px', fontSize: '11.5px', fontWeight: 700 }}
+                  >
+                    Insert (+{nextAvlInsertValue})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleAVLTreeReset}
+                    className="btn btn-secondary"
+                    style={{ padding: '8px 10px', fontSize: '11.5px', fontWeight: 700 }}
+                  >
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* ========================================================= */}
+          {/* 8. DIJKSTRA HUD */}
+          {/* ========================================================= */}
+          {activeAlgorithmId === 'algo-dijkstras-algorithm' && (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700 }}>CURRENT VERTEX:</span>
+                  <span className="badge badge-amber" style={{ fontSize: '11px', padding: '2px 8px' }}>
+                    {dijkstraState.currentVertex ?? (dijkstraState.isComplete ? 'Complete' : 'Start A')}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' }}>
+                  <span style={{ color: '#94a3b8' }}>Visited: <strong style={{ color: '#10b981' }}>{dijkstraState.visited.length}/{dijkstraState.vertices.length}</strong></span>
+                  <span style={{ color: '#94a3b8' }}>Shortest Path: <strong style={{ color: '#38bdf8' }}>{dijkstraState.shortestPath.length > 0 ? dijkstraState.shortestPath.join(' -> ') : 'Evaluating'}</strong></span>
+                </div>
+              </div>
+
+              <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.08)' }} />
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ fontSize: '11.5px', color: '#cbd5e1' }}>
+                  {dijkstraState.lastAction}
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={handleDijkstraStep}
+                    disabled={dijkstraState.isComplete}
+                    className="btn btn-primary"
+                    style={{ flex: 1, padding: '8px 10px', fontSize: '11.5px', fontWeight: 700, justifyContent: 'center' }}
+                  >
+                    Relax Next Vertex
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+                    disabled={dijkstraState.isComplete}
+                    className="btn btn-secondary"
+                    style={{ padding: '8px 12px', fontSize: '11.5px', fontWeight: 700 }}
+                  >
+                    {isAutoPlaying ? <Pause size={14} /> : <Play size={14} />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDijkstraReset}
                     className="btn btn-secondary"
                     style={{ padding: '8px 10px', fontSize: '11.5px', fontWeight: 700 }}
                   >

@@ -1,0 +1,50 @@
+{
+  "documentId": "DOC-BST-01",
+  "algorithmId": "ds-binary-search-tree",
+  "topic": "Binary Search Tree (BST)",
+  "category": "Tree Data Structure",
+  "version": "1.0.0",
+  "sourceFile": "src/services/dsa/bst/BSTEngine.ts",
+  "sections": [
+    {
+      "sectionId": "description",
+      "title": "BST Concept and Definition",
+      "content": "A Binary Search Tree (BST) is a hierarchical node-based binary tree data structure where each node has at most two children, referred to as the left child and right child. The structure enforces the fundamental BST Ordering Invariant: for any given node with key K, all keys stored in its left subtree are strictly less than K, and all keys stored in its right subtree are strictly greater than K. This ordering property facilitates efficient binary search partitioning during insertion, deletion, and search operations."
+    },
+    {
+      "sectionId": "pseudocode",
+      "title": "BST Search and Insertion Pseudocode",
+      "content": "function search(node, target):\n  if node is null or node.key == target:\n    return node\n  if target < node.key:\n    return search(node.left, target)\n  else:\n    return search(node.right, target)\n\nfunction insert(node, key):\n  if node is null:\n    return new Node(key)\n  if key < node.key:\n    node.left = insert(node.left, key)\n  else if key > node.key:\n    node.right = insert(node.right, key)\n  return node"
+    },
+    {
+      "sectionId": "invariants",
+      "title": "BST Formal Invariants",
+      "content": "1. BST Ordering Invariant: For every node P with left subtree L and right subtree R, for all x in L: x.key < P.key, and for all y in R: y.key > P.key.\n2. In-Order Traversal Invariant: Performing an In-Order Depth-First Traversal (Left -> Root -> Right) visits keys in strictly monotonically non-decreasing sorted order.\n3. Distinct Keys: Standard BST implementations disallow duplicate keys to maintain strict trichotomy during branch decisions."
+    },
+    {
+      "sectionId": "complexity",
+      "title": "BST Asymptotic Complexity",
+      "content": "Time Complexity:\n- Search: Best Case O(1) when target is root; Average Case O(log n) when tree is balanced; Worst Case O(n) when tree degenerates into a linear linked list (skewed tree).\n- Insertion: Best Case O(1); Average Case O(log n); Worst Case O(n).\n- Deletion: Best Case O(1); Average Case O(log n); Worst Case O(n).\nSpace Complexity:\n- Auxiliary Space: O(h) where h is the tree height, bounded by O(log n) for balanced trees and O(n) for degenerate skewed trees due to the recursive execution call stack.\n- Total Space: O(n) to store n nodes containing key pointers and child references."
+    },
+    {
+      "sectionId": "execution_trace",
+      "title": "Step-by-Step BST Insertion Example",
+      "content": "Given an initial tree with root 50, left child 30, right child 70. Inserting target key 40:\nStep 1: Compare target 40 with root 50. Since 40 < 50, branch to the left subtree.\nStep 2: Compare target 40 with node 30. Since 40 > 30, branch to the right subtree of 30.\nStep 3: Right child of node 30 is null. Allocate new leaf node with value 40 and attach as node 30's right child.\nResult: BST property preserved, tree height remains 3."
+    },
+    {
+      "sectionId": "common_errors",
+      "title": "Common Implementation Errors and Misconceptions",
+      "content": "1. Local vs Global Invariant Fallacy: Checking only that node.left.val < node.val and node.right.val > node.val locally without propagating range bounds (-infinity to +infinity). An invalid tree can satisfy local parent-child tests while violating ancestor bounds.\n2. Skewed Tree Degeneration: Inserting keys in sorted or reverse-sorted order without self-balancing leads to a degenerate linked-list tree with O(n) search time.\n3. Two-Child Deletion Mishandling: When deleting a node with two children, failing to correctly substitute the In-Order Successor (smallest node in right subtree) or In-Order Predecessor and subsequently delete that successor node."
+    },
+    {
+      "sectionId": "edge_cases",
+      "title": "BST Edge Cases",
+      "content": "1. Empty Tree: Root pointer is null; searching returns null immediately; inserting sets new node directly as root.\n2. Single-Node Tree: Root has no children; height is 1; deleting root yields empty tree.\n3. Skewed Tree: Monotonically increasing or decreasing insertions produce height equal to n.\n4. Duplicate Keys: Must be either rejected or consistently placed in one subtree; standard AR-DSA Tutor rejects duplicates."
+    },
+    {
+      "sectionId": "viva_questions",
+      "title": "Frequently Asked Examination / Viva Questions",
+      "content": "Q1: Why does In-Order traversal of a BST produce sorted order?\nA1: Because by definition, In-Order visits all keys smaller than the node (left subtree), then the node itself, then all keys larger than the node (right subtree). Recursively applied, this enforces monotonic ordering.\nQ2: What is the worst-case time complexity of BST operations and when does it occur?\nA2: O(n), which occurs when the tree degenerates into a singly linked list due to inserting sorted or reverse-sorted keys without self-balancing rotations."
+    }
+  ]
+}

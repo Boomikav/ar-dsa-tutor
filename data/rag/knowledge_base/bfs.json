@@ -1,0 +1,45 @@
+{
+  "documentId": "DOC-BFS-01",
+  "algorithmId": "algo-breadth-first-search",
+  "topic": "Breadth-First Search (BFS)",
+  "category": "Graph Algorithm",
+  "version": "1.0.0",
+  "sourceFile": "src/services/dsa/graphAlgorithms/BFSEngine.ts",
+  "sections": [
+    {
+      "sectionId": "description",
+      "title": "Breadth-First Search Concept and Definition",
+      "content": "Breadth-First Search (BFS) is a fundamental graph and tree traversal algorithm that explores vertices in strictly increasing order of their distance (number of edges) from a designated source vertex. BFS explores all immediate neighbor vertices at the current depth level before moving on to explore vertices at the next depth level. To maintain this level-order progression, BFS utilizes a First-In, First-Out (FIFO) queue alongside a visited tracking set to prevent cycles and duplicate node processing."
+    },
+    {
+      "sectionId": "pseudocode",
+      "title": "Breadth-First Search Pseudocode",
+      "content": "procedure BFS(graph, source):\n  create a FIFO queue Q\n  create a set visited\n  add source to visited\n  enqueue source into Q\n  while Q is not empty:\n    u = dequeue from Q\n    visit(u)\n    for each neighbor v of u in graph:\n      if v is not in visited:\n        add v to visited\n        enqueue v into Q"
+    },
+    {
+      "sectionId": "invariants",
+      "title": "BFS Formal Invariants",
+      "content": "1. Level-Order Distance Monotonicity: Vertices are dequeued in monotonically non-decreasing order of their unweighted shortest distance from the source: dist(source, u) <= dist(source, v) for all vertices dequeued prior to v.\n2. FIFO Queue Invariant: At any point during BFS execution, the queue contains vertices from at most two consecutive distance levels: level d and level d + 1.\n3. Cycle Prevention Invariant: A vertex is marked as visited immediately upon enqueueing, ensuring that each vertex is enqueued at most once."
+    },
+    {
+      "sectionId": "complexity",
+      "title": "BFS Asymptotic Complexity",
+      "content": "Time Complexity:\n- O(V + E) where V is the total number of vertices and E is the total number of edges. Each vertex is enqueued and dequeued exactly once (O(V)), and each incident edge is examined at most twice in an undirected graph or once in a directed graph (O(E)).\nSpace Complexity:\n- Auxiliary Space: O(V) to store the FIFO queue and the visited set in the worst case (e.g., in a star graph where the central node connects to all V - 1 outer nodes).\n- Total Space: O(V + E) for the adjacency list representation of the graph."
+    },
+    {
+      "sectionId": "execution_trace",
+      "title": "Step-by-Step BFS Trace Example",
+      "content": "Given undirected graph with vertices A, B, C, D, E, F where A connects to B and C; B connects to D and E; C connects to F:\n1. Initialize: Q = [A], visited = {A}.\n2. Dequeue A: Neighbors of A are B and C. Both unvisited. Q = [B, C], visited = {A, B, C}.\n3. Dequeue B: Neighbors of B are D and E. Both unvisited. Q = [C, D, E], visited = {A, B, C, D, E}.\n4. Dequeue C: Neighbor of C is F. Unvisited. Q = [D, E, F], visited = {A, B, C, D, E, F}.\n5. Dequeue D, E, F in sequence: All neighbors already visited. Q becomes empty.\nResult: Traversal order: A -> B -> C -> D -> E -> F."
+    },
+    {
+      "sectionId": "common_errors",
+      "title": "Common Implementation Errors and Misconceptions",
+      "content": "1. Late Visited Marking: Marking a node as visited when it is dequeued rather than when it is enqueued. In graphs with multiple cross-edges or cycles, this leads to the same vertex being enqueued multiple times, causing exponential redundant operations.\n2. FIFO Queue Substitution: Using a LIFO stack instead of a FIFO queue, which inadvertently transforms the algorithm from Breadth-First Search into Depth-First Search.\n3. Shortest Path in Weighted Graphs: Incorrectly attempting to use unweighted BFS to find shortest paths in weighted graphs; BFS guarantees shortest paths only when all edge weights are identical (uniform)."
+    },
+    {
+      "sectionId": "viva_questions",
+      "title": "Frequently Asked Examination / Viva Questions",
+      "content": "Q1: Can BFS find the shortest path in an unweighted graph?\nA1: Yes. Because BFS explores nodes level by level in order of edge distance, the first time an unweighted BFS reaches any vertex, the path taken from the source is guaranteed to contain the minimum number of edges.\nQ2: What data structure is essential for implementing BFS, and why?\nA2: A FIFO queue. It ensures that vertices discovered first (at level d) are processed and expanded before vertices discovered later (at level d + 1)."
+    }
+  ]
+}

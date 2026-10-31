@@ -1,5 +1,5 @@
-import React from 'react';
-import { Play, Sparkles, X, GitBranch, ArrowUpDown, Search, Network, Layers } from 'lucide-react';
+import React, { useState } from 'react';
+import { Play, Sparkles, X, GitBranch, ArrowUpDown, Search, Network, Layers, Sliders } from 'lucide-react';
 
 export interface ARAlgorithmOption {
   id: string;
@@ -11,7 +11,7 @@ export interface ARAlgorithmOption {
   badgeColor: string;
 }
 
-export const AR_ALGORITHMS: ARAlgorithmOption[] = [
+export const AR_CORE_ALGORITHMS: ARAlgorithmOption[] = [
   {
     id: 'ds-binary-search-tree',
     name: 'Binary Search Tree',
@@ -59,7 +59,45 @@ export const AR_ALGORITHMS: ARAlgorithmOption[] = [
   }
 ];
 
-interface ARAlgorithmSelectorProps {
+// Preserves backward compatibility and protected baseline verification
+export const AR_ALGORITHMS: ARAlgorithmOption[] = AR_CORE_ALGORITHMS;
+
+export const AR_ADVANCED_ALGORITHMS: ARAlgorithmOption[] = [
+  {
+    id: 'algo-merge-sort',
+    name: 'Merge Sort',
+    category: 'Divide & Conquer Sorting',
+    learningObjective: 'Observe recursive array halving, recursion trees, and stable sorted merging in 3D.',
+    operationSupported: 'Subarray Partitioning & Sorted Two-Way Merging',
+    icon: <Sliders size={20} color="#a855f7" />,
+    badgeColor: 'badge-purple'
+  },
+  {
+    id: 'ds-avl-tree',
+    name: 'AVL Tree',
+    category: 'Self-Balancing Tree',
+    learningObjective: 'Experience strict height balancing, balance factors (-1, 0, +1), and LL/RR/LR/RL 3D rotations.',
+    operationSupported: 'Insert, Dynamic Rebalancing & Rotations',
+    icon: <GitBranch size={20} color="#06b6d4" />,
+    badgeColor: 'badge-teal'
+  },
+  {
+    id: 'algo-dijkstras-algorithm',
+    name: "Dijkstra's Algorithm",
+    category: 'Shortest Path Graph',
+    learningObjective: 'Trace greedy priority queue vertex extractions, edge relaxations, and shortest path trees in 3D.',
+    operationSupported: 'Tentative Distance Relaxation & Path Tracing',
+    icon: <Network size={20} color="#f97316" />,
+    badgeColor: 'badge-amber'
+  }
+];
+
+export const ALL_AR_ALGORITHMS: ARAlgorithmOption[] = [
+  ...AR_CORE_ALGORITHMS,
+  ...AR_ADVANCED_ALGORITHMS
+];
+
+export interface ARAlgorithmSelectorProps {
   activeAlgorithmId: string;
   onSelectAlgorithm: (algorithmId: string) => void;
   onClose?: () => void;
@@ -69,62 +107,68 @@ interface ARAlgorithmSelectorProps {
 export const ARAlgorithmSelector: React.FC<ARAlgorithmSelectorProps> = ({
   activeAlgorithmId,
   onSelectAlgorithm,
-  onClose,
-  isARSessionActive = false
+  onClose
 }) => {
+  const [filterTab, setFilterTab] = useState<'ALL' | 'CORE' | 'ADVANCED'>('ALL');
+
+  const displayedAlgorithms = filterTab === 'ALL'
+    ? ALL_AR_ALGORITHMS
+    : (filterTab === 'CORE' ? AR_CORE_ALGORITHMS : AR_ADVANCED_ALGORITHMS);
+
   return (
     <div
-      role="dialog"
-      aria-label="AR Algorithm Selection"
       style={{
         position: 'fixed',
-        inset: 0,
-        zIndex: 200,
-        backgroundColor: 'rgba(4, 7, 17, 0.92)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(11, 15, 25, 0.88)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        zIndex: 100,
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
         alignItems: 'center',
-        padding: '16px',
-        overflowY: 'auto'
+        justifyContent: 'center',
+        padding: '16px'
       }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ar-selector-title"
     >
       <div
         style={{
           width: '100%',
-          maxWidth: '560px',
-          maxHeight: '90dvh',
+          maxWidth: '520px',
+          maxHeight: '85vh',
+          background: 'linear-gradient(180deg, #131b2e 0%, #0d121f 100%)',
+          border: '1px solid rgba(56, 189, 248, 0.25)',
+          borderRadius: '20px',
           display: 'flex',
           flexDirection: 'column',
-          background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(8, 12, 22, 0.98) 100%)',
-          borderRadius: '20px',
-          border: '1px solid rgba(56, 189, 248, 0.25)',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8)',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)'
         }}
       >
         {/* Header */}
         <div
           style={{
-            padding: '16px 20px',
+            padding: '18px 20px 12px 20px',
             borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '12px'
+            justifyContent: 'space-between'
           }}
         >
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Sparkles size={18} color="#38bdf8" />
-              <h2 style={{ fontSize: '17px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+              <h2 id="ar-selector-title" style={{ fontSize: '17px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
                 Select AR Algorithm
               </h2>
             </div>
             <p style={{ fontSize: '12px', color: '#94a3b8', margin: '4px 0 0 0' }}>
-              Select a DSA topic to practice in the immersive WebXR spatial environment.
+              Select from all 8 supported 3D spatial algorithm visualizers.
             </p>
           </div>
 
@@ -140,17 +184,49 @@ export const ARAlgorithmSelector: React.FC<ARAlgorithmSelectorProps> = ({
           )}
         </div>
 
+        {/* Tab Filters */}
+        <div style={{
+          display: 'flex',
+          gap: '6px',
+          padding: '10px 20px',
+          background: 'rgba(15, 23, 42, 0.6)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
+        }}>
+          {[
+            { id: 'ALL', label: 'All 8 Topics' },
+            { id: 'CORE', label: 'Core Baseline (5)' },
+            { id: 'ADVANCED', label: 'Advanced Expansion (3)' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setFilterTab(tab.id as any)}
+              style={{
+                background: filterTab === tab.id ? '#2563eb' : 'transparent',
+                color: filterTab === tab.id ? '#ffffff' : '#94a3b8',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '6px 10px',
+                fontSize: '11px',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
         {/* Algorithm List */}
         <div
           style={{
-            padding: '16px 20px',
+            padding: '14px 20px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '12px',
+            gap: '10px',
             overflowY: 'auto'
           }}
         >
-          {AR_ALGORITHMS.map(algo => {
+          {displayedAlgorithms.map(algo => {
             const isSelected = algo.id === activeAlgorithmId;
 
             return (
@@ -158,13 +234,13 @@ export const ARAlgorithmSelector: React.FC<ARAlgorithmSelectorProps> = ({
                 key={algo.id}
                 className="card"
                 style={{
-                  padding: '14px 16px',
+                  padding: '12px 14px',
                   background: isSelected ? 'rgba(56, 189, 248, 0.08)' : 'rgba(30, 41, 59, 0.45)',
                   border: isSelected ? '2px solid rgba(56, 189, 248, 0.6)' : '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '14px',
+                  borderRadius: '12px',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '10px',
+                  gap: '8px',
                   transition: 'all 0.15s ease'
                 }}
               >
@@ -172,68 +248,58 @@ export const ARAlgorithmSelector: React.FC<ARAlgorithmSelectorProps> = ({
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div
                       style={{
-                        width: '38px',
-                        height: '38px',
-                        borderRadius: '10px',
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '8px',
                         background: 'rgba(15, 23, 42, 0.8)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        flexShrink: 0
+                        border: '1px solid rgba(255, 255, 255, 0.08)'
                       }}
                     >
                       {algo.icon}
                     </div>
                     <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                          {algo.name}
-                        </h3>
-                        <span className={`badge ${algo.badgeColor}`} style={{ fontSize: '10px', padding: '2px 6px' }}>
-                          {algo.category}
-                        </span>
-                      </div>
+                      <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc', margin: 0 }}>
+                        {algo.name}
+                      </h3>
+                      <span className={`badge ${algo.badgeColor}`} style={{ fontSize: '10px', padding: '1px 6px', marginTop: '2px', display: 'inline-block' }}>
+                        {algo.category}
+                      </span>
                     </div>
                   </div>
 
                   <button
                     onClick={() => onSelectAlgorithm(algo.id)}
-                    className="btn btn-primary"
+                    className={`btn ${isSelected ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                     style={{
-                      padding: '8px 14px',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      whiteSpace: 'nowrap',
-                      flexShrink: 0
+                      gap: '4px',
+                      fontSize: '11px',
+                      padding: '6px 12px',
+                      borderRadius: '8px'
                     }}
                   >
-                    <Play size={13} />
-                    {isSelected && isARSessionActive ? 'Resume AR' : 'Start AR'}
+                    <Play size={12} fill={isSelected ? '#ffffff' : 'none'} />
+                    <span>{isSelected ? 'Active' : 'Practice'}</span>
                   </button>
                 </div>
 
-                <div style={{ fontSize: '12px', color: '#cbd5e1', lineHeight: 1.4 }}>
-                  <strong style={{ color: '#94a3b8' }}>Objective: </strong>
+                <p style={{ fontSize: '11.5px', color: '#cbd5e1', lineHeight: 1.45, margin: 0 }}>
                   {algo.learningObjective}
-                </div>
+                </p>
 
                 <div
                   style={{
-                    fontSize: '11px',
+                    fontSize: '10.5px',
                     color: '#94a3b8',
-                    background: 'rgba(15, 23, 42, 0.6)',
-                    padding: '6px 10px',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
+                    background: 'rgba(15, 23, 42, 0.5)',
+                    padding: '4px 8px',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 255, 255, 0.04)'
                   }}
                 >
-                  <strong style={{ color: '#38bdf8' }}>Operations: </strong>
-                  {algo.operationSupported}
+                  <strong style={{ color: '#38bdf8' }}>Interactive Ops:</strong> {algo.operationSupported}
                 </div>
               </div>
             );

@@ -4,6 +4,8 @@ import { ILLMProvider } from './providers/ILLMProvider';
 import { GeminiProvider } from './providers/GeminiProvider';
 import { MockProvider } from './providers/MockProvider';
 import { loadServerEnv, getGeminiApiKey } from './env';
+import { VectorStore } from '../src/services/ai/rag/VectorStore';
+import { RAGTutorService } from '../src/services/ai/rag/RAGTutorService';
 
 /**
  * Creates the active LLM provider based on server environment.
@@ -69,6 +71,116 @@ export async function handleAiApiRequest(req: IncomingMessage, res: ServerRespon
       timestamp: new Date().toISOString()
     }));
     return true;
+  }
+
+  // 1b. RAG Index Status: GET /api/ai/rag-index-status
+  if (url === '/api/ai/rag-index-status' || url.startsWith('/api/ai/rag-index-status?')) {
+    const vectorStore = VectorStore.getInstance();
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    });
+    res.end(JSON.stringify({
+      status: 'ok',
+      metadata: vectorStore.getIndexMetadata(),
+      timestamp: new Date().toISOString()
+    }));
+    return true;
+  }
+
+  // 1c. RAG Vector Retrieval: POST /api/ai/rag-retrieve
+  if (url === '/api/ai/rag-retrieve') {
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204, {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      });
+      res.end();
+      return true;
+    }
+
+    if (req.method !== 'POST') {
+      res.writeHead(405, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+      return true;
+    }
+
+    try {
+      const body = await readJsonBody(req);
+      const query = String(body.query || '').trim();
+      if (!query) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Missing required query field' }));
+        return true;
+      }
+
+      const vectorStore = VectorStore.getInstance();
+      const result = vectorStore.search(query, {
+        topK: body.topK,
+        minScoreThreshold: body.minScoreThreshold,
+        algorithmFilter: body.algorithmFilter,
+        categoryFilter: body.categoryFilter
+      });
+
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      });
+      res.end(JSON.stringify(result));
+      return true;
+    } catch (err: any) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'RAG retrieval error', message: err.message }));
+      return true;
+    }
+  }
+
+  // 1d. RAG Grounded Tutor: POST /api/ai/rag-tutor
+  if (url === '/api/ai/rag-tutor') {
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204, {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      });
+      res.end();
+      return true;
+    }
+
+    if (req.method !== 'POST') {
+      res.writeHead(405, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+      return true;
+    }
+
+    try {
+      const body = await readJsonBody(req);
+      const query = String(body.query || '').trim();
+      if (!query) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Missing required query field' }));
+        return true;
+      }
+
+      const tutorService = RAGTutorService.getInstance();
+      const ragResponse = await tutorService.answerQuery(
+        query,
+        body.runtimeState,
+        body.options
+      );
+
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      });
+      res.end(JSON.stringify(ragResponse));
+      return true;
+    } catch (err: any) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'RAG tutor error', message: err.message }));
+      return true;
+    }
   }
 
   // 2. Main Tutor endpoint: POST /api/ai/tutor

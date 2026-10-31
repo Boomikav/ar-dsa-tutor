@@ -1,0 +1,45 @@
+{
+  "documentId": "DOC-BUB-01",
+  "algorithmId": "algo-bubble-sort",
+  "topic": "Bubble Sort",
+  "category": "Sorting Algorithm",
+  "version": "1.0.0",
+  "sourceFile": "src/services/dsa/sorting/BubbleSortEngine.ts",
+  "sections": [
+    {
+      "sectionId": "description",
+      "title": "Bubble Sort Concept and Definition",
+      "content": "Bubble Sort is an elementary comparison-based sorting algorithm that operates by repeatedly traversing an input array and comparing adjacent pairs of elements. If a pair of adjacent elements is found to be out of sorted order (arr[j] > arr[j + 1]), the algorithm swaps them. Across successive passes through the unsorted prefix, the largest unsorted value 'bubbles up' to its correct final position at the end of the array."
+    },
+    {
+      "sectionId": "pseudocode",
+      "title": "Bubble Sort Pseudocode with Early Termination",
+      "content": "procedure bubbleSort(arr, n):\n  for i from 0 to n - 2:\n    swapped = false\n    for j from 0 to n - i - 2:\n      if arr[j] > arr[j + 1]:\n        swap(arr[j], arr[j + 1])\n        swapped = true\n    if not swapped:\n      break // Early exit: array is already sorted\n  return arr"
+    },
+    {
+      "sectionId": "invariants",
+      "title": "Bubble Sort Formal Invariants",
+      "content": "1. Sorted Suffix Invariant: After completion of pass i (0-indexed), the sub-array arr[n - 1 - i .. n - 1] contains the (i + 1) largest elements of the original array in their final, permanently sorted positions.\n2. Bounded Prefix: Elements in arr[0 .. n - 2 - i] are all less than or equal to arr[n - 1 - i].\n3. Stability: Bubble Sort is stable because it only swaps strictly adjacent elements when arr[j] > arr[j + 1], never swapping equal elements (arr[j] == arr[j + 1]), thus preserving the relative initial order of duplicate keys."
+    },
+    {
+      "sectionId": "complexity",
+      "title": "Bubble Sort Asymptotic Complexity",
+      "content": "Time Complexity:\n- Best Case: O(n) comparisons and O(1) swaps when the input is already sorted and an early termination swapped flag is used.\n- Average Case: O(n^2) comparisons and O(n^2) swaps on random permutations.\n- Worst Case: O(n^2) comparisons and O(n^2) swaps, occurring when the input array is sorted in strict reverse order (requires n*(n-1)/2 comparisons and swaps).\nSpace Complexity:\n- Auxiliary Space: O(1) in-place sorting memory; requires only a constant number of temporary variables for swapping.\n- Total Space: O(n) to store the input array."
+    },
+    {
+      "sectionId": "execution_trace",
+      "title": "Step-by-Step Bubble Sort Trace",
+      "content": "Given array [5, 2, 4, 1, 3]:\nPass 1:\n- Compare [0] vs [1] (5 vs 2): 5 > 2 -> Swap -> [2, 5, 4, 1, 3]\n- Compare [1] vs [2] (5 vs 4): 5 > 4 -> Swap -> [2, 4, 5, 1, 3]\n- Compare [2] vs [3] (5 vs 1): 5 > 1 -> Swap -> [2, 4, 1, 5, 3]\n- Compare [3] vs [4] (5 vs 3): 5 > 3 -> Swap -> [2, 4, 1, 3, 5]\nPass 1 complete: Element 5 is permanently placed at index 4 (sorted suffix: [5])."
+    },
+    {
+      "sectionId": "common_errors",
+      "title": "Common Implementation Errors and Misconceptions",
+      "content": "1. Redundant Inner Bounds: Running the inner loop up to n - 2 on every pass without subtracting i. This performs unnecessary comparisons against already sorted suffix elements.\n2. Inadvertent Instability: Using a non-strict comparison (arr[j] >= arr[j + 1]) during swap decisions, which swaps equal elements and destroys algorithmic stability.\n3. Missing Swapped Flag: Failing to track whether any swap occurred during a pass, thereby forcing an O(n^2) execution even on already sorted inputs."
+    },
+    {
+      "sectionId": "viva_questions",
+      "title": "Frequently Asked Examination / Viva Questions",
+      "content": "Q1: Is Bubble Sort an in-place and stable sorting algorithm?\nA1: Yes. It is in-place because it operates directly within the input array using O(1) auxiliary memory. It is stable because it swaps only strictly adjacent elements when arr[j] > arr[j + 1], preserving the relative ordering of identical keys.\nQ2: What is the maximum number of swaps possible in Bubble Sort for an array of size n?\nA2: n * (n - 1) / 2 swaps, which occurs when the array is in reverse sorted order."
+    }
+  ]
+}

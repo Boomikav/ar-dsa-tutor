@@ -1,0 +1,290 @@
+[
+  {
+    "queryId": "EVAL-BST-01",
+    "query": "What is the fundamental invariant of a Binary Search Tree?",
+    "category": "CONCEPTUAL",
+    "targetAlgorithmId": "ds-binary-search-tree",
+    "expectedDocumentIds": ["DOC-BST-01"],
+    "expectedKeyTerms": ["left", "right", "subtree", "invariant", "strictly"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-BST-02",
+    "query": "What is the worst-case time complexity of BST operations and when does it occur?",
+    "category": "COMPLEXITY",
+    "targetAlgorithmId": "ds-binary-search-tree",
+    "expectedDocumentIds": ["DOC-BST-01"],
+    "expectedKeyTerms": ["O(N)", "skewed", "degenerate", "sorted"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-BST-03",
+    "query": "How is in-order traversal related to node ordering in a BST?",
+    "category": "TRACE",
+    "targetAlgorithmId": "ds-binary-search-tree",
+    "expectedDocumentIds": ["DOC-BST-01"],
+    "expectedKeyTerms": ["in-order", "ascending", "sorted"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-BST-04",
+    "query": "What happens when you delete a BST node with two children?",
+    "category": "EDGE_CASE",
+    "targetAlgorithmId": "ds-binary-search-tree",
+    "expectedDocumentIds": ["DOC-BST-01"],
+    "expectedKeyTerms": ["in-order successor", "two children", "minimum"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-BUB-01",
+    "query": "How does Bubble Sort identify that an array is already sorted early?",
+    "category": "CONCEPTUAL",
+    "targetAlgorithmId": "algo-bubble-sort",
+    "expectedDocumentIds": ["DOC-BUB-01"],
+    "expectedKeyTerms": ["swapped", "flag", "pass", "early"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-BUB-02",
+    "query": "What is the time complexity and number of comparisons in worst-case Bubble Sort?",
+    "category": "COMPLEXITY",
+    "targetAlgorithmId": "algo-bubble-sort",
+    "expectedDocumentIds": ["DOC-BUB-01"],
+    "expectedKeyTerms": ["O(N^2)", "comparisons", "quadratic"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-BUB-03",
+    "query": "Why is Bubble Sort considered a stable sorting algorithm?",
+    "category": "COMPARISON",
+    "targetAlgorithmId": "algo-bubble-sort",
+    "expectedDocumentIds": ["DOC-BUB-01"],
+    "expectedKeyTerms": ["stable", "equal", "relative order"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-BS-01",
+    "query": "What precondition must be satisfied before performing Binary Search?",
+    "category": "CONCEPTUAL",
+    "targetAlgorithmId": "algo-binary-search",
+    "expectedDocumentIds": ["DOC-BIN-01"],
+    "expectedKeyTerms": ["sorted", "monotonic", "precondition"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-BS-02",
+    "query": "How does Binary Search prevent integer overflow when computing mid?",
+    "category": "EDGE_CASE",
+    "targetAlgorithmId": "algo-binary-search",
+    "expectedDocumentIds": ["DOC-BIN-01"],
+    "expectedKeyTerms": ["low + (high - low) / 2", "overflow"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-BS-03",
+    "query": "What is the time and space complexity of iterative Binary Search?",
+    "category": "COMPLEXITY",
+    "targetAlgorithmId": "algo-binary-search",
+    "expectedDocumentIds": ["DOC-BIN-01"],
+    "expectedKeyTerms": ["O(log N)", "O(1)", "halving"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-BFS-01",
+    "query": "Which auxiliary data structure does Breadth-First Search use for frontier traversal?",
+    "category": "CONCEPTUAL",
+    "targetAlgorithmId": "algo-breadth-first-search",
+    "expectedDocumentIds": ["DOC-BFS-01"],
+    "expectedKeyTerms": ["queue", "FIFO", "level"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-BFS-02",
+    "query": "Why does BFS guarantee the shortest path on unweighted graphs?",
+    "category": "COMPARISON",
+    "targetAlgorithmId": "algo-breadth-first-search",
+    "expectedDocumentIds": ["DOC-BFS-01"],
+    "expectedKeyTerms": ["unweighted", "shortest path", "level by level", "edges"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-BFS-03",
+    "query": "What is the time complexity of BFS in terms of vertices V and edges E?",
+    "category": "COMPLEXITY",
+    "targetAlgorithmId": "algo-breadth-first-search",
+    "expectedDocumentIds": ["DOC-BFS-01"],
+    "expectedKeyTerms": ["O(V + E)", "vertices", "edges", "adjacency"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-STK-01",
+    "query": "What is the primary access principle of a Stack data structure?",
+    "category": "CONCEPTUAL",
+    "targetAlgorithmId": "ds-stack",
+    "expectedDocumentIds": ["DOC-STK-01"],
+    "expectedKeyTerms": ["LIFO", "last in first out", "top", "push", "pop"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-STK-02",
+    "query": "What are the edge conditions for Stack underflow and overflow?",
+    "category": "EDGE_CASE",
+    "targetAlgorithmId": "ds-stack",
+    "expectedDocumentIds": ["DOC-STK-01"],
+    "expectedKeyTerms": ["underflow", "empty", "overflow", "capacity"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-STK-03",
+    "query": "What are common applications of a Stack in computer systems?",
+    "category": "COMPARISON",
+    "targetAlgorithmId": "ds-stack",
+    "expectedDocumentIds": ["DOC-STK-01"],
+    "expectedKeyTerms": ["call", "undo", "expression", "backtracking"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-MRG-01",
+    "query": "What algorithmic paradigm does Merge Sort employ and how does divide and conquer work?",
+    "category": "CONCEPTUAL",
+    "targetAlgorithmId": "algo-merge-sort",
+    "expectedDocumentIds": ["DOC-MRG-01"],
+    "expectedKeyTerms": ["divide and conquer", "halves", "subarrays", "merge"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-MRG-02",
+    "query": "What is the time complexity of Merge Sort in worst, average, and best cases?",
+    "category": "COMPLEXITY",
+    "targetAlgorithmId": "algo-merge-sort",
+    "expectedDocumentIds": ["DOC-MRG-01"],
+    "expectedKeyTerms": ["O(N log N)", "guaranteed", "master theorem"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-MRG-03",
+    "query": "What is the auxiliary space complexity of standard Merge Sort and why is it needed?",
+    "category": "EDGE_CASE",
+    "targetAlgorithmId": "algo-merge-sort",
+    "expectedDocumentIds": ["DOC-MRG-01"],
+    "expectedKeyTerms": ["O(N)", "auxiliary array", "buffer", "merge"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-MRG-04",
+    "query": "How does Merge Sort maintain stability during the merge step?",
+    "category": "COMPARISON",
+    "targetAlgorithmId": "algo-merge-sort",
+    "expectedDocumentIds": ["DOC-MRG-01"],
+    "expectedKeyTerms": ["stable", "<=", "left subarray", "tie"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-AVL-01",
+    "query": "How is the balance factor of a node calculated in an AVL Tree?",
+    "category": "CONCEPTUAL",
+    "targetAlgorithmId": "ds-avl-tree",
+    "expectedDocumentIds": ["DOC-AVL-01"],
+    "expectedKeyTerms": ["balance factor", "height", "left", "right", "-1, 0, +1"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-AVL-02",
+    "query": "What are the four rotation cases in an AVL Tree and when is a double rotation required?",
+    "category": "TRACE",
+    "targetAlgorithmId": "ds-avl-tree",
+    "expectedDocumentIds": ["DOC-AVL-01"],
+    "expectedKeyTerms": ["LL", "RR", "LR", "RL", "double rotation", "single rotation"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-AVL-03",
+    "query": "What is the maximum height and worst-case search complexity of an AVL tree with N nodes?",
+    "category": "COMPLEXITY",
+    "targetAlgorithmId": "ds-avl-tree",
+    "expectedDocumentIds": ["DOC-AVL-01"],
+    "expectedKeyTerms": ["1.44 log2 N", "O(log N)", "height-balanced"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-AVL-04",
+    "query": "How does an AVL Tree prevent the BST worst-case degenerate O(N) linked-list state?",
+    "category": "COMPARISON",
+    "targetAlgorithmId": "ds-avl-tree",
+    "expectedDocumentIds": ["DOC-AVL-01", "DOC-BST-01"],
+    "expectedKeyTerms": ["rebalance", "rotations", "balance factor", "degenerate"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-DJK-01",
+    "query": "What is edge relaxation in Dijkstra's algorithm?",
+    "category": "CONCEPTUAL",
+    "targetAlgorithmId": "algo-dijkstras-algorithm",
+    "expectedDocumentIds": ["DOC-DIJ-01"],
+    "expectedKeyTerms": ["relaxation", "tentative distance", "dist[u] + weight < dist[v]"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-DJK-02",
+    "query": "Why does Dijkstra's algorithm fail or produce incorrect results on graphs with negative edge weights?",
+    "category": "EDGE_CASE",
+    "targetAlgorithmId": "algo-dijkstras-algorithm",
+    "expectedDocumentIds": ["DOC-DIJ-01"],
+    "expectedKeyTerms": ["negative weight", "greedy", "finalized", "cycle"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-DJK-03",
+    "query": "What is the time complexity of Dijkstra's algorithm using a Min-Heap priority queue?",
+    "category": "COMPLEXITY",
+    "targetAlgorithmId": "algo-dijkstras-algorithm",
+    "expectedDocumentIds": ["DOC-DIJ-01"],
+    "expectedKeyTerms": ["O((V + E) log V)", "min-heap", "priority queue"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-EGEA-01",
+    "query": "How does Execution-Grounded Explainable Adaptation connect learner interaction with cognitive pacing?",
+    "category": "CONCEPTUAL",
+    "targetAlgorithmId": "arch-egea-adaptation",
+    "expectedDocumentIds": ["DOC-EGA-01"],
+    "expectedKeyTerms": ["EGEA", "execution-grounded", "pacing", "cognitive load", "telemetry"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-EGEA-02",
+    "query": "What are the 6 canonical intervention types generated by the EGEA Policy Engine?",
+    "category": "TRACE",
+    "targetAlgorithmId": "arch-egea-adaptation",
+    "expectedDocumentIds": ["DOC-EGA-01"],
+    "expectedKeyTerms": ["CONTEXTUAL_HINT", "HIGHLIGHT_ELEMENT", "STEPWISE_SLOWDOWN", "WORKED_EXAMPLE", "PREREQUISITE_REVIEW", "REDUCE_GUIDANCE"],
+    "isOutOfScope": false
+  },
+  {
+    "queryId": "EVAL-OOS-01",
+    "query": "How does the Bellman-Ford algorithm detect negative weight cycles in a directed graph?",
+    "category": "OUT_OF_SCOPE",
+    "targetAlgorithmId": "algo-bellman-ford",
+    "expectedDocumentIds": [],
+    "expectedKeyTerms": [],
+    "isOutOfScope": true
+  },
+  {
+    "queryId": "EVAL-OOS-02",
+    "query": "Explain how quantum entanglement enables quantum key distribution using BB84.",
+    "category": "OUT_OF_SCOPE",
+    "targetAlgorithmId": "general-quantum",
+    "expectedDocumentIds": [],
+    "expectedKeyTerms": [],
+    "isOutOfScope": true
+  },
+  {
+    "queryId": "EVAL-OOS-03",
+    "query": "What is the difference between TCP slow start and congestion avoidance algorithms?",
+    "category": "OUT_OF_SCOPE",
+    "targetAlgorithmId": "networking-tcp",
+    "expectedDocumentIds": [],
+    "expectedKeyTerms": [],
+    "isOutOfScope": true
+  }
+]

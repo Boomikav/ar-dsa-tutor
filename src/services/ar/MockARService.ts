@@ -123,6 +123,18 @@ export class MockARService implements IARService {
     // Mock Stack
   }
 
+  renderMergeSort(_state: any, _options?: any): void {
+    // Mock Merge Sort
+  }
+
+  renderAVLTree(_state: any, _options?: any): void {
+    // Mock AVL Tree
+  }
+
+  renderDijkstra(_state: any, _options?: any): void {
+    // Mock Dijkstra's Algorithm
+  }
+
   selectElementAt(_screenX: number, _screenY: number): any {
     return null;
   }

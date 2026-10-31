@@ -1,0 +1,45 @@
+{
+  "documentId": "DOC-AVL-01",
+  "algorithmId": "ds-avl-tree",
+  "topic": "AVL Tree (Self-Balancing Binary Search Tree)",
+  "category": "Advanced Tree Data Structure",
+  "version": "1.0.0",
+  "sourceFile": "src/services/dsa/tree/AVLTreeEngine.ts",
+  "sections": [
+    {
+      "sectionId": "description",
+      "title": "AVL Tree Concept and Definition",
+      "content": "An AVL Tree (named after inventors Adelson-Velsky and Landis, 1962) is a self-balancing binary search tree. In addition to preserving the strict BST ordering invariant (left < node < right), an AVL tree enforces the Height Balance Invariant: for every node in the tree, the difference in height between its left and right subtrees (defined as its Balance Factor, BF = height(left) - height(right)) is strictly bounded within the set {-1, 0, +1}. When an insertion or deletion causes a node's Balance Factor to become +2 or -2, the tree immediately restores balance through localized pointer rotations."
+    },
+    {
+      "sectionId": "pseudocode",
+      "title": "AVL Tree Balance Factor and Rotation Pseudocode",
+      "content": "function getBalance(node):\n  if node is null: return 0\n  return height(node.left) - height(node.right)\n\nfunction rotateRight(y):\n  x = y.left\n  T2 = x.right\n  x.right = y\n  y.left = T2\n  y.height = 1 + max(height(y.left), height(y.right))\n  x.height = 1 + max(height(x.left), height(x.right))\n  return x\n\nfunction rotateLeft(x):\n  y = x.right\n  T2 = y.left\n  y.left = x\n  x.right = T2\n  x.height = 1 + max(height(x.left), height(x.right))\n  y.height = 1 + max(height(y.left), height(y.right))\n  return y"
+    },
+    {
+      "sectionId": "invariants",
+      "title": "AVL Tree Rotations and Formal Invariants",
+      "content": "1. Strict BST Invariant: All left descendants < node.key < all right descendants.\n2. AVL Height-Balance Invariant: For every node u, |BF(u)| = |height(u.left) - height(u.right)| <= 1.\n3. The 4 Rotation Cases:\n   - Left-Left (LL): BF(node) > 1 and key < node.left.key -> Single Right Rotation on node.\n   - Right-Right (RR): BF(node) < -1 and key > node.right.key -> Single Left Rotation on node.\n   - Left-Right (LR): BF(node) > 1 and key > node.left.key -> Left Rotate child (node.left), then Right Rotate parent (node).\n   - Right-Left (RL): BF(node) < -1 and key < node.right.key -> Right Rotate child (node.right), then Left Rotate parent (node).\n4. Height Bound: Height h of an AVL tree containing n nodes satisfies h < 1.4404 * log2(n + 2) - 0.3277."
+    },
+    {
+      "sectionId": "complexity",
+      "title": "AVL Tree Asymptotic Complexity",
+      "content": "Time Complexity:\n- Search: Worst-case O(log n), guaranteed by the strict height upper bound (height cannot exceed 1.44 * log2 n).\n- Insertion: Worst-case O(log n), consisting of O(log n) traversal down the tree, followed by at most two tree rotations (which execute in O(1) pointer operations) to restore balance.\n- Deletion: Worst-case O(log n), requiring up to O(log n) rotations propagating up the tree.\nSpace Complexity:\n- Auxiliary Space: O(log n) recursion call stack depth.\n- Total Space: O(n) to store n nodes containing keys, pointers, and height/balance metadata."
+    },
+    {
+      "sectionId": "execution_trace",
+      "title": "Step-by-Step AVL Rotation Example",
+      "content": "Demonstration of LR Double Rotation:\nInitial state: Root is 30, left child is 10. (Tree height is 2, BF(30) = +1).\nAction: Insert 20 into left subtree of 30, right child of 10.\n1. Node 10 has left=null, right=20. BF(10) = 0 - 1 = -1.\n2. Node 30 has left height=2, right height=0. BF(30) = 2 - 0 = +2 (Imbalance!).\n3. Since BF(30) > 1 and new key 20 > left child 10, this is the Left-Right (LR) Case.\n4. Step 1: Left Rotate child node 10. Node 20 becomes left child of 30; node 10 becomes left child of 20.\n5. Step 2: Right Rotate parent node 30. Node 20 becomes the new root; 10 is its left child; 30 is its right child.\n6. Result: Root is 20 (BF: 0), left is 10 (BF: 0), right is 30 (BF: 0). Tree is perfectly balanced with height 2."
+    },
+    {
+      "sectionId": "common_errors",
+      "title": "Common Implementation Errors and Misconceptions",
+      "content": "1. Stale Height Updates: Forgetting to recompute node heights immediately after pointer reassignment during rotations. Because parent heights depend directly on child heights, failing to update the lower rotated node before the higher pivot node produces corrupted balance factors.\n2. Incomplete Double Rotation (LR/RL): Attempting to resolve an LR or RL imbalance with a single rotation. A single rotation on an LR case transforms it into another imbalanced configuration without restoring the balance factor to {-1, 0, +1}.\n3. Height vs Depth Confusion: Height is measured from the node down to its deepest leaf (leaf height = 1); depth is measured from the root down to the node (root depth = 0)."
+    },
+    {
+      "sectionId": "viva_questions",
+      "title": "Frequently Asked Examination / Viva Questions",
+      "content": "Q1: What is the difference between an AVL Tree and a Red-Black Tree?\nA1: An AVL tree enforces stricter height balancing (|BF| <= 1), resulting in shallower trees (max height 1.44 log n vs 2 log n for Red-Black trees). Consequently, AVL trees provide faster lookup times for read-heavy workloads, whereas Red-Black trees require fewer rotations during frequent insertions and deletions.\nQ2: What is the maximum number of rotations needed to restore balance after an insertion into an AVL tree?\nA2: At most two rotations (either one single rotation LL/RR, or one double rotation LR/RL). Once the local subtree is rebalanced, its height matches the pre-insertion height, so no ancestors require further rotation."
+    }
+  ]
+}

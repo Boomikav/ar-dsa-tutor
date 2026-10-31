@@ -12,6 +12,7 @@ import { StackEngine } from '../stack/StackEngine';
 import { QueueEngine } from '../queue/QueueEngine';
 import { BinaryTreeEngine } from '../tree/BinaryTreeEngine';
 import { BSTAdapter } from '../bst/BSTAdapter';
+import { AVLTreeEngine } from '../tree/AVLTreeEngine';
 import { HeapEngine } from '../heap/HeapEngine';
 import { HashTableEngine } from '../hashTable/HashTableEngine';
 import { GraphEngine } from '../graph/GraphEngine';
@@ -39,6 +40,7 @@ export class DSARegistry {
     this.register(new QueueEngine());
     this.register(new BinaryTreeEngine());
     this.register(new BSTAdapter());
+    this.register(new AVLTreeEngine());
     this.register(new HeapEngine());
     this.register(new HashTableEngine());
     this.register(new GraphEngine());

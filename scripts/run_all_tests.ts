@@ -21,7 +21,13 @@ const testSuites = [
   'egeaHardeningPhase2Verification.ts',
   'egeaRuntimeWiringIntegration.ts',
   'arSceneFramingVerification.ts',
-  'arMotionStabilityVerification.ts'
+  'arMotionStabilityVerification.ts',
+  'protectedARBaselineRegression.ts',
+  'mergeSortEngineTest.ts',
+  'avlTreeEngineTest.ts',
+  'dijkstraEngineTest.ts',
+  'advancedAlgorithmsVisualizerTest.ts',
+  'ragSystemEvaluationTest.ts'
 ];
 
 let totalPassed = 0;

@@ -1,0 +1,45 @@
+{
+  "documentId": "DOC-DIJ-01",
+  "algorithmId": "algo-dijkstras-algorithm",
+  "topic": "Dijkstra's Shortest Path Algorithm",
+  "category": "Graph Algorithm",
+  "version": "1.0.0",
+  "sourceFile": "src/services/dsa/graphAlgorithms/DijkstraEngine.ts",
+  "sections": [
+    {
+      "sectionId": "description",
+      "title": "Dijkstra's Algorithm Concept and Definition",
+      "content": "Dijkstra's Algorithm (published by Edsger W. Dijkstra in 1959) is a greedy graph algorithm that computes the single-source shortest paths from a starting source vertex to all other reachable vertices in a weighted graph containing strictly non-negative edge weights. The algorithm maintains a table of tentative distances from the source to each vertex. At each iteration, it permanently settles the unvisited vertex with the minimum tentative distance using a priority queue (min-heap), and then performs edge relaxation on all its unvisited incident neighbors."
+    },
+    {
+      "sectionId": "pseudocode",
+      "title": "Dijkstra's Algorithm Pseudocode with Priority Queue",
+      "content": "procedure Dijkstra(graph, source):\n  dist = table of size V initialized to Infinity\n  prev = table of size V initialized to null\n  dist[source] = 0\n  create MinHeap PQ and insert (source, 0)\n  visited = empty set\n\n  while PQ is not empty:\n    (u, d) = PQ.popMin()\n    if u in visited: continue\n    add u to visited\n\n    for each neighbor (v, weight) of u in graph:\n      if v not in visited:\n        newDist = dist[u] + weight\n        if newDist < dist[v]: // Edge Relaxation\n          dist[v] = newDist\n          prev[v] = u\n          PQ.push(v, newDist)\n  return dist, prev"
+    },
+    {
+      "sectionId": "invariants",
+      "title": "Dijkstra Formal Invariants and Non-Negative Weights",
+      "content": "1. Greedy Settlement Invariant: Whenever a vertex u is extracted from the priority queue and marked as visited, its tentative distance dist[u] is guaranteed to be the true shortest path distance from the source to u: dist[u] = delta(source, u).\n2. Optimal Substructure: If the shortest path from s to v passes through u, the sub-path from s to u is itself an optimal shortest path from s to u.\n3. Non-Negative Edge Weight Requirement: Edge weights must satisfy w(u, v) >= 0. If negative edge weights exist, a previously settled vertex could later achieve a shorter path through a negative edge, completely invalidating the greedy settlement guarantee.\n4. Edge Relaxation Triangle Inequality: For all settled edges, dist[v] <= dist[u] + w(u, v)."
+    },
+    {
+      "sectionId": "complexity",
+      "title": "Dijkstra Asymptotic Complexity",
+      "content": "Time Complexity:\n- Using a Binary Min-Heap: O((V + E) log V). There are V vertex extractions from the priority queue, each taking O(log V) time, and at most E edge relaxations, each triggering a heap insertion or decrease-key in O(log V) time.\n- Using a Fibonacci Heap: O(E + V log V), since decrease-key takes amortized O(1) time.\n- Using an Unsorted Array: O(V^2 + E) = O(V^2), optimal for dense graphs where E is approximately V^2.\nSpace Complexity:\n- Auxiliary Space: O(V) to store distance array, predecessor pointers, visited set, and the priority queue.\n- Total Space: O(V + E) for adjacency list graph storage."
+    },
+    {
+      "sectionId": "execution_trace",
+      "title": "Step-by-Step Dijkstra Trace Example",
+      "content": "Given graph with vertices A, B, C, D, E, F; source = A, destination = E:\nEdges: A->B (4), A->C (2), B->D (5), C->B (1), C->F (4), F->E (3), D->E (2).\n1. Init: dist[A]=0, all others Infinity. PQ = [(A, 0)].\n2. Settle A (dist 0): Relax B to 4 (prev: A); relax C to 2 (prev: A). PQ = [(C, 2), (B, 4)].\n3. Settle C (dist 2): Relax B to 2+1=3 < 4 (prev: C); relax F to 2+4=6 (prev: C). PQ = [(B, 3), (F, 6)].\n4. Settle B (dist 3): Relax D to 3+5=8 (prev: B). PQ = [(F, 6), (D, 8)].\n5. Settle F (dist 6): Relax E to 6+3=9 (prev: F). PQ = [(D, 8), (E, 9)].\n6. Settle D (dist 8): D->E weight 2 gives 8+2=10 >= 9 (no relaxation).\n7. Settle E (dist 9): Destination reached. Shortest path: A -> C -> F -> E with total cost 9."
+    },
+    {
+      "sectionId": "common_errors",
+      "title": "Common Implementation Errors and Misconceptions",
+      "content": "1. Applying to Graphs with Negative Edges: Running Dijkstra's algorithm on graphs with negative edge weights produces incorrect path distances or infinite loops. Graphs with negative weights require the Bellman-Ford algorithm (O(V * E)) or Floyd-Warshall.\n2. Omitting Visited Check on Pop: In standard binary heap implementations without decrease-key, duplicate entries for the same vertex are inserted into the PQ. Failing to check if (u in visited) immediately upon pop leads to redundant expansions and degraded O(E log V) runtime.\n3. Greedy vs BFS Confusion: Believing Dijkstra is only for unweighted graphs; BFS is for unweighted graphs (edge count), whereas Dijkstra handles non-negative weighted graphs."
+    },
+    {
+      "sectionId": "viva_questions",
+      "title": "Frequently Asked Examination / Viva Questions",
+      "content": "Q1: Why does Dijkstra's algorithm fail on graphs with negative edge weights?\nA1: Because Dijkstra assumes that once a vertex is marked as settled (visited), no shorter path to that vertex can ever be found. A negative edge encountered later could reduce the path cost to an already-settled vertex, violating the greedy choice property.\nQ2: What is edge relaxation in Dijkstra's algorithm?\nA2: Edge relaxation is the process of testing whether going through vertex u to vertex v yields a shorter path to v than the current tentative distance dist[v]. If dist[u] + weight(u, v) < dist[v], then dist[v] is updated to dist[u] + weight(u, v) and prev[v] is set to u."
+    }
+  ]
+}

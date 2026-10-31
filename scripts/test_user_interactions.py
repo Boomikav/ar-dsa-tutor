@@ -20,7 +20,8 @@ def test_interactions():
         page.on('console', lambda msg: print(f"  [CONSOLE] {msg.type}: {msg.text}"))
 
         # 1. Start with BST
-        url = 'http://localhost:5173/?screen=ar-session&topic=ds-binary-search-tree'
+        port = os.environ.get('PORT', '5199')
+        url = f'http://localhost:{port}/?screen=ar-session&topic=ds-binary-search-tree'
         print(f"\n1. Navigating to BST: {url}")
         page.goto(url)
         page.wait_for_selector('text=Binary Search Tree', timeout=8000)
@@ -89,7 +90,7 @@ def test_interactions():
 
         # 7. Test Switching to Stack and Push Action
         print("\n7. Switching to Stack...")
-        page.goto('http://localhost:5173/?screen=ar-session&topic=ds-stack')
+        page.goto(f'http://localhost:{port}/?screen=ar-session&topic=ds-stack')
         page.wait_for_selector('text=Stack', timeout=5000)
         page.wait_for_timeout(800)
         push_btn = page.query_selector('button:has-text("Push")')

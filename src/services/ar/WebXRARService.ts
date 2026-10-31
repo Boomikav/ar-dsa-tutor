@@ -17,6 +17,9 @@ import { ThreeBubbleSortVisualizer } from './ThreeBubbleSortVisualizer';
 import { ThreeBinarySearchVisualizer } from './ThreeBinarySearchVisualizer';
 import { ThreeBFSVisualizer } from './ThreeBFSVisualizer';
 import { ThreeStackVisualizer } from './ThreeStackVisualizer';
+import { ThreeMergeSortVisualizer } from './ThreeMergeSortVisualizer';
+import { ThreeAVLTreeVisualizer } from './ThreeAVLTreeVisualizer';
+import { ThreeDijkstraVisualizer } from './ThreeDijkstraVisualizer';
 import { ARSceneFraming, ARFramingDiagnostic } from './ARSceneFraming';
 
 /**
@@ -54,6 +57,9 @@ export class WebXRARService implements IARService {
   private binarySearchVisualizer: ThreeBinarySearchVisualizer;
   private bfsVisualizer: ThreeBFSVisualizer;
   private stackVisualizer: ThreeStackVisualizer;
+  private mergeSortVisualizer: ThreeMergeSortVisualizer;
+  private avlVisualizer: ThreeAVLTreeVisualizer;
+  private dijkstraVisualizer: ThreeDijkstraVisualizer;
   private activeAlgorithmId = 'ds-binary-search-tree';
   private reticle: THREE.Mesh | null = null;
   public isObjectPlaced = false;
@@ -107,18 +113,27 @@ export class WebXRARService implements IARService {
     this.binarySearchVisualizer = new ThreeBinarySearchVisualizer();
     this.bfsVisualizer = new ThreeBFSVisualizer();
     this.stackVisualizer = new ThreeStackVisualizer();
+    this.mergeSortVisualizer = new ThreeMergeSortVisualizer();
+    this.avlVisualizer = new ThreeAVLTreeVisualizer();
+    this.dijkstraVisualizer = new ThreeDijkstraVisualizer();
 
     // Attach all visualizer groups inside the authoritative placement rootGroup
     this.visualizer.rootGroup.add(this.bubbleSortVisualizer.visualGroup);
     this.visualizer.rootGroup.add(this.binarySearchVisualizer.visualGroup);
     this.visualizer.rootGroup.add(this.bfsVisualizer.visualGroup);
     this.visualizer.rootGroup.add(this.stackVisualizer.visualGroup);
+    this.visualizer.rootGroup.add(this.mergeSortVisualizer.visualGroup);
+    this.visualizer.rootGroup.add(this.avlVisualizer.visualGroup);
+    this.visualizer.rootGroup.add(this.dijkstraVisualizer.visualGroup);
 
     // Initial state: only BST group is visible
     this.bubbleSortVisualizer.visualGroup.visible = false;
     this.binarySearchVisualizer.visualGroup.visible = false;
     this.bfsVisualizer.visualGroup.visible = false;
     this.stackVisualizer.visualGroup.visible = false;
+    this.mergeSortVisualizer.visualGroup.visible = false;
+    this.avlVisualizer.visualGroup.visible = false;
+    this.dijkstraVisualizer.visualGroup.visible = false;
   }
 
   public get sessionState(): ARSessionState {
@@ -737,6 +752,15 @@ export class WebXRARService implements IARService {
     if (!this.visualizer.rootGroup.children.includes(this.stackVisualizer.visualGroup)) {
       this.visualizer.rootGroup.add(this.stackVisualizer.visualGroup);
     }
+    if (!this.visualizer.rootGroup.children.includes(this.mergeSortVisualizer.visualGroup)) {
+      this.visualizer.rootGroup.add(this.mergeSortVisualizer.visualGroup);
+    }
+    if (!this.visualizer.rootGroup.children.includes(this.avlVisualizer.visualGroup)) {
+      this.visualizer.rootGroup.add(this.avlVisualizer.visualGroup);
+    }
+    if (!this.visualizer.rootGroup.children.includes(this.dijkstraVisualizer.visualGroup)) {
+      this.visualizer.rootGroup.add(this.dijkstraVisualizer.visualGroup);
+    }
   }
 
   public getActiveVisualGroup(): THREE.Group {
@@ -750,6 +774,13 @@ export class WebXRARService implements IARService {
         return this.bfsVisualizer.visualGroup;
       case 'ds-stack':
         return this.stackVisualizer.visualGroup;
+      case 'algo-merge-sort':
+        return this.mergeSortVisualizer.visualGroup;
+      case 'ds-avl-tree':
+        return this.avlVisualizer.visualGroup;
+      case 'algo-dijkstras-algorithm':
+      case 'algo-dijkstra':
+        return this.dijkstraVisualizer.visualGroup;
       case 'ds-binary-search-tree':
       default:
         return this.visualizer.bstVisualGroup;
@@ -834,6 +865,9 @@ export class WebXRARService implements IARService {
     this.binarySearchVisualizer.visualGroup.visible = algorithmId === 'algo-binary-search';
     this.bfsVisualizer.visualGroup.visible = algorithmId === 'algo-breadth-first-search' || algorithmId === 'algo-bfs';
     this.stackVisualizer.visualGroup.visible = algorithmId === 'ds-stack';
+    this.mergeSortVisualizer.visualGroup.visible = algorithmId === 'algo-merge-sort';
+    this.avlVisualizer.visualGroup.visible = algorithmId === 'ds-avl-tree';
+    this.dijkstraVisualizer.visualGroup.visible = algorithmId === 'algo-dijkstras-algorithm' || algorithmId === 'algo-dijkstra';
 
     // In 3D fallback mode, reset view angles and fit camera ONLY when algorithm changes
     if (this._state === 'UNAVAILABLE' && isNew) {
@@ -886,6 +920,21 @@ export class WebXRARService implements IARService {
     this.stackVisualizer.render(state, options);
   }
 
+  public renderMergeSort(state: any, _options: any = {}): void {
+    this.setActiveAlgorithm('algo-merge-sort');
+    this.mergeSortVisualizer.render(state);
+  }
+
+  public renderAVLTree(state: any, _options: any = {}): void {
+    this.setActiveAlgorithm('ds-avl-tree');
+    this.avlVisualizer.render(state);
+  }
+
+  public renderDijkstra(state: any, _options: any = {}): void {
+    this.setActiveAlgorithm('algo-dijkstras-algorithm');
+    this.dijkstraVisualizer.render(state);
+  }
+
   public selectElementAt(screenX: number, screenY: number): any {
     if (!this.camera || !this.canvas) return null;
 
@@ -900,6 +949,10 @@ export class WebXRARService implements IARService {
       return this.visualizer.pickNode(raycaster);
     } else if (this.activeAlgorithmId === 'algo-breadth-first-search' || this.activeAlgorithmId === 'algo-bfs') {
       return this.bfsVisualizer.pickElement(raycaster);
+    } else if (this.activeAlgorithmId === 'ds-avl-tree') {
+      return this.avlVisualizer.pickElement(raycaster);
+    } else if (this.activeAlgorithmId === 'algo-dijkstras-algorithm' || this.activeAlgorithmId === 'algo-dijkstra') {
+      return this.dijkstraVisualizer.pickElement(raycaster);
     }
     return null;
   }
@@ -1001,6 +1054,9 @@ export class WebXRARService implements IARService {
     this.binarySearchVisualizer.dispose();
     this.bfsVisualizer.dispose();
     this.stackVisualizer.dispose();
+    this.mergeSortVisualizer.dispose();
+    this.avlVisualizer.dispose();
+    this.dijkstraVisualizer.dispose();
 
     if (this.reticle) {
       this.reticle.geometry.dispose();

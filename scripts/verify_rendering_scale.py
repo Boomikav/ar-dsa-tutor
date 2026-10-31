@@ -37,8 +37,9 @@ def run_verification():
             context = browser.new_context(viewport=vp_size)
             page = context.new_page()
 
+            port = os.environ.get('PORT', '5199')
             for algo_key, topic_id, title in algorithms:
-                url = f"http://localhost:5173/?screen=ar-session&topic={topic_id}"
+                url = f"http://localhost:{port}/?screen=ar-session&topic={topic_id}"
                 print(f"Loading {title} ({url})...")
                 page.goto(url)
                 page.wait_for_selector(f'text={title}', timeout=8000)

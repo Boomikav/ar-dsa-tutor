@@ -19,7 +19,8 @@ export type ScreenId =
   | 'recommendations'
   | 'profile'
   | 'settings'
-  | 'research-dashboard';
+  | 'research-dashboard'
+  | 'rag-evaluation';
 
 import { CurrentOperationState, TutorHelpLevel } from '../models/ai';
 import { MisconceptionDiagnosis } from '../models/misconception';

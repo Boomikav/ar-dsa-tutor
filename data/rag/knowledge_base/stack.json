@@ -1,0 +1,45 @@
+{
+  "documentId": "DOC-STK-01",
+  "algorithmId": "ds-stack",
+  "topic": "Stack Data Structure",
+  "category": "Linear LIFO Data Structure",
+  "version": "1.0.0",
+  "sourceFile": "src/services/dsa/stack/StackEngine.ts",
+  "sections": [
+    {
+      "sectionId": "description",
+      "title": "Stack Concept and Definition",
+      "content": "A Stack is a linear abstract data structure that adheres strictly to the Last-In, First-Out (LIFO) behavioral discipline. In a stack, all insertions and removals of elements take place at a single designated end known as the 'Top'. Elements added most recently are the first to be retrieved. Fundamental primitive operations include: Push (insert an element onto the top), Pop (remove and return the top element), and Peek (inspect the top element without removing it)."
+    },
+    {
+      "sectionId": "pseudocode",
+      "title": "Stack Operations Pseudocode",
+      "content": "class Stack(capacity):\n  items = array of size capacity\n  top = -1\n\n  function push(x):\n    if top == capacity - 1:\n      raise StackOverflowError\n    top = top + 1\n    items[top] = x\n\n  function pop():\n    if top == -1:\n      raise StackUnderflowError\n    val = items[top]\n    top = top - 1\n    return val\n\n  function peek():\n    if top == -1:\n      raise StackUnderflowError\n    return items[top]"
+    },
+    {
+      "sectionId": "invariants",
+      "title": "Stack Formal Invariants",
+      "content": "1. LIFO Access Invariant: Elements are popped in the exact reverse temporal order of their insertion. If element A was pushed before element B without any intervening pops, B must be popped before A.\n2. Capacity Bounds Invariant: At all times, 0 <= size <= capacity. Pushing when size == capacity violates capacity and triggers Overflow; popping when size == 0 triggers Underflow.\n3. Top Pointer Invariant: For a 0-indexed array implementation, top == size - 1."
+    },
+    {
+      "sectionId": "complexity",
+      "title": "Stack Asymptotic Complexity",
+      "content": "Time Complexity:\n- Push: O(1) worst-case time for fixed-capacity array implementations; O(1) amortized time for dynamic resizing array implementations.\n- Pop: O(1) worst-case time.\n- Peek: O(1) worst-case time.\n- IsEmpty / Size: O(1) worst-case time.\nSpace Complexity:\n- Auxiliary Space: O(1) auxiliary operational overhead.\n- Total Space: O(n) where n is the number of elements currently stored in the stack."
+    },
+    {
+      "sectionId": "execution_trace",
+      "title": "Step-by-Step Stack Example",
+      "content": "Given empty stack with capacity 6:\n1. Push(15): top moves from -1 to 0; items = [15]; size = 1.\n2. Push(30): top moves to 1; items = [15, 30]; size = 2.\n3. Push(45): top moves to 2; items = [15, 30, 45]; size = 3; top element is 45.\n4. Peek(): returns 45; items and top unchanged.\n5. Pop(): returns 45; top moves to 1; items = [15, 30]; size = 2."
+    },
+    {
+      "sectionId": "common_errors",
+      "title": "Common Implementation Errors and Misconceptions",
+      "content": "1. Stack Overflow: Attempting to push an element into a full fixed-size stack without bounds verification, causing out-of-bounds memory corruption or crashes.\n2. Stack Underflow: Attempting to pop or peek from an empty stack (top == -1), returning undefined or negative indexing errors.\n3. Memory Leaks in Managed Languages: In languages with garbage collection, decrementing the top index without clearing the referenced object pointer in the internal array, preventing GC reclamation (loitering objects)."
+    },
+    {
+      "sectionId": "viva_questions",
+      "title": "Frequently Asked Examination / Viva Questions",
+      "content": "Q1: What are real-world computer science applications of stacks?\nA1: Function call runtime execution stacks (activation records), expression parsing and syntax evaluation (Dijkstra's Shunting-Yard algorithm), undo/redo mechanisms in software, and backtracking algorithms (e.g. DFS, maze solving).\nQ2: What is the time complexity of pushing an element onto a stack implemented using a singly linked list?\nA2: O(1) constant time, by prepending the new node at the head of the linked list."
+    }
+  ]
+}

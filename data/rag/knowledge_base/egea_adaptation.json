@@ -1,0 +1,35 @@
+{
+  "documentId": "DOC-EGA-01",
+  "algorithmId": "arch-egea-adaptation",
+  "topic": "Execution-Grounded Explainable Adaptation (EGEA)",
+  "category": "Pedagogical Adaptation Architecture",
+  "version": "1.0.0",
+  "sourceFile": "src/services/research/egea/EGEAPolicyEngine.ts",
+  "sections": [
+    {
+      "sectionId": "description",
+      "title": "EGEA Architecture and Purpose",
+      "content": "Execution-Grounded Explainable Adaptation (EGEA) is a deterministic pedagogical decision architecture designed for interactive 3D and spatial algorithm learning. EGEA processes validated learner interaction events (timing, accuracy, repetitive missteps) and algorithm invariant states to trigger timely, personalized, and explainable instructional scaffolds. Crucially, EGEA is strictly deterministic and decoupled from generative language models: it governs the pedagogical interventions while Generative AI/RAG provides natural language explanations."
+    },
+    {
+      "sectionId": "interventions",
+      "title": "EGEA 6 Canonical Intervention Types",
+      "content": "1. CONTEXTUAL_HINT: Triggered on an isolated mistake; provides directional spatial guidance without revealing the answer.\n2. HIGHLIGHT_ELEMENT: Triggered on attention lapse; pulses or brightens the target node or comparison bracket.\n3. STEPWISE_SLOWDOWN: Triggered when rapid guessing is detected (e.g., latency < 250ms); temporarily disables rapid clicking to encourage reflective pause.\n4. WORKED_EXAMPLE: Triggered after persistent failure (3+ consecutive unsuccessful attempts on the same step); demonstrates the step-by-step invariant traversal.\n5. PREREQUISITE_REVIEW: Triggered on systemic breakdown across foundational prerequisites; recommends review of prerequisite topics.\n6. REDUCE_GUIDANCE: Triggered on an independent mastery streak (3+ consecutive unassisted correct decisions); fades scaffolds to foster learner autonomy."
+    },
+    {
+      "sectionId": "invariants",
+      "title": "EGEA Deterministic Decision Invariants",
+      "content": "1. Authority Separation: EGEA never mutates algorithm state. The underlying DSA engine remains the sole authority for tree, array, and graph invariants.\n2. Auditability & Grounding: Every EGEA decision produces a verifiable rationale code (e.g., RAPID_GUESSING_DETECTED, PERSISTENT_STEP_FAILURE, INDEPENDENT_MASTERY_STREAK) accompanied by grounding telemetry state.\n3. Latency Budget: Steady-state EGEA policy evaluations execute in under 0.01ms (< 10 microseconds), preserving the 60 FPS (16.6ms) WebXR rendering frame budget."
+    },
+    {
+      "sectionId": "pacing",
+      "title": "EGEA Pacing Model and Timing Thresholds",
+      "content": "The EGEAPacingModel computes moving-window pacing metrics across learner interactions:\n- Jitter & Impulsive Guessing Threshold: Inter-step latency < 250ms indicates rapid unthinking guessing or physical tap jitter.\n- Deliberation Threshold: Step completion latency > 15,000ms (15 seconds) indicates learner hesitation or confusion.\n- Moving-Average Filter: An Exponentially Weighted Moving Average (EWMA) smoothes interaction pacing against noise."
+    },
+    {
+      "sectionId": "viva_questions",
+      "title": "Frequently Asked Questions on EGEA Integration",
+      "content": "Q1: Why is EGEA deterministic rather than LLM-driven?\nA1: Because pedagogical intervention triggers (such as detecting an error streak or enforcing slowdown) require millisecond-level responsiveness, zero hallucination risk, and reproducible scientific validation. LLMs are non-deterministic, have variable 500ms-3000ms latency, and cannot run inside an interactive WebXR frame loop.\nQ2: How does RAG complement EGEA in the AR-DSA Tutor?\nA2: When a learner requests further explanation on an EGEA hint or asks 'Why did this node rotate?', RAG retrieves verified algorithmic context and generates a natural language response grounded in retrieved documentation and active 3D state."
+    }
+  ]
+}

@@ -49,7 +49,7 @@ async function runTests() {
   // -------------------------------------------------------------
   console.log('--- TEST GROUP 1: DSARegistry & Curriculum Coverage (20 Topics) ---');
   const allEngines = DSARegistry.getAllEngines();
-  assert(allEngines.length === 20, 'Registry contains exactly 20 Tier-1 topics', `Found ${allEngines.length}`);
+  assert(allEngines.length >= 20, 'Registry contains curriculum topics (20 Tier-1 + Advanced topics)', `Found ${allEngines.length}`);
 
   const requiredTopics = [
     // 9 Data Structures

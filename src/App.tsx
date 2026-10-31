@@ -19,6 +19,7 @@ import { RecommendationsScreen } from './screens/RecommendationsScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { ResearchDashboardScreen } from './screens/ResearchDashboardScreen';
+import { RAGEvaluationScreen } from './screens/RAGEvaluationScreen';
 
 const MainScreenRouter: React.FC = () => {
   const { currentScreen } = useApp();
@@ -55,6 +56,8 @@ const MainScreenRouter: React.FC = () => {
         return <SettingsScreen />;
       case 'research-dashboard':
         return <ResearchDashboardScreen />;
+      case 'rag-evaluation':
+        return <RAGEvaluationScreen />;
       default:
         return <HomeScreen />;
     }

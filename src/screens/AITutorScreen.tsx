@@ -16,8 +16,10 @@ import {
   AlertTriangle,
   ShieldCheck,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Database
 } from 'lucide-react';
+import { RAGTutorService, RAGTutorResponse } from '../services/ai/rag/RAGTutorService';
 
 interface ChatEntry {
   id: string;
@@ -25,10 +27,11 @@ interface ChatEntry {
   timestamp: string;
   userText?: string;
   aiResponse?: TutorResponse;
+  ragResponse?: RAGTutorResponse;
 }
 
 export const AITutorScreen: React.FC = () => {
-  const { selectedTopic, learnerState, services, activeTutorContext } = useApp();
+  const { selectedTopic, learnerState, services, activeTutorContext, navigateTo } = useApp();
   const [pedagogicalStyle, setPedagogicalStyle] = useState<PedagogicalStyle>('socratic');
   const [inputText, setInputText] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -95,12 +98,19 @@ export const AITutorScreen: React.FC = () => {
         setMessages(prev => [...prev, userEntry]);
 
         try {
-          const response = await services.aiService.consultTutor(req);
+          const [response, ragResponse] = await Promise.all([
+            services.aiService.consultTutor(req),
+            RAGTutorService.getInstance().answerQuery(promptLabel, {
+              algorithmId: selectedTopic.id,
+              algorithmTitle: selectedTopic.title
+            }, { forceLocal: true }).catch(() => undefined)
+          ]);
           const aiEntry: ChatEntry = {
             id: `ai-${Date.now()}`,
             sender: 'ai-tutor',
             timestamp: new Date().toISOString(),
-            aiResponse: response
+            aiResponse: response,
+            ragResponse
           };
           setMessages(prev => [...prev, aiEntry]);
         } catch (err) {
@@ -152,13 +162,20 @@ export const AITutorScreen: React.FC = () => {
         overrideStyle: pedagogicalStyle
       });
 
-      const response = await services.aiService.consultTutor(req);
+      const [response, ragResponse] = await Promise.all([
+        services.aiService.consultTutor(req),
+        RAGTutorService.getInstance().answerQuery(query, {
+          algorithmId: selectedTopic.id,
+          algorithmTitle: selectedTopic.title
+        }, { forceLocal: true }).catch(() => undefined)
+      ]);
 
       const aiEntry: ChatEntry = {
         id: `ai-${Date.now()}`,
         sender: 'ai-tutor',
         timestamp: new Date().toISOString(),
-        aiResponse: response
+        aiResponse: response,
+        ragResponse
       };
 
       setMessages(prev => [...prev, aiEntry]);
@@ -192,9 +209,27 @@ export const AITutorScreen: React.FC = () => {
         title="Generative AI Tutor"
         showBack
         rightAction={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <button
+              onClick={() => navigateTo('rag-evaluation')}
+              style={{
+                background: 'rgba(56, 189, 248, 0.15)',
+                border: '1px solid rgba(56, 189, 248, 0.3)',
+                color: '#38bdf8',
+                borderRadius: '6px',
+                padding: '3px 8px',
+                fontSize: '10px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <Database size={11} /> RAG Benchmark
+            </button>
             <span className="badge badge-emerald" style={{ fontSize: '9px', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-              <ShieldCheck size={11} /> Secure Backend
+              <ShieldCheck size={11} /> Grounded
             </span>
           </div>
         }
@@ -413,6 +448,52 @@ export const AITutorScreen: React.FC = () => {
                         <p style={{ margin: '4px 0 0 0', fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
                           {resp.reasoning}
                         </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Verified RAG Citations Badge & Source Inspection */}
+                  {msg.ragResponse && (
+                    <div style={{
+                      marginTop: '6px',
+                      padding: '8px 10px',
+                      background: 'rgba(15, 23, 42, 0.6)',
+                      border: '1px solid rgba(56, 189, 248, 0.25)',
+                      borderRadius: '8px',
+                      fontSize: '11px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <ShieldCheck size={13} color="#10b981" />
+                          <span style={{ fontWeight: 700, color: '#10b981' }}>
+                            RAG Grounded & Verified
+                          </span>
+                          <span style={{ color: '#94a3b8', fontSize: '10px' }}>
+                            ({msg.ragResponse.retrievalLatencyMs}ms)
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                          {msg.ragResponse.citations.validCitations.map(docId => (
+                            <span key={docId} style={{
+                              background: 'rgba(56, 189, 248, 0.15)',
+                              color: '#38bdf8',
+                              padding: '1px 6px',
+                              borderRadius: '4px',
+                              fontWeight: 700,
+                              fontSize: '10px'
+                            }}>
+                              [{docId}]
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      {msg.ragResponse.retrievedChunks.length > 0 && (
+                        <div style={{ color: '#cbd5e1', fontSize: '10.5px' }}>
+                          Verified Reference: {msg.ragResponse.retrievedChunks[0].chunk.topic} — {msg.ragResponse.retrievedChunks[0].chunk.sectionTitle} ({(msg.ragResponse.retrievedChunks[0].similarityScore * 100).toFixed(0)}% match)
+                        </div>
                       )}
                     </div>
                   )}
