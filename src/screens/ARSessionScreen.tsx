@@ -37,7 +37,8 @@ import {
   EGEAEventAdapter, 
   EGEAPolicyEngine, 
   EGEAInterventionDecision, 
-  EGEAAlgorithmId 
+  EGEAAlgorithmId,
+  VALID_EGEA_ALGORITHM_IDS
 } from '../services/research/egea';
 
 export const ARSessionScreen: React.FC = () => {
@@ -104,13 +105,21 @@ export const ARSessionScreen: React.FC = () => {
   });
   const egeaAdapterRef = useRef<EGEAEventAdapter | null>(null);
 
-  const resolveEgeaAlgorithmId = useCallback((id: string): EGEAAlgorithmId => {
+  const resolveEgeaAlgorithmId = useCallback((id: string): EGEAAlgorithmId | null => {
     if (id === 'algo-bfs') return 'algo-breadth-first-search';
-    return id as EGEAAlgorithmId;
+    if ((VALID_EGEA_ALGORITHM_IDS as readonly string[]).includes(id)) {
+      return id as EGEAAlgorithmId;
+    }
+    return null;
   }, []);
 
   useEffect(() => {
     const egeaAlgoId = resolveEgeaAlgorithmId(activeAlgorithmId);
+    if (!egeaAlgoId) {
+      egeaAdapterRef.current = null;
+      setEgeaDecision(null);
+      return;
+    }
     if (!egeaAdapterRef.current || egeaAdapterRef.current.getAlgorithmId() !== egeaAlgoId) {
       const adapter = new EGEAEventAdapter(`session-${Date.now()}`, egeaAlgoId, {
         debounceIntervalMs: 250,
@@ -507,11 +516,16 @@ export const ARSessionScreen: React.FC = () => {
 
     // Cleanly reset EGEA telemetry to prevent cross-algorithm history leakage
     const egeaAlgoId = resolveEgeaAlgorithmId(canonicalId);
-    egeaAdapterRef.current = new EGEAEventAdapter(`session-${Date.now()}`, egeaAlgoId, {
-      debounceIntervalMs: 250,
-      suppressDuplicateEvents: false
-    });
-    setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
+    if (egeaAlgoId) {
+      egeaAdapterRef.current = new EGEAEventAdapter(`session-${Date.now()}`, egeaAlgoId, {
+        debounceIntervalMs: 250,
+        suppressDuplicateEvents: false
+      });
+      setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
+    } else {
+      egeaAdapterRef.current = null;
+      setEgeaDecision(null);
+    }
 
     if (canonicalId === 'ds-binary-search-tree') {
       update3DVisualization(practiceSession);
@@ -1228,8 +1242,13 @@ export const ARSessionScreen: React.FC = () => {
 
     // Reset EGEA adapter for clean demonstration replay
     const egeaAlgoId = resolveEgeaAlgorithmId(activeAlgorithmId);
-    egeaAdapterRef.current?.reset(`session-${Date.now()}`, egeaAlgoId);
-    setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
+    if (egeaAlgoId && egeaAdapterRef.current) {
+      egeaAdapterRef.current.reset(`session-${Date.now()}`, egeaAlgoId);
+      setEgeaDecision(EGEAPolicyEngine.evaluateIntervention([]));
+    } else {
+      egeaAdapterRef.current = null;
+      setEgeaDecision(null);
+    }
 
     if (activeAlgorithmId === 'ds-binary-search-tree') {
       previousTargetsRef.current = [40];

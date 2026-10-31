@@ -89,6 +89,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (topicParam) {
           const found = INITIAL_DSA_TOPICS.find(t => t.id === topicParam);
           if (found) return found;
+          if (topicParam === 'ds-avl-tree') {
+            return {
+              id: 'ds-avl-tree',
+              slug: 'avl-tree',
+              title: 'AVL Tree',
+              category: 'data-structure',
+              difficulty: 'Advanced',
+              estimatedMinutes: 40,
+              shortDescription: 'Self-balancing binary search tree maintaining height invariant |hL - hR| <= 1.',
+              detailedConcept: 'An AVL tree is a self-balancing binary search tree where the difference between heights of left and right subtrees cannot be more than one for all nodes.',
+              learningObjectives: ['Understand balance factors', 'Trace LL, RR, LR, RL rotations'],
+              prerequisites: ['ds-binary-search-tree'],
+              timeComplexity: { best: 'O(log N)', average: 'O(log N)', worst: 'O(log N)' },
+              spaceComplexity: 'O(N)',
+              visualSpec: {
+                hasArModel: true,
+                modelFormat: 'procedural-3d',
+                proceduralGeneratorId: 'avl-balanced-tree',
+                defaultCameraDistance: 2.0,
+                initialScale: 0.85,
+                interactiveAnchors: ['balance-factor-badge', 'rotation-pivot']
+              },
+              tags: ['balanced-tree', 'avl', 'self-balancing'],
+              orderIndex: 21
+            } as DSATopic;
+          }
         }
       }
     } catch {
