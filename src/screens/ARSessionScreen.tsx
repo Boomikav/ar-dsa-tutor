@@ -11,7 +11,8 @@ import {
   Layers,
   Sparkles,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Info
 } from 'lucide-react';
 import { ARSessionState } from '../services/ar/IARService';
 import { BSTPracticeEngine, PracticeSessionState } from '../services/dsa/bst/BSTPracticeEngine';
@@ -70,6 +71,30 @@ export const ARSessionScreen: React.FC = () => {
   const [selectedNode, setSelectedNode] = useState<BSTNode | null>(null);
   const [feedbackToast, setFeedbackToast] = useState<{ message: string; isCorrect: boolean } | null>(null);
   const [isHudCollapsed, setIsHudCollapsed] = useState(false);
+  const [showDiagnostics, setShowDiagnostics] = useState(false);
+  const [liveDiagnostics, setLiveDiagnostics] = useState<{
+    hitPos?: { x: number; y: number; z: number } | null;
+    placedPos?: { x: number; y: number; z: number } | null;
+    meshCount?: number;
+    fps?: number;
+  }>({});
+
+  useEffect(() => {
+    if (!showDiagnostics) return;
+    const interval = setInterval(() => {
+      const hit = services.arService.getLastHitPosition?.() || null;
+      const placed = services.arService.getPlacedPosition?.() || null;
+      const meshes = services.arService.getActiveMeshCount?.() || 0;
+      const tele = services.arService.getPerformanceTelemetry?.();
+      setLiveDiagnostics({
+        hitPos: hit,
+        placedPos: placed,
+        meshCount: meshes,
+        fps: tele?.approximateFPS
+      });
+    }, 400);
+    return () => clearInterval(interval);
+  }, [showDiagnostics, services.arService]);
 
   // Auto-dismiss placement and interaction feedback toasts so they do not block the 3D scene
   useEffect(() => {
@@ -1366,7 +1391,7 @@ export const ARSessionScreen: React.FC = () => {
           gap: '8px'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
           <span 
             className={`badge ${isPlaced ? 'badge-emerald' : ((sessionState as string) === 'UNAVAILABLE' ? 'badge-indigo' : 'badge-cyan')}`}
             style={{ fontSize: '11px', padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}
@@ -1374,6 +1399,24 @@ export const ARSessionScreen: React.FC = () => {
             {(sessionState as string) === 'UNAVAILABLE' ? <Layers size={12} /> : <Scan size={12} />}
             {getCleanStateLabel()}
           </span>
+          <button
+            type="button"
+            onClick={() => setShowDiagnostics(prev => !prev)}
+            style={{
+              background: showDiagnostics ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255, 255, 255, 0.08)',
+              border: '1px solid rgba(56, 189, 248, 0.3)',
+              borderRadius: '6px',
+              padding: '3px 5px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              color: showDiagnostics ? '#38bdf8' : '#94a3b8'
+            }}
+            title="Toggle WebXR Diagnostics"
+            aria-label="Toggle WebXR Diagnostics"
+          >
+            <Info size={12} />
+          </button>
         </div>
 
         {/* Algorithm Switcher Pill */}
@@ -1436,6 +1479,43 @@ export const ARSessionScreen: React.FC = () => {
           </button>
         </div>
       </header>
+
+      {/* REAL-TIME WEBXR PHYSICAL DIAGNOSTICS OVERLAY */}
+      {showDiagnostics && (
+        <div style={{
+          position: 'absolute',
+          top: '56px',
+          left: '14px',
+          zIndex: 99,
+          background: 'rgba(8, 12, 22, 0.94)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          border: '1px solid rgba(56, 189, 248, 0.45)',
+          borderRadius: '10px',
+          padding: '10px 14px',
+          fontSize: '11px',
+          color: '#e2e8f0',
+          lineHeight: 1.6,
+          fontFamily: 'monospace',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
+          maxWidth: '320px',
+          pointerEvents: 'auto'
+        }}>
+          <div style={{ fontWeight: 800, color: '#38bdf8', letterSpacing: '0.5px', marginBottom: '4px', display: 'flex', justifyContent: 'space-between' }}>
+            <span>WEBXR RUNTIME HUD</span>
+            <span style={{ color: '#34d399' }}>{liveDiagnostics.fps ?? 60} FPS</span>
+          </div>
+          <div>Mode: <span style={{ color: '#f8fafc' }}>{sessionState === 'UNAVAILABLE' ? '3D Fallback' : 'WebXR (local-floor)'}</span></div>
+          <div>State: <span style={{ color: '#34d399', fontWeight: 700 }}>{sessionState}</span></div>
+          <div>Hit Pose: <span style={{ color: liveDiagnostics.hitPos ? '#38bdf8' : '#94a3b8' }}>
+            {liveDiagnostics.hitPos ? `${liveDiagnostics.hitPos.x.toFixed(2)}, ${liveDiagnostics.hitPos.y.toFixed(2)}, ${liveDiagnostics.hitPos.z.toFixed(2)}` : 'Scanning...'}
+          </span></div>
+          <div>Placed Pose: <span style={{ color: liveDiagnostics.placedPos ? '#34d399' : '#94a3b8' }}>
+            {liveDiagnostics.placedPos ? `${liveDiagnostics.placedPos.x.toFixed(2)}, ${liveDiagnostics.placedPos.y.toFixed(2)}, ${liveDiagnostics.placedPos.z.toFixed(2)}` : 'Unplaced'}
+          </span></div>
+          <div>Active Meshes: <span style={{ color: '#f59e0b', fontWeight: 700 }}>{liveDiagnostics.meshCount ?? 0}</span></div>
+        </div>
+      )}
 
       {/* PLACEMENT INSTRUCTION BANNER (Only shown before placement) */}
       {!isPlaced && (

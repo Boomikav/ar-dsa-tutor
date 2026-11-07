@@ -70,6 +70,7 @@ export class WebXRARService implements IARService {
   private xrRefSpaceType: 'local-floor' | 'local' | 'none' = 'none';
   private xrHitTestSource: any = null;
   private lastHitMatrix: THREE.Matrix4 = new THREE.Matrix4();
+  private lastHitTimestamp = 0;
   private viewerPosition: THREE.Vector3 = new THREE.Vector3(0, 0, 1.0);
   private viewerOrientation: THREE.Quaternion = new THREE.Quaternion();
 
@@ -329,16 +330,20 @@ export class WebXRARService implements IARService {
     dirLight.position.set(0.5, 1.5, 0.8);
     this.scene.add(dirLight);
 
-    // 3. Create Reticle Indicator for surface hit testing
-    const reticleGeo = new THREE.RingGeometry(0.06, 0.075, 32);
+    // 3. Create Reticle Indicator for surface hit testing (Authoritative Single Mesh from 802e616)
+    const reticleGeo = new THREE.RingGeometry(0.06, 0.08, 32);
     reticleGeo.rotateX(-Math.PI / 2);
     const reticleMat = new THREE.MeshBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.85
+      opacity: 0.85,
+      side: THREE.DoubleSide
     });
     this.reticle = new THREE.Mesh(reticleGeo, reticleMat);
+    this.reticle.name = 'ar-placement-reticle';
     this.reticle.matrixAutoUpdate = false;
+    this.reticle.frustumCulled = false;
+    this.reticle.renderOrder = 999;
     this.reticle.visible = false;
     this.scene.add(this.reticle);
 
@@ -476,6 +481,13 @@ export class WebXRARService implements IARService {
         }
       }
 
+      // Sync reference space with Three.js WebXRManager
+      try {
+        this.renderer.xr.setReferenceSpace(this.xrRefSpace);
+      } catch {
+        // Ignored
+      }
+
       // 3. Hit-test capability verification
       try {
         if (typeof session.requestHitTestSource !== 'function') {
@@ -564,11 +576,12 @@ export class WebXRARService implements IARService {
           this.reticle.matrix.fromArray(pose.transform.matrix);
           this.reticle.matrixWorld.copy(this.reticle.matrix);
           this.lastHitMatrix.copy(this.reticle.matrix);
+          this.lastHitTimestamp = Date.now();
 
           this.setState('SURFACE_DETECTED');
         }
       } else {
-        // No hit result: reticle is hidden; do not transition to PLACEMENT_READY
+        // Clean immediate reticle hide when surface tracking is lost (authoritative 802e616 behavior)
         if (this.reticle) this.reticle.visible = false;
         if (this._state === 'PLACEMENT_READY' || this._state === 'SURFACE_DETECTED') {
           this.setState('SCANNING');
@@ -604,7 +617,7 @@ export class WebXRARService implements IARService {
   }
 
   /**
-   * Places the 3D BST at the active surface hit test location.
+   * Places the active 3D algorithm visualization at the active surface hit test location.
    * Spatial placement uses the XR reference space transform; does not use native XRAnchor.
    */
   public placeObject(): boolean {
@@ -615,7 +628,7 @@ export class WebXRARService implements IARService {
 
       this.lastHitMatrix.decompose(pos, quat, scale);
 
-      // Compute horizontal camera right vector in reference space so tree is 100% parallel to phone screen
+      // Compute horizontal camera right vector in reference space so tree is 100% parallel to phone screen (802e616 authoritative baseline)
       const camRight = new THREE.Vector3(1, 0, 0).applyQuaternion(this.viewerOrientation);
       camRight.y = 0;
       if (camRight.lengthSq() < 1e-6) {
@@ -641,23 +654,28 @@ export class WebXRARService implements IARService {
       // Distance from camera to placement surface
       const hitDist = this.viewerPosition.distanceTo(pos);
 
-      // Adaptive physical scale factor to preserve optimal apparent visual angle:
-      // Targets 1.05m reference distance (standard tabletop arm's length).
-      // Clamped within [0.90, 1.40] so standing users (floor placement at 1.6m-2.0m) get an ergonomically readable model.
-      const targetRefDist = 1.05;
-      const autoScale = Math.max(0.90, Math.min(1.40, hitDist / targetRefDist));
+      // Ensure all visualizer groups are attached inside the authoritative placement rootGroup
+      this.ensureVisualizersAttached();
+      const activeGroup = this.getActiveVisualGroup();
+      activeGroup.visible = true;
 
-      // World-space placement in XR reference space (elevate slightly above surface to prevent z-fighting)
+      // World-space placement in XR reference space (elevate 0.02m above surface to eliminate z-fighting)
       this.visualizer.rootGroup.position.set(pos.x, pos.y + 0.02, pos.z);
       this.visualizer.rootGroup.rotation.set(0, yaw, 0);
-      this.visualizer.rootGroup.scale.set(autoScale, autoScale, autoScale);
+      this.visualizer.rootGroup.scale.set(1.0, 1.0, 1.0);
       this.visualizer.rootGroup.visible = true;
+
+      // Crucial: set frustumCulled = false on all meshes in rootGroup so WebXR camera never drops them
+      this.visualizer.rootGroup.traverse((child) => {
+        if ((child as any).isMesh) {
+          child.frustumCulled = false;
+        }
+      });
 
       this.isObjectPlaced = true;
       this.reticle.visible = false;
 
       // Compute authoritative world-space bounds for the active algorithm
-      const activeGroup = this.getActiveVisualGroup();
       const bounds = ARSceneFraming.computeBoundingBox(activeGroup);
 
       this.lastSpatialDiagnostic = {
@@ -665,7 +683,7 @@ export class WebXRARService implements IARService {
         renderingMode: this.renderer && this.renderer.xr.isPresenting ? 'WEBXR_AR' : 'CANVAS_3D_FALLBACK',
         referenceSpaceType: this.xrRefSpaceType,
         placementDistance: hitDist,
-        objectScale: [autoScale, autoScale, autoScale],
+        objectScale: [1.0, 1.0, 1.0],
         placementPosition: [this.visualizer.rootGroup.position.x, this.visualizer.rootGroup.position.y, this.visualizer.rootGroup.position.z],
         cameraPosition: [this.viewerPosition.x, this.viewerPosition.y, this.viewerPosition.z],
         cameraToModelDistance: this.viewerPosition.distanceTo(this.visualizer.rootGroup.position),
@@ -713,6 +731,7 @@ export class WebXRARService implements IARService {
     this.isObjectPlaced = false;
     this.visualizer.rootGroup.visible = false;
     this.visualizer.rootGroup.scale.set(1.0, 1.0, 1.0);
+    this.lastHitTimestamp = 0;
     if (this.reticle) this.reticle.visible = false;
     if (this._state !== 'UNAVAILABLE') {
       this.setState('SCANNING');
@@ -868,6 +887,14 @@ export class WebXRARService implements IARService {
     this.mergeSortVisualizer.visualGroup.visible = algorithmId === 'algo-merge-sort';
     this.avlVisualizer.visualGroup.visible = algorithmId === 'ds-avl-tree';
     this.dijkstraVisualizer.visualGroup.visible = algorithmId === 'algo-dijkstras-algorithm' || algorithmId === 'algo-dijkstra';
+
+    // Ensure all meshes in newly active group have frustumCulled = false so WebXR camera never drops them
+    const activeGroup = this.getActiveVisualGroup();
+    activeGroup.traverse((child) => {
+      if ((child as any).isMesh) {
+        child.frustumCulled = false;
+      }
+    });
 
     // In 3D fallback mode, reset view angles and fit camera ONLY when algorithm changes
     if (this._state === 'UNAVAILABLE' && isNew) {
@@ -1059,8 +1086,25 @@ export class WebXRARService implements IARService {
     this.dijkstraVisualizer.dispose();
 
     if (this.reticle) {
-      this.reticle.geometry.dispose();
-      (this.reticle.material as THREE.Material).dispose();
+      if ((this.reticle as any).geometry) {
+        (this.reticle as any).geometry.dispose();
+      }
+      if ((this.reticle as any).material) {
+        if (Array.isArray((this.reticle as any).material)) {
+          (this.reticle as any).material.forEach((m: any) => m.dispose());
+        } else {
+          (this.reticle as any).material.dispose();
+        }
+      }
+      if ((this.reticle as any).traverse) {
+        (this.reticle as any).traverse((child: any) => {
+          if (child.geometry) child.geometry.dispose();
+          if (child.material) {
+            if (Array.isArray(child.material)) child.material.forEach((m: any) => m.dispose());
+            else child.material.dispose();
+          }
+        });
+      }
       this.reticle = null;
     }
 
@@ -1075,6 +1119,37 @@ export class WebXRARService implements IARService {
     this.setState('ENDED');
     this.stateListeners = [];
     this.trackingListeners = [];
+  }
+
+  /**
+   * Real-time mobile HUD telemetry helper: returns latest surface hit position.
+   */
+  public getLastHitPosition(): { x: number; y: number; z: number } | null {
+    if (!this.reticle || !this.reticle.visible) return null;
+    const pos = new THREE.Vector3();
+    pos.setFromMatrixPosition(this.lastHitMatrix);
+    return { x: pos.x, y: pos.y, z: pos.z };
+  }
+
+  /**
+   * Real-time mobile HUD telemetry helper: returns placed object world position.
+   */
+  public getPlacedPosition(): { x: number; y: number; z: number } | null {
+    if (!this.isObjectPlaced) return null;
+    const pos = this.visualizer.rootGroup.position;
+    return { x: pos.x, y: pos.y, z: pos.z };
+  }
+
+  /**
+   * Real-time mobile HUD telemetry helper: returns mesh count of active visualizer.
+   */
+  public getActiveMeshCount(): number {
+    const activeGroup = this.getActiveVisualGroup();
+    let count = 0;
+    activeGroup.traverse((child) => {
+      if ((child as any).isMesh) count++;
+    });
+    return count;
   }
 
   public onStateChange(callback: (state: ARSessionState) => void): () => void {

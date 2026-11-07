@@ -5,7 +5,10 @@ export const AR_SUPPORTED_TOPIC_IDS = [
   'algo-bubble-sort',
   'algo-binary-search',
   'algo-breadth-first-search',
-  'ds-stack'
+  'ds-stack',
+  'algo-merge-sort',
+  'ds-avl-tree',
+  'algo-dijkstras-algorithm'
 ] as const;
 
 export type ARSupportedTopicId = typeof AR_SUPPORTED_TOPIC_IDS[number];
@@ -188,6 +191,34 @@ export const INITIAL_DSA_TOPICS: DSATopic[] = [
     },
     tags: ['search-tree', 'bst', 'logarithmic'],
     orderIndex: 6
+  },
+  {
+    id: 'ds-avl-tree',
+    slug: 'avl-tree',
+    title: 'AVL Tree',
+    category: 'data-structure',
+    difficulty: 'Advanced',
+    estimatedMinutes: 40,
+    shortDescription: 'Self-balancing binary search tree maintaining height invariant |hL - hR| <= 1.',
+    detailedConcept: 'An AVL Tree is a self-balancing Binary Search Tree where the heights of the two child subtrees of any node differ by at most one. Whenever an insertion or deletion violates this balance factor invariant (BF not in {-1, 0, +1}), rebalancing is performed via one of four tree rotations: Left-Left (Single Right), Right-Right (Single Left), Left-Right (Double Left-Right), or Right-Left (Double Right-Left). Guarantees strict O(log N) lookup, insertion, and deletion.',
+    learningObjectives: [
+      'Understand height balance factors and strict tree height bounds.',
+      'Master the 4 rotation cases: Single (LL, RR) and Double (LR, RL).',
+      'Observe real-time balance factor recomputation and rotation pivots in interactive 3D AR space.'
+    ],
+    prerequisites: ['ds-binary-search-tree'],
+    timeComplexity: { best: 'O(log N)', average: 'O(log N)', worst: 'O(log N)' },
+    spaceComplexity: 'O(N)',
+    visualSpec: {
+      hasArModel: true,
+      modelFormat: 'procedural-3d',
+      proceduralGeneratorId: 'avl-balanced-tree',
+      defaultCameraDistance: 2.0,
+      initialScale: 0.85,
+      interactiveAnchors: ['balance-factor-badge', 'rotation-pivot']
+    },
+    tags: ['balanced-tree', 'avl', 'self-balancing', 'rotation'],
+    orderIndex: 7
   },
   {
     id: 'ds-heap',
@@ -461,7 +492,7 @@ export const INITIAL_DSA_TOPICS: DSATopic[] = [
     timeComplexity: { best: 'O(N log N)', average: 'O(N log N)', worst: 'O(N log N)' },
     spaceComplexity: 'O(N) auxiliary array',
     visualSpec: {
-      hasArModel: false,
+      hasArModel: true,
       modelFormat: 'procedural-3d',
       proceduralGeneratorId: 'merge-sort-tree',
       defaultCameraDistance: 1.8,
@@ -573,7 +604,7 @@ export const INITIAL_DSA_TOPICS: DSATopic[] = [
     timeComplexity: { best: 'O(E log V)', average: 'O((V + E) log V)', worst: 'O((V + E) log V)' },
     spaceComplexity: 'O(V) distance map & priority queue',
     visualSpec: {
-      hasArModel: false,
+      hasArModel: true,
       modelFormat: 'procedural-3d',
       proceduralGeneratorId: 'dijkstra-shortest-pathway',
       defaultCameraDistance: 2.4,

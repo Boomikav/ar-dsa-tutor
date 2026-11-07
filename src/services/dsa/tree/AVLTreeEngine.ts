@@ -58,7 +58,7 @@ export class AVLTreeEngine implements IDSALearningEngine<AVLTreeState, { type: '
   readonly topicTitle = 'AVL Tree (Self-Balancing)';
   readonly title = 'AVL Tree';
   readonly category = 'data-structure' as const;
-  readonly visualizationCapability: VisualizationCapability = '3D_READY';
+  readonly visualizationCapability: VisualizationCapability = 'AR_READY';
 
   private state!: AVLTreeState;
   private startTime = 0;

@@ -232,4 +232,13 @@ export interface IARService {
 
   /** Recalculates bounding box and refits camera framing to active visualization */
   refitScene?(): boolean;
+
+  /** Returns latest surface hit coordinates for real-time mobile HUD inspection */
+  getLastHitPosition?(): { x: number; y: number; z: number } | null;
+
+  /** Returns placed object coordinates for real-time mobile HUD inspection */
+  getPlacedPosition?(): { x: number; y: number; z: number } | null;
+
+  /** Returns active visualizer mesh count to verify geometry generation */
+  getActiveMeshCount?(): number;
 }

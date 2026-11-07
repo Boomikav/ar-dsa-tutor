@@ -138,7 +138,7 @@ export const HomeScreen: React.FC = () => {
         <section style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <Sparkles size={13} color="var(--accent-cyan)" /> AR-Ready Algorithms (5)
+              <Sparkles size={13} color="var(--accent-cyan)" /> AR-Ready Algorithms (8)
             </span>
             <span style={{ fontSize: '11px', color: 'var(--accent-cyan)', cursor: 'pointer' }} onClick={() => navigateTo('topics')}>
               Explore All →
@@ -151,7 +151,10 @@ export const HomeScreen: React.FC = () => {
               { id: 'algo-bubble-sort', name: 'Bubble Sort', icon: '🫧', badge: 'Sort' },
               { id: 'algo-binary-search', name: 'Binary Search', icon: '🎯', badge: 'Search' },
               { id: 'algo-breadth-first-search', name: 'BFS Graph', icon: '🕸️', badge: 'Graph' },
-              { id: 'ds-stack', name: 'Stack (LIFO)', icon: '🥞', badge: 'LIFO' }
+              { id: 'ds-stack', name: 'Stack (LIFO)', icon: '🥞', badge: 'LIFO' },
+              { id: 'algo-merge-sort', name: 'Merge Sort', icon: '🔀', badge: 'Sorting' },
+              { id: 'ds-avl-tree', name: 'AVL Tree', icon: '⚖️', badge: 'Balanced' },
+              { id: 'algo-dijkstras-algorithm', name: "Dijkstra's Algo", icon: '🗺️', badge: 'Pathfinding' }
             ].map(item => {
               const topicObj = topics.find(t => t.id === item.id);
               if (!topicObj) return null;
@@ -196,7 +199,7 @@ export const HomeScreen: React.FC = () => {
               Continue Learning
             </span>
             <span style={{ fontSize: '11px', color: 'var(--accent-cyan)', cursor: 'pointer' }} onClick={() => navigateTo('topics')}>
-              View all 20 →
+              View all {topics.length} →
             </span>
           </div>
 

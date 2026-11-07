@@ -18,7 +18,7 @@ export const INITIAL_KNOWLEDGE_GRAPH: ConceptGraph = {
       tier = 2;
     } else if (['ds-binary-tree', 'ds-graph', 'algo-merge-sort', 'algo-quick-sort'].includes(topic.id)) {
       tier = 3;
-    } else if (['ds-binary-search-tree', 'ds-heap', 'algo-breadth-first-search', 'algo-depth-first-search'].includes(topic.id)) {
+    } else if (['ds-binary-search-tree', 'ds-avl-tree', 'ds-heap', 'algo-breadth-first-search', 'algo-depth-first-search'].includes(topic.id)) {
       tier = 4;
     } else if (['algo-dijkstras-algorithm'].includes(topic.id)) {
       tier = 5;
@@ -225,6 +225,14 @@ export const INITIAL_KNOWLEDGE_GRAPH: ConceptGraph = {
       relationshipType: 'SUPPORTING_CONCEPT',
       strength: 'RECOMMENDED',
       rationale: 'Binary search decision splitting provides intuition for BST traversal paths.'
+    },
+    {
+      id: 'rel-bst-avl',
+      sourceConceptId: 'node-ds-binary-search-tree',
+      targetConceptId: 'node-ds-avl-tree',
+      relationshipType: 'PREREQUISITE',
+      strength: 'MANDATORY',
+      rationale: 'AVL trees extend BSTs by enforcing strict height-balance invariants.'
     },
     {
       id: 'rel-tree-heap',

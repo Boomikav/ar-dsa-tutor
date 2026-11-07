@@ -151,7 +151,7 @@ export class DijkstraEngine implements IDSALearningEngine<DijkstraState, { type:
   readonly topicTitle = "Dijkstra's Shortest Path";
   readonly title = "Dijkstra's Algorithm";
   readonly category = 'algorithm' as const;
-  readonly visualizationCapability: VisualizationCapability = '3D_READY';
+  readonly visualizationCapability: VisualizationCapability = 'AR_READY';
 
   private state!: DijkstraState;
   private trace: DijkstraStepTrace[] = [];

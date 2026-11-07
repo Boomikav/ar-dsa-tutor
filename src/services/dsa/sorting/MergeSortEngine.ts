@@ -70,7 +70,7 @@ export class MergeSortEngine implements IDSALearningEngine<MergeSortState, { typ
   readonly topicTitle = 'Merge Sort';
   readonly title = 'Merge Sort';
   readonly category = 'algorithm' as const;
-  readonly visualizationCapability: VisualizationCapability = '2D_READY';
+  readonly visualizationCapability: VisualizationCapability = 'AR_READY';
 
   private state!: MergeSortState;
   private startTime = 0;

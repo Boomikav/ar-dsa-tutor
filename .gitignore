@@ -1,31 +1,90 @@
-# Logs
-logs
+# Dependencies and Builds
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Logs and Temporary files
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+~$*.docx
 
-node_modules
-dist
-dist-ssr
-*.local
+# Testing & Coverage
+coverage/
+playwright-report/
+test-results/
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
+# Deployment & Vercel
 .vercel
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Research Manuscripts, Templates & PDFs
+*.docx
+*.pdf
+Paper_template*
+paper (*)*
+AgroVision_Mine*
+TODAY_REVIEW_STATUS.md
+
+# Academic Submission & Audit Folders
+docs/journal_conversion/
+docs/final_audit/
+docs/ar_restoration/
+docs/AIxVR_*
+docs/CONFERENCE_*
+docs/FINAL_*
+docs/CITATION_AUDIT_LEDGER.md
+docs/INDEPENDENT_FINAL_AUDIT.md
+docs/IMPLEMENTATION_COMPLETION_AUDIT.md
+docs/RELATED_WORK_AND_NOVELTY_*
+docs/RESEARCH_CLAIMS_EVIDENCE_MAP.md
+docs/RESEARCH_VALIDITY_REVIEW.md
+figures/
+submission/
+research-results/
+data/rag/independent_rag_benchmark_audit.*
+
+# Temporary / Academic scripts
+scripts/build_*.py
+scripts/inspect_*.py
+scripts/generate_*_architecture.py
+scripts/generate_*_figures.py
+scripts/render_*.py
+scripts/audit_*.py
+scripts/audit_*.ts
+scripts/test_*.py
+scripts/verify_*.py
+scripts/cae_svg_preview.html
+scripts/extracted_*.json
+scripts/extract_tables.py
+scripts/source_text_summary.txt
+scripts/table_style_helper.py
+scripts/independent_*.ts

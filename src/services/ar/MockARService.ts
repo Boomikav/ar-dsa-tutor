@@ -253,4 +253,16 @@ export class MockARService implements IARService {
   refitScene(): boolean {
     return true;
   }
+
+  getLastHitPosition(): { x: number; y: number; z: number } | null {
+    return { x: 0, y: -0.65, z: -0.85 };
+  }
+
+  getPlacedPosition(): { x: number; y: number; z: number } | null {
+    return this.isObjectPlaced ? { x: 0, y: -0.63, z: -0.85 } : null;
+  }
+
+  getActiveMeshCount(): number {
+    return 12;
+  }
 }

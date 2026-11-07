@@ -61,6 +61,7 @@ export const TopicExplorerScreen: React.FC = () => {
 
   const dsCount = topics.filter(t => t.category === 'data-structure').length;
   const algoCount = topics.filter(t => t.category === 'algorithm').length;
+  const arReadyCount = topics.filter(t => isARSupportedTopic(t.id)).length;
 
   return (
     <div className="mobile-screen-content">
@@ -142,7 +143,7 @@ export const TopicExplorerScreen: React.FC = () => {
                 fontWeight: 700
               }}
             >
-              <Sparkles size={11} /> AR Ready (5)
+              <Sparkles size={11} /> AR Ready ({arReadyCount})
             </button>
             {['all', 'Beginner', 'Intermediate', 'Advanced'].map(diff => (
               <button
