@@ -1,0 +1,78 @@
+flowchart TB
+    %% ========================================================================
+    %% AR-DSA TUTOR: FULL EIGHT-ALGORITHM & DUAL-AI ARCHITECTURE (CAE WILEY)
+    %% ========================================================================
+
+    subgraph CLIENT ["1 | LEARNER INTERACTION & MOBILE WEBXR PRESENTATION LAYER"]
+        direction LR
+        UI["<b>Learner Interface & Mobile Viewport</b><br/>• Mobile Browser (Chrome on Android 12+)<br/>• React 18 & TypeScript Component Tree<br/>• Responsive Adaptive HUD & Diagnostics<br/>• 1-Click Zero-Tear Algorithm Switcher"]
+
+        XR["<b>WebXR Session & Spatial Tracking</b><br/>• W3C WebXR Device API ('immersive-ar')<br/>• ARCore Plane Hit-Testing & Raycasting<br/>• Authoritative Single-Mesh Reticle (DoubleSide)<br/>• Dual Coordinate Frame (M_world vs M_model)"]
+
+        UI <-->|Touch Gestures & XR Session| XR
+    end
+
+    subgraph CORE ["2 | DETERMINISTIC ALGORITHM ENGINE CORE & SPATIAL VISUALIZERS"]
+        direction TB
+        subgraph ENGINES ["Eight Curricular Algorithm Engines (IDSALearningEngine / IAlgorithmEngine)"]
+            direction LR
+            E1["<b>Linear & Search</b><br/>• Bubble Sort (O(n²))<br/>• Binary Search (O(log n))<br/>• Stack LIFO (O(1))"]
+            E2["<b>Hierarchical Trees</b><br/>• BST Invariant (O(h))<br/>• AVL Tree 4-Rotations (O(log n))<br/>• Merge Sort Divide (O(n log n))"]
+            E3["<b>Graph & Shortest Path</b><br/>• BFS Queue Traversal (O(V+E))<br/>• Dijkstra Min-Heap (O((V+E)log V))"]
+        end
+
+        THREE["<b>Three.js Spatial Rendering Pipeline (WebGL2)</b><br/>• Frustum-Culling Overridden Mesh Hierarchies (frustumCulled: false)<br/>• Horizontal Camera Right Vector Yaw Alignment (camRight × ŷ)<br/>• Interactive 3D Raycasting & State Transition Animations"]
+
+        ENGINES <-->|Deterministic State & Geometry Updates| THREE
+    end
+
+    subgraph AI ["3 | DUAL PEDAGOGICAL INTELLIGENCE ARCHITECTURES (STRICT NON-INTERFERENCE)"]
+        direction LR
+
+        subgraph EGEA_SUB ["EGEA Scaffolding Subsystem (Procedural Track)"]
+            direction TB
+            TEL["<b>Monotonic Telemetry Ingestion</b><br/>• Immutable Event Stream {t_k, op_k, status_k}<br/>• Zero State Mutation Guarantee"]
+            EWMA["<b>EWMA Temporal Pacing Filter</b><br/>• Inter-action Δt_k & Decay α=0.3<br/>• Velocity Thresholds (Guessing vs Saliency)"]
+            POL["<b>Deterministic Scaffolding Policy</b><br/>• 6-Tier Behavioral Taxonomy<br/>• Non-Invasive Visual Cues & Reflective Pauses<br/>• 7 μs Median Decision Latency"]
+            TEL --> EWMA --> POL
+        end
+
+        subgraph RAG_SUB ["RAG AI Tutoring Subsystem (Conceptual Track)"]
+            direction TB
+            KB["<b>Pedagogical Knowledge Base</b><br/>• 9 Curated Documents across 8 Topics<br/>• 62 Structured Semantic Chunks (142 tok avg)"]
+            VEC["<b>128-d Vector Index & Retrieval</b><br/>• Cosine Similarity Scan: sim(q, d)<br/>• Top-3 Context Ranking (K=3, 1.12 ms)"]
+            SYN["<b>Grounded Response Synthesis</b><br/>• Structural Citation Provenance [DOC-XXX]<br/>• Out-of-Scope Refusal Guard (100% Rate)<br/>• Total Local Execution: 2.55 ms Median"]
+            KB --> VEC --> SYN
+        end
+    end
+
+    subgraph EVAL ["4 | CONTINUOUS VERIFICATION & EMPIRICAL BENCHMARK SUITE"]
+        direction LR
+        V1["<b>Algorithmic Correctness</b><br/>• 142 Unit Assertions Passing<br/>• Invariant Preservation Verified"]
+        V2["<b>EGEA Stress Suite</b><br/>• 30 Scenarios (100% Accuracy)<br/>• 12 Boundary Stress Handled"]
+        V3["<b>RAG Evaluation Benchmark</b><br/>• P@3=98.96%, R@3=100%, MRR=1.0<br/>• 0% Unreferenced Tag Rate"]
+        V4["<b>Physical WebXR Tracking</b><br/>• Forensic Trap Resolution<br/>• Candidate Fix Ready (dpl_Lj6B...)"]
+    end
+
+    %% Dataflow Interconnections
+    CLIENT -->|User Manipulation Event| CORE
+    CORE -->|Validated Interaction Event| TEL
+    POL -.->|Visual Highlights & Cues (Non-Mutating)| UI
+
+    UI -->|Learner Conceptual Query| VEC
+    SYN -.->|Cited Conversational Answer| UI
+
+    CORE -.->|Verification Asserts| EVAL
+    AI -.->|Benchmark Verification| EVAL
+
+    classDef clientStyle fill:#e0f2fe,stroke:#0284c7,stroke-width:1.5px,color:#0369a1;
+    classDef coreStyle fill:#dcfce7,stroke:#16a34a,stroke-width:1.5px,color:#15803d;
+    classDef egeaStyle fill:#fef3c7,stroke:#d97706,stroke-width:1.5px,color:#b45309;
+    classDef ragStyle fill:#f3e8ff,stroke:#9333ea,stroke-width:1.5px,color:#7e22ce;
+    classDef evalStyle fill:#f1f5f9,stroke:#64748b,stroke-width:1.2px,color:#334155;
+
+    class UI,XR clientStyle;
+    class ENGINES,E1,E2,E3,THREE coreStyle;
+    class TEL,EWMA,POL egeaStyle;
+    class KB,VEC,SYN ragStyle;
+    class V1,V2,V3,V4 evalStyle;
